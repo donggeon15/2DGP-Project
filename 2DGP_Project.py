@@ -2,7 +2,7 @@ from pico2d import *
 
 
 open_canvas()
-#background = load_image('TUK_GROUND.png')
+background = load_image('background1.png')
 character = load_image('walk_kobby.png')
 
 
@@ -60,7 +60,7 @@ up = False
 # fill here
 while running:
     clear_canvas()
-    #background.draw(400,300,800,600)
+    background.draw(400,300,800,600)
     if left == True and up == False:
         character.clip_draw(frame*25,0,25,25,x,y, 50, 50)
     elif left == False and up == False:
