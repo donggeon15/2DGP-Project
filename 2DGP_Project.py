@@ -8,14 +8,18 @@ class Kobby:
         self.count=0
         self.dir=0
         self.last_dir=0
-        self.action=0   #atcion 1:찌그러진, 2:점프
+        self.action=0   #atcion 1:찌그러진, 2:점프 3: 하늘날수 있는
         self.mode=0
         self.image=load_image('nomal_kobby_sheet.png')
+        self.image2=load_image('magic_kobby_sheet.png')
+        self.image3=load_image('sword_kobby_sheet.png')
+        self.image4=load_image('ice_kobby_sheet.png')
+        self.image5=load_image('fire_kobby_sheet.png')
 
     def update(self):
-        if self.dir == 0 and self.action == 0:
+        if self.dir == 0:
             self.count = (self.count + 1) % 50
-            if self.count == 49 and self.frame==0:
+            if self.count == 49 and self.frame == 0:
                 self.frame = (self.frame + 1) % 2
             elif self.frame == 1:
                 self.frame = (self.frame + 1) % 2
@@ -32,35 +36,58 @@ class Kobby:
     def handle_event(self, event):
         if event.type == SDL_KEYDOWN:
             if event.key == SDLK_RIGHT:
-                self.dir += 1
+                self.frame = 0
+                if self.action == 0:
+                    self.dir += 1
+                self.last_dir = 0
             elif event.key == SDLK_LEFT:
-                self.dir -= 1
+                self.frame = 0
+                if self.action == 0:
+                    self.dir -= 1
+                self.last_dir = 1
             elif event.key == SDLK_UP:
-                self.action = 2
+                self.frame = 0
+                self.action = 3 # 하늘 나는 풍선
             elif event.key == SDLK_DOWN:
-                self.action = 1
+                self.frame = 0
+                self.action = 1 # 찌그러진
+            elif event.key == SDLK_k:
+                self.frame = 0
+                self.action = 2 # 점프
         elif event.type == SDL_KEYUP:
             if event.key == SDLK_RIGHT:
                 self.dir = 0
-                self.last_dir = 0
                 self.frame = 0
             elif event.key == SDLK_LEFT:
                 self.dir = 0
-                self.last_dir = 1
                 self.frame = 0
             elif event.key == SDLK_DOWN:
                 self.action = 0
+                self.frame = 0
+            elif event.key == SDLK_UP:
+                self.action = 0
+                self.frame = 0
 
     def draw(self):
-        if self.dir > 0 and self.action == 0:
-            self.image.clip_draw(25 * self.frame, 50, 25, 25, self.x, self.y,50,50)
-        elif self.dir < 0 and self.action == 0:
-            self.image.clip_composite_draw(25 * self.frame, 50, 25, 25, 0, 'h', self.x, self.y, 50, 50)
-        elif self.dir == 0 and self.action == 0:
+        if self.action == 0:
+            if self.dir > 0:
+                self.image.clip_draw(25 * self.frame, 50, 25, 25, self.x, self.y, 50, 50)
+            elif self.dir < 0:
+                self.image.clip_composite_draw(25 * self.frame, 50, 25, 25, 0, 'h', self.x, self.y, 50, 50)
+            else:
+                if self.last_dir == 0:
+                    self.image.clip_draw(25 * self.frame, 100, 25, 25, self.x, self.y, 50, 50)
+                else:
+                    self.image.clip_composite_draw(25 * self.frame, 100, 25, 25, 0, 'h', self.x, self.y, 50, 50)
+        elif self.action == 1:
             if self.last_dir == 0:
-                self.image.clip_draw(25 * self.frame, 100, 25, 25, self.x, self.y, 50, 50)
-            elif self.last_dir == 1:
-                self.image.clip_composite_draw(25 * self.frame, 100, 25, 25, 0, 'h', self.x, self.y, 50, 50)
+                self.image.clip_draw(25 * self.frame, 75, 25, 25, self.x, self.y, 50, 50)
+            else:
+                self.image.clip_composite_draw(25 * self.frame, 75, 25, 25, 0, 'h', self.x, self.y, 50, 50)
+        elif self.action == 2:
+            pass
+        elif self.action == 3:
+            pass
 
 class Background:
     def __init__(self):
