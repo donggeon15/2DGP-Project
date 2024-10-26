@@ -3,24 +3,68 @@ from pico2d import *
 
 class Kobby:
     def __init__(self):
-        self.x,self.y = 0, 100
+        self.x,self.y = 0, 80
         self.frame=0
+        self.count=0
         self.dir=0
-        self.action=0
+        self.last_dir=0
+        self.action=0   #atcion 1:찌그러진, 2:점프
         self.mode=0
         self.image=load_image('nomal_kobby_sheet.png')
 
     def update(self):
-        pass
+        if self.dir == 0 and self.action == 0:
+            self.count = (self.count + 1) % 50
+            if self.count == 49 and self.frame==0:
+                self.frame = (self.frame + 1) % 2
+            elif self.frame == 1:
+                self.frame = (self.frame + 1) % 2
+        elif self.dir == 1 and self.action == 0:
+            self.frame = (self.frame + 1) % 10
+            self.x += self.dir * 5
+        elif self.dir > 1 and self.action == 0:
+            self.frame = (self.frame + 1) % 10
+            self.x += self.dir * 10
+        elif self.dir < 0 and self.action == 0:
+            self.frame = (self.frame + 1) % 10
+            self.x += self.dir * 5
+
     def handle_event(self, event):
-        pass
+        if event.type == SDL_KEYDOWN:
+            if event.key == SDLK_RIGHT:
+                self.dir += 1
+            elif event.key == SDLK_LEFT:
+                self.dir -= 1
+            elif event.key == SDLK_UP:
+                self.action = 2
+            elif event.key == SDLK_DOWN:
+                self.action = 1
+        elif event.type == SDL_KEYUP:
+            if event.key == SDLK_RIGHT:
+                self.dir = 0
+                self.last_dir = 0
+                self.frame = 0
+            elif event.key == SDLK_LEFT:
+                self.dir = 0
+                self.last_dir = 1
+                self.frame = 0
+            elif event.key == SDLK_DOWN:
+                self.action = 0
+
     def draw(self):
-        pass
+        if self.dir > 0 and self.action == 0:
+            self.image.clip_draw(25 * self.frame, 50, 25, 25, self.x, self.y,50,50)
+        elif self.dir < 0 and self.action == 0:
+            self.image.clip_composite_draw(25 * self.frame, 50, 25, 25, 0, 'h', self.x, self.y, 50, 50)
+        elif self.dir == 0 and self.action == 0:
+            if self.last_dir == 0:
+                self.image.clip_draw(25 * self.frame, 100, 25, 25, self.x, self.y, 50, 50)
+            elif self.last_dir == 1:
+                self.image.clip_composite_draw(25 * self.frame, 100, 25, 25, 0, 'h', self.x, self.y, 50, 50)
 
 class Background:
     def __init__(self):
         self.image = load_image('background1.png')
-
     def update(self):
         pass
     def draw(self):
@@ -32,11 +76,11 @@ class Ground:
         self.image=load_image('ground1.png')
         self.x,self.y = 0,0
 
-    def draw(self):
-        self.image.draw(750,100,1500,200)
-
     def update(self):
         pass
+
+    def draw(self):
+        self.image.draw(750,100,1500,200)
 
 class Monster:
     def __init__(self):
