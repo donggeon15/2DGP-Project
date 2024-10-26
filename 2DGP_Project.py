@@ -30,13 +30,19 @@ class Kobby:
             elif self.frame == 1:
                 self.frame = (self.frame + 1) % 2
         elif self.dir == 1 and self.action == 0:
-            self.frame = (self.frame + 1) % 10
+            if self.mode == 1:
+                self.frame = (self.frame + 1) % 12
+            else:
+                self.frame = (self.frame + 1) % 10
             self.x += self.dir * 5
         elif self.dir > 1 and self.action == 0:
             self.frame = (self.frame + 1) % 8
             self.x += self.dir * 5
         elif self.dir == -1 and self.action == 0:
-            self.frame = (self.frame + 1) % 10
+            if self.mode == 1:
+                self.frame = (self.frame + 1) % 12
+            else:
+                self.frame = (self.frame + 1) % 10
             self.x += self.dir * 5
         elif self.dir < -1 and self.action == 0:
             self.frame = (self.frame + 1) % 8
