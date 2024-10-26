@@ -1,10 +1,6 @@
 from pico2d import *
 
 
-open_canvas()
-background = load_image('background1.png')
-character = load_image('sword_kobby_sheet.png')
-
 
 class Kobby:
     def __init__(self):
@@ -22,11 +18,24 @@ class Kobby:
     def draw(self):
         pass
 
-class Ground:
+class Background:
     def __init__(self):
+        background = load_image('background1.png')
+
+    def update(self):
         pass
     def draw(self):
-        pass
+        self.image.draw(750,300,1500,600)
+
+
+class Ground:
+    def __init__(self):
+        self.image=load_image('ground.png')
+        self.x,self.y = 0,0
+
+    def draw(self):
+        self.image.draw(750,40,1750,80)
+
     def update(self):
         pass
 
@@ -42,80 +51,56 @@ class Monster:
 
 
 def handle_events():
-    global running, dir, dir2
+    global running
 
-    global x
-    global left, up
     events = get_events()
     for event in events:
         if event.type == SDL_QUIT:
             running = False
-        elif event.type == SDL_KEYDOWN:
-            if event.key == SDLK_RIGHT:
-                dir += 1
-                left = False
-                up = False
-            elif event.key == SDLK_LEFT:
-                dir -= 1
-                left = True
-                up = False
-            elif event.key == SDLK_DOWN:
-                dir2 -= 1
-                left = False
-                up = True
-            elif event.key == SDLK_UP:
-                dir2 += 1
-                left = True
-                up = True
-            elif event.key == SDLK_ESCAPE:
-                running = False
-        elif event.type == SDL_KEYUP:
-            if event.key == SDLK_RIGHT:
-                dir -= 1
-            elif event.key == SDLK_LEFT:
-                dir += 1
-            elif event.key == SDLK_DOWN:
-                dir2 += 1
-            elif event.key == SDLK_UP:
-                dir2 -= 1
+        elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
+            running = False
+        else:
+            kobby.handle_event(event)
 
 
-running = True
-x = 800 // 2
-y = 600 // 2
-frame = 0
-dir = 0
-dir2 = 0
+def reset_world():
+    global running
+    global world
+    global ground1
+    global background1
+    global kobby
 
-left = False
-up = False
+    running = True
+    world= [ ]
+
+    background1 = Background()
+    world.append(background1)
+
+    ground1 = Ground()
+    world.append(ground1)
+
+    kobby = Kobby()
+    world.append(kobby)
+
+
+def update_world():
+    for o in world:
+        o.update()
+
+def render_world():
+    clear_canvas()
+    for o in world:
+        o.draw()
+    update_canvas()
+
+open_canvas()
+
+reset_world()
 
 while running:
-    clear_canvas()
-    background.draw(750,300,1500,600)
-    if left == True and up == False:
-        character.clip_draw(frame * 32, 80, 32, 40, x, y, 48, 60)
-    elif left == False and up == False:
-        character.clip_draw(frame * 32, 80, 32, 40, x, y, 48, 60)
-    elif left == False and up == True:
-        character.clip_draw(frame * 32, 80, 32, 40, x, y, 48, 60)
-    elif left == True and up == True:
-        character.clip_draw(frame * 32, 80, 32, 40, x, y, 48, 60)
-    update_canvas()
     handle_events()
-    frame = (frame + 1) % 11
-    if dir > 0:
-        if x < 800:
-            x += dir * 5
-    elif dir < 0:
-        if x > 0:
-            x += dir * 5
-    if dir2 > 0:
-        if y < 600:
-            y += dir2 * 5
-    elif dir2 < 0:
-        if y > 0:
-            y += dir2 * 5
+    update_world()
+    render_world()
     delay(0.05)
 
 close_canvas()
