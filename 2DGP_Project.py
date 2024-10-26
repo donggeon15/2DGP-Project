@@ -7,7 +7,6 @@ class Kobby:
         self.frame = 0
         self.count = 0
         self.timer = 0
-        self.dt = 0
         self.dir = 0
         self.last_dir = 0
         self.action = 0   #atcion 1:찌그러진, 2:점프 3: 하늘날수 있는
@@ -36,11 +35,11 @@ class Kobby:
         elif self.dir > 1 and self.action == 0:
             self.frame = (self.frame + 1) % 8
             self.x += self.dir * 5
-        elif self.dir < 0 and self.action == 0:
+        elif self.dir == -1 and self.action == 0:
             self.frame = (self.frame + 1) % 10
             self.x += self.dir * 5
         elif self.dir < -1 and self.action == 0:
-            self.frame = (self.frame + 1) % 10
+            self.frame = (self.frame + 1) % 8
             self.x += self.dir * 5
 
 
@@ -56,11 +55,20 @@ class Kobby:
                     self.dir += 2
                 else:
                     self.dir += 1
+                if self.dir == -2:
+                    self.dir += 2
             elif event.key == SDLK_LEFT:
                 self.frame = 0
-                if self.action == 0:
-                    self.dir -= 1
                 self.last_dir = 1
+                if self.timer == 0 and self.action == 0:
+                    self.dir -= 1
+                    self.timer = 0.05
+                elif self.timer < 0.3:
+                    self.dir -= 2
+                else:
+                    self.dir -= 1
+                if self.dir == 2:
+                    self.dir -= 2
             elif event.key == SDLK_UP:
                 self.frame = 0
                 self.action = 3 # 하늘 나는 풍선
@@ -72,10 +80,16 @@ class Kobby:
                 self.action = 2 # 점프
         elif event.type == SDL_KEYUP:
             if event.key == SDLK_RIGHT:
-                self.dir = 0
+                if self.dir == 1:
+                    self.dir -= 1
+                elif self.dir == 2:
+                    self.dir -= 2
                 self.frame = 0
             elif event.key == SDLK_LEFT:
-                self.dir = 0
+                if self.dir == -1:
+                    self.dir += 1
+                elif self.dir == -2:
+                    self.dir += 2
                 self.frame = 0
             elif event.key == SDLK_DOWN:
                 self.action = 0
@@ -87,11 +101,15 @@ class Kobby:
     def draw(self):
         if self.action == 0:
             if self.dir > 0:
-                self.image.clip_draw(25 * self.frame, 50, 25, 25, self.x, self.y, 50, 50)
                 if self.dir > 1:
                     self.image.clip_draw(25 * self.frame, 25, 25, 25, self.x, self.y, 50, 50)
+                else:
+                    self.image.clip_draw(25 * self.frame, 50, 25, 25, self.x, self.y, 50, 50)
             elif self.dir < 0:
-                self.image.clip_composite_draw(25 * self.frame, 50, 25, 25, 0, 'h', self.x, self.y, 50, 50)
+                if self.dir < -1:
+                    self.image.clip_composite_draw(25 * self.frame, 25, 25, 25, 0, 'h', self.x, self.y, 50, 50)
+                else:
+                    self.image.clip_composite_draw(25 * self.frame, 50, 25, 25, 0, 'h', self.x, self.y, 50, 50)
             else:
                 if self.last_dir == 0:
                     self.image.clip_draw(25 * self.frame, 100, 25, 25, self.x, self.y, 50, 50)
