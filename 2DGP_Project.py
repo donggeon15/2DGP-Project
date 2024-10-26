@@ -10,7 +10,7 @@ class Kobby:
         self.dir = 0
         self.last_dir = 0
         self.action = 0   #atcion 1:찌그러진, 2:점프 3: 하늘날수 있는
-        self.mode = 0
+        self.mode = 0 #mode 0: 기본 1: 마법사 2: 검사 3: 얼음 4: 불꽃
         self.image=load_image('nomal_kobby_sheet.png')
         self.image2=load_image('magic_kobby_sheet.png')
         self.image3=load_image('sword_kobby_sheet.png')
@@ -49,26 +49,28 @@ class Kobby:
                 self.frame = 0
                 self.last_dir = 0
                 if self.timer == 0 and self.action == 0:
-                    self.dir += 1
-                    self.timer = 0.05
-                elif self.timer < 0.3:
+                    if self.dir == -2:
+                        self.dir = 0
+                    else:
+                        self.dir += 1
+                        self.timer = 0.05
+                elif self.timer < 0.26:
                     self.dir += 2
                 else:
                     self.dir += 1
-                if self.dir == -2:
-                    self.dir += 2
             elif event.key == SDLK_LEFT:
                 self.frame = 0
                 self.last_dir = 1
                 if self.timer == 0 and self.action == 0:
-                    self.dir -= 1
-                    self.timer = 0.05
-                elif self.timer < 0.3:
+                    if self.dir == 2:
+                        self.dir = 0
+                    else:
+                        self.dir -= 1
+                        self.timer = 0.05
+                elif self.timer < 0.26:
                     self.dir -= 2
                 else:
                     self.dir -= 1
-                if self.dir == 2:
-                    self.dir -= 2
             elif event.key == SDLK_UP:
                 self.frame = 0
                 self.action = 3 # 하늘 나는 풍선
@@ -78,18 +80,14 @@ class Kobby:
             elif event.key == SDLK_k:
                 self.frame = 0
                 self.action = 2 # 점프
+            elif event.key == SDLK_1:
+                self.mode = (self.mode + 1) % 5
         elif event.type == SDL_KEYUP:
             if event.key == SDLK_RIGHT:
-                if self.dir == 1:
-                    self.dir -= 1
-                elif self.dir == 2:
-                    self.dir -= 2
+                self.dir = 0
                 self.frame = 0
             elif event.key == SDLK_LEFT:
-                if self.dir == -1:
-                    self.dir += 1
-                elif self.dir == -2:
-                    self.dir += 2
+                self.dir = 0
                 self.frame = 0
             elif event.key == SDLK_DOWN:
                 self.action = 0
@@ -102,24 +100,96 @@ class Kobby:
         if self.action == 0:
             if self.dir > 0:
                 if self.dir > 1:
-                    self.image.clip_draw(25 * self.frame, 25, 25, 25, self.x, self.y, 50, 50)
+                    if self.mode == 0:
+                        self.image.clip_draw(25 * self.frame, 25, 25, 25, self.x, self.y, 50, 50)
+                    elif self.mode == 1:
+                        self.image2.clip_draw(25 * self.frame, 35, 25, 25, self.x, self.y, 50, 50)
+                    elif self.mode == 2:
+                        pass
+                    elif self.mode == 3:
+                        pass
+                    elif self.mode == 4:
+                        pass
                 else:
-                    self.image.clip_draw(25 * self.frame, 50, 25, 25, self.x, self.y, 50, 50)
+                    if self.mode == 0:
+                        self.image.clip_draw(25 * self.frame, 50, 25, 25, self.x, self.y, 50, 50)
+                    elif self.mode == 1:
+                        self.image2.clip_draw(25 * self.frame, 60, 25, 25, self.x, self.y, 50, 50)
+                    elif self.mode == 2:
+                        pass
+                    elif self.mode == 3:
+                        pass
+                    elif self.mode == 4:
+                        pass
             elif self.dir < 0:
                 if self.dir < -1:
-                    self.image.clip_composite_draw(25 * self.frame, 25, 25, 25, 0, 'h', self.x, self.y, 50, 50)
+                    if self.mode == 0:
+                        self.image.clip_composite_draw(25 * self.frame, 25, 25, 25, 0, 'h', self.x, self.y, 50, 50)
+                    elif self.mode == 1:
+                        self.image2.clip_composite_draw(25 * self.frame, 35, 25, 25, 0, 'h', self.x, self.y, 50, 50)
+                    elif self.mode == 2:
+                        pass
+                    elif self.mode == 3:
+                        pass
+                    elif self.mode == 4:
+                        pass
                 else:
-                    self.image.clip_composite_draw(25 * self.frame, 50, 25, 25, 0, 'h', self.x, self.y, 50, 50)
+                    if self.mode == 0:
+                        self.image.clip_composite_draw(25 * self.frame, 50, 25, 25, 0, 'h', self.x, self.y, 50, 50)
+                    elif self.mode == 1:
+                        self.image2.clip_composite_draw(25 * self.frame, 60, 25, 25, 0, 'h', self.x, self.y, 50, 50)
+                    elif self.mode == 2:
+                        pass
+                    elif self.mode == 3:
+                        pass
+                    elif self.mode == 4:
+                        pass
             else:
                 if self.last_dir == 0:
-                    self.image.clip_draw(25 * self.frame, 100, 25, 25, self.x, self.y, 50, 50)
-                else:
-                    self.image.clip_composite_draw(25 * self.frame, 100, 25, 25, 0, 'h', self.x, self.y, 50, 50)
+                    if self.mode == 0:
+                        self.image.clip_draw(25 * self.frame, 100, 25, 25, self.x, self.y, 50, 50)
+                    elif self.mode == 1:
+                        self.image2.clip_draw(25 * self.frame, 110, 25, 25, self.x, self.y, 50, 50)
+                    elif self.mode == 2:
+                        pass
+                    elif self.mode == 3:
+                        pass
+                    elif self.mode == 4:
+                        pass
+                elif self.last_dir == 1:
+                    if self.mode == 0:
+                        self.image.clip_composite_draw(25 * self.frame, 100, 25, 25, 0, 'h', self.x, self.y, 50, 50)
+                    elif self.mode == 1:
+                        self.image2.clip_composite_draw(25 * self.frame, 110, 25, 25, 0, 'h', self.x, self.y, 50, 50)
+                    elif self.mode == 2:
+                        pass
+                    elif self.mode == 3:
+                        pass
+                    elif self.mode == 4:
+                        pass
         elif self.action == 1:
             if self.last_dir == 0:
-                self.image.clip_draw(25 * self.frame, 75, 25, 25, self.x, self.y, 50, 50)
-            else:
-                self.image.clip_composite_draw(25 * self.frame, 75, 25, 25, 0, 'h', self.x, self.y, 50, 50)
+                if self.mode == 0:
+                    self.image.clip_draw(25 * self.frame, 75, 25, 25, self.x, self.y, 50, 50)
+                elif self.mode == 1:
+                    self.image2.clip_draw(25 * self.frame, 85, 25, 25, self.x, self.y, 50, 50)
+                elif self.mode == 2:
+                    pass
+                elif self.mode == 3:
+                    pass
+                elif self.mode == 4:
+                    pass
+            if self.last_dir == 1:
+                if self.mode == 0:
+                    self.image.clip_composite_draw(25 * self.frame, 75, 25, 25, 0, 'h', self.x, self.y, 50, 50)
+                elif self.mode == 1:
+                    self.image2.clip_composite_draw(25 * self.frame, 85, 25, 25, 0, 'h', self.x, self.y, 50, 50)
+                elif self.mode == 2:
+                    pass
+                elif self.mode == 3:
+                    pass
+                elif self.mode == 4:
+                    pass
         elif self.action == 2:
             pass
         elif self.action == 3:
