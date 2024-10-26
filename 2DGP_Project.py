@@ -4,12 +4,14 @@ from pico2d import *
 class Kobby:
     def __init__(self):
         self.x,self.y = 0, 80
-        self.frame=0
-        self.count=0
-        self.dir=0
-        self.last_dir=0
-        self.action=0   #atcion 1:찌그러진, 2:점프 3: 하늘날수 있는
-        self.mode=0
+        self.frame = 0
+        self.count = 0
+        self.timer = 0
+        self.dt = 0
+        self.dir = 0
+        self.last_dir = 0
+        self.action = 0   #atcion 1:찌그러진, 2:점프 3: 하늘날수 있는
+        self.mode = 0
         self.image=load_image('nomal_kobby_sheet.png')
         self.image2=load_image('magic_kobby_sheet.png')
         self.image3=load_image('sword_kobby_sheet.png')
@@ -17,6 +19,11 @@ class Kobby:
         self.image5=load_image('fire_kobby_sheet.png')
 
     def update(self):
+        if self.timer != 0:
+            self.timer += 0.05
+            if self.timer >= 0.5:
+                self.timer = 0
+
         if self.dir == 0:
             self.count = (self.count + 1) % 50
             if self.count == 49 and self.frame == 0:
@@ -27,19 +34,28 @@ class Kobby:
             self.frame = (self.frame + 1) % 10
             self.x += self.dir * 5
         elif self.dir > 1 and self.action == 0:
-            self.frame = (self.frame + 1) % 10
-            self.x += self.dir * 10
+            self.frame = (self.frame + 1) % 8
+            self.x += self.dir * 5
         elif self.dir < 0 and self.action == 0:
             self.frame = (self.frame + 1) % 10
             self.x += self.dir * 5
+        elif self.dir < -1 and self.action == 0:
+            self.frame = (self.frame + 1) % 10
+            self.x += self.dir * 5
+
 
     def handle_event(self, event):
         if event.type == SDL_KEYDOWN:
             if event.key == SDLK_RIGHT:
                 self.frame = 0
-                if self.action == 0:
-                    self.dir += 1
                 self.last_dir = 0
+                if self.timer == 0 and self.action == 0:
+                    self.dir += 1
+                    self.timer = 0.05
+                elif self.timer < 0.3:
+                    self.dir += 2
+                else:
+                    self.dir += 1
             elif event.key == SDLK_LEFT:
                 self.frame = 0
                 if self.action == 0:
@@ -72,6 +88,8 @@ class Kobby:
         if self.action == 0:
             if self.dir > 0:
                 self.image.clip_draw(25 * self.frame, 50, 25, 25, self.x, self.y, 50, 50)
+                if self.dir > 1:
+                    self.image.clip_draw(25 * self.frame, 25, 25, 25, self.x, self.y, 50, 50)
             elif self.dir < 0:
                 self.image.clip_composite_draw(25 * self.frame, 50, 25, 25, 0, 'h', self.x, self.y, 50, 50)
             else:
