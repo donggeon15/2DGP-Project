@@ -113,22 +113,22 @@ class Kobby:
                     if self.mode == 0:
                         self.image.clip_draw(25 * self.frame, 25, 25, 25, self.x, self.y, 50, 50)
                     elif self.mode == 1:
-                        self.image2.clip_draw(25 * self.frame, 35, 25, 25, self.x, self.y + 2, 50, 50)
+                        self.image2.clip_draw(25 * self.frame, 35, 25, 25, self.x - 2, self.y + 2, 50, 50)
                     elif self.mode == 2:
-                        self.image3.clip_draw(32 * self.frame, 40, 32, 40, self.x, self.y + 17, 64, 80)
+                        self.image3.clip_draw(32 * self.frame, 40, 32, 40, self.x - 7, self.y + 17, 64, 80)
                     elif self.mode == 3:
-                        self.image4.clip_draw(25 * self.frame, 28, 25, 28, self.x, self.y, 50, 56)
+                        self.image4.clip_draw(25 * self.frame, 28, 25, 28, self.x, self.y + 5, 50, 56)
                     elif self.mode == 4:
                         pass
                 else:
                     if self.mode == 0:
                         self.image.clip_draw(25 * self.frame, 50, 25, 25, self.x, self.y, 50, 50)
                     elif self.mode == 1:
-                        self.image2.clip_draw(25 * self.frame, 60, 25, 25, self.x, self.y + 2, 50, 50)
+                        self.image2.clip_draw(25 * self.frame, 60, 25, 25, self.x - 2, self.y + 2, 50, 50)
                     elif self.mode == 2:
-                        self.image3.clip_draw(32 * self.frame, 80, 32, 40, self.x, self.y + 17, 64, 80)
+                        self.image3.clip_draw(32 * self.frame, 80, 32, 40, self.x - 7, self.y + 17, 64, 80)
                     elif self.mode == 3:
-                        self.image4.clip_draw(25 * self.frame, 56, 25, 28, self.x, self.y, 50, 56)
+                        self.image4.clip_draw(25 * self.frame, 56, 25, 28, self.x, self.y + 5, 50, 56)
                     elif self.mode == 4:
                         pass
             elif self.dir < 0:
@@ -136,22 +136,22 @@ class Kobby:
                     if self.mode == 0:
                         self.image.clip_composite_draw(25 * self.frame, 25, 25, 25, 0, 'h', self.x, self.y, 50, 50)
                     elif self.mode == 1:
-                        self.image2.clip_composite_draw(25 * self.frame, 35, 25, 25, 0, 'h', self.x, self.y + 2, 50, 50)
+                        self.image2.clip_composite_draw(25 * self.frame, 35, 25, 25, 0, 'h', self.x + 2, self.y + 2, 50, 50)
                     elif self.mode == 2:
-                        self.image3.clip_composite_draw(32 * self.frame, 40, 32, 40, 0, 'h', self.x, self.y + 17, 64, 80)
+                        self.image3.clip_composite_draw(32 * self.frame, 40, 32, 40, 0, 'h', self.x + 7, self.y + 17, 64, 80)
                     elif self.mode == 3:
-                        self.image4.clip_composite_draw(25 * self.frame, 28, 25, 28, 0, 'h', self.x, self.y, 50, 56)
+                        self.image4.clip_composite_draw(25 * self.frame, 28, 25, 28, 0, 'h', self.x, self.y + 5, 50, 56)
                     elif self.mode == 4:
                         pass
                 else:
                     if self.mode == 0:
                         self.image.clip_composite_draw(25 * self.frame, 50, 25, 25, 0, 'h', self.x, self.y, 50, 50)
                     elif self.mode == 1:
-                        self.image2.clip_composite_draw(25 * self.frame, 60, 25, 25, 0, 'h', self.x, self.y + 2, 50, 50)
+                        self.image2.clip_composite_draw(25 * self.frame, 60, 25, 25, 0, 'h', self.x + 2, self.y + 2, 50, 50)
                     elif self.mode == 2:
-                        self.image3.clip_composite_draw(32 * self.frame, 80, 32, 40, 0, 'h', self.x, self.y + 17, 64, 80)
+                        self.image3.clip_composite_draw(32 * self.frame, 80, 32, 40, 0, 'h', self.x + 7, self.y + 17, 64, 80)
                     elif self.mode == 3:
-                        self.image4.clip_composite_draw(25 * self.frame, 56, 25, 28, 0, 'h', self.x, self.y, 50, 56)
+                        self.image4.clip_composite_draw(25 * self.frame, 56, 25, 28, 0, 'h', self.x, self.y + 5, 50, 56)
                     elif self.mode == 4:
                         pass
             else:
@@ -159,22 +159,22 @@ class Kobby:
                     if self.mode == 0:
                         self.image.clip_draw(25 * self.frame, 100, 25, 25, self.x, self.y, 50, 50)
                     elif self.mode == 1:
-                        self.image2.clip_draw(25 * self.frame, 110, 25, 25, self.x, self.y + 2, 50, 50)
+                        self.image2.clip_draw(25 * self.frame, 110, 25, 25, self.x - 2, self.y + 2, 50, 50)
                     elif self.mode == 2:
-                        self.image3.clip_draw(32 * self.frame, 160, 32, 40, self.x, self.y + 17, 64, 80)
+                        self.image3.clip_draw(32 * self.frame, 160, 32, 40, self.x - 7, self.y + 17, 64, 80)
                     elif self.mode == 3:
-                        self.image4.clip_draw(25 * self.frame, 112, 25, 28, self.x, self.y, 50, 56)
+                        self.image4.clip_draw(25 * self.frame, 112, 25, 28, self.x, self.y + 5, 50, 56)
                     elif self.mode == 4:
                         pass
                 elif self.last_dir == 1:
                     if self.mode == 0:
                         self.image.clip_composite_draw(25 * self.frame, 100, 25, 25, 0, 'h', self.x, self.y, 50, 50)
                     elif self.mode == 1:
-                        self.image2.clip_composite_draw(25 * self.frame, 110, 25, 25, 0, 'h', self.x, self.y + 2, 50, 50)
+                        self.image2.clip_composite_draw(25 * self.frame, 110, 25, 25, 0, 'h', self.x + 2, self.y + 2, 50, 50)
                     elif self.mode == 2:
-                        self.image3.clip_composite_draw(32 * self.frame, 160, 32, 40, 0, 'h', self.x, self.y + 17, 64, 80)
+                        self.image3.clip_composite_draw(32 * self.frame, 160, 32, 40, 0, 'h', self.x + 7, self.y + 17, 64, 80)
                     elif self.mode == 3:
-                        self.image4.clip_composite_draw(25 * self.frame, 112, 25, 28, 0, 'h', self.x, self.y, 50, 56)
+                        self.image4.clip_composite_draw(25 * self.frame, 112, 25, 28, 0, 'h', self.x, self.y + 5, 50, 56)
                     elif self.mode == 4:
                         pass
         elif self.action == 1:
@@ -182,22 +182,22 @@ class Kobby:
                 if self.mode == 0:
                     self.image.clip_draw(25 * self.frame, 75, 25, 25, self.x, self.y, 50, 50)
                 elif self.mode == 1:
-                    self.image2.clip_draw(25 * self.frame, 85, 25, 25, self.x, self.y + 2, 50, 50)
+                    self.image2.clip_draw(25 * self.frame, 85, 25, 25, self.x - 2, self.y + 2, 50, 50)
                 elif self.mode == 2:
-                    self.image3.clip_draw(32 * self.frame, 120, 32, 40, self.x, self.y + 17, 64, 80)
+                    self.image3.clip_draw(32 * self.frame, 120, 32, 40, self.x - 7, self.y + 17, 64, 80)
                 elif self.mode == 3:
-                    self.image4.clip_draw(25 * self.frame, 84, 25, 28, self.x, self.y, 50, 56)
+                    self.image4.clip_draw(25 * self.frame, 84, 25, 28, self.x, self.y + 5, 50, 56)
                 elif self.mode == 4:
                     pass
             if self.last_dir == 1:
                 if self.mode == 0:
                     self.image.clip_composite_draw(25 * self.frame, 75, 25, 25, 0, 'h', self.x, self.y, 50, 50)
                 elif self.mode == 1:
-                    self.image2.clip_composite_draw(25 * self.frame, 85, 25, 25, 0, 'h', self.x, self.y + 2, 50, 50)
+                    self.image2.clip_composite_draw(25 * self.frame, 85, 25, 25, 0, 'h', self.x + 2, self.y + 2, 50, 50)
                 elif self.mode == 2:
-                    self.image3.clip_composite_draw(32 * self.frame, 120, 32, 40, 0, 'h', self.x, self.y + 17, 64, 80)
+                    self.image3.clip_composite_draw(32 * self.frame, 120, 32, 40, 0, 'h', self.x + 7, self.y + 17, 64, 80)
                 elif self.mode == 3:
-                    self.image.clip_composite_draw(25 * self.frame, 84, 25, 28, 0, 'h', self.x, self.y, 50, 56)
+                    self.image4.clip_composite_draw(25 * self.frame, 84, 25, 28, 0, 'h', self.x, self.y + 5, 50, 56)
                 elif self.mode == 4:
                     pass
         elif self.action == 2:
