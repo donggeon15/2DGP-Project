@@ -1,7 +1,6 @@
 from pico2d import *
 
 
-
 class Kobby:
     def __init__(self):
         self.x,self.y = 0, 100
@@ -20,7 +19,7 @@ class Kobby:
 
 class Background:
     def __init__(self):
-        background = load_image('background1.png')
+        self.image = load_image('background1.png')
 
     def update(self):
         pass
@@ -30,11 +29,11 @@ class Background:
 
 class Ground:
     def __init__(self):
-        self.image=load_image('ground.png')
+        self.image=load_image('ground1.png')
         self.x,self.y = 0,0
 
     def draw(self):
-        self.image.draw(750,40,1750,80)
+        self.image.draw(750,100,1500,200)
 
     def update(self):
         pass
@@ -43,8 +42,6 @@ class Monster:
     def __init__(self):
         pass
     def update(self):
-        pass
-    def handle_event(self, event):
         pass
     def draw(self):
         pass
