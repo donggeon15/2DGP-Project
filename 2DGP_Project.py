@@ -3,7 +3,7 @@ from pico2d import *
 from background import Background
 from ground import Ground
 from kobby import Kobby
-
+from state_machine import*
 
 def handle_events():
     global running
@@ -15,7 +15,8 @@ def handle_events():
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             running = False
         else:
-            kobby.handle_event(event)
+            if event.type == SDL_KEYDOWN or event.type == SDL_KEYUP:
+                kobby.handle_event(event)
 
 
 def reset_world():
@@ -56,6 +57,6 @@ while running:
     handle_events()
     update_world()
     render_world()
-    delay(0.05)
+    delay(0.03)
 
 close_canvas()
