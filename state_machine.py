@@ -30,6 +30,9 @@ def double_right(e):
 def double_left(e):
     return e[0] == 'DOUBLE_INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_LEFT
 
+def down_k(e):
+    return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_k
+
 class StateMachine:
     def __init__(self, o):
         self.o = o

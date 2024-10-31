@@ -40,26 +40,26 @@ class Idle:
     def draw(kobby):
         if kobby.face_dir == 1:
             if kobby.mode == 0:
-                kobby.image.clip_draw(25 * kobby.frame, 100, 25, 25, kobby.x, kobby.y, 50, 50)
+                kobby.image.clip_draw(25 * kobby.frame, 100, 25, 25, kobby.screen_x, kobby.y, 50, 50)
             elif kobby.mode == 1:
-                kobby.image2.clip_draw(25 * kobby.frame, 110, 25, 25, kobby.x - 2, kobby.y + 2, 50, 50)
+                kobby.image2.clip_draw(25 * kobby.frame, 110, 25, 25, kobby.screen_x - 2, kobby.y + 2, 50, 50)
             elif kobby.mode == 2:
-                kobby.image3.clip_draw(32 * kobby.frame, 160, 32, 40, kobby.x - 7, kobby.y + 17, 64, 80)
+                kobby.image3.clip_draw(32 * kobby.frame, 160, 32, 40, kobby.screen_x - 7, kobby.y + 17, 64, 80)
             elif kobby.mode == 3:
-                kobby.image4.clip_draw(25 * kobby.frame, 112, 25, 28, kobby.x, kobby.y + 5, 50, 56)
+                kobby.image4.clip_draw(25 * kobby.frame, 112, 25, 28, kobby.screen_x, kobby.y + 5, 50, 56)
             elif kobby.mode == 4:
-                kobby.image5.clip_draw(25 * kobby.frame, 152, 25, 40, kobby.x, kobby.y + 15, 50, 80)
+                kobby.image5.clip_draw(25 * kobby.frame, 152, 25, 40, kobby.screen_x, kobby.y + 15, 50, 80)
         elif kobby.face_dir == -1:
             if kobby.mode == 0:
-                kobby.image.clip_composite_draw(25 * kobby.frame, 100, 25, 25, 0, 'h', kobby.x, kobby.y, 50, 50)
+                kobby.image.clip_composite_draw(25 * kobby.frame, 100, 25, 25, 0, 'h', kobby.screen_x, kobby.y, 50, 50)
             elif kobby.mode == 1:
-                kobby.image2.clip_composite_draw(25 * kobby.frame, 110, 25, 25, 0, 'h', kobby.x + 2, kobby.y + 2, 50, 50)
+                kobby.image2.clip_composite_draw(25 * kobby.frame, 110, 25, 25, 0, 'h', kobby.screen_x + 2, kobby.y + 2, 50, 50)
             elif kobby.mode == 2:
-                kobby.image3.clip_composite_draw(32 * kobby.frame, 160, 32, 40, 0, 'h', kobby.x + 7, kobby.y + 17, 64, 80)
+                kobby.image3.clip_composite_draw(32 * kobby.frame, 160, 32, 40, 0, 'h', kobby.screen_x + 7, kobby.y + 17, 64, 80)
             elif kobby.mode == 3:
-                kobby.image4.clip_composite_draw(25 * kobby.frame, 112, 25, 28, 0, 'h', kobby.x, kobby.y + 5, 50, 56)
+                kobby.image4.clip_composite_draw(25 * kobby.frame, 112, 25, 28, 0, 'h', kobby.screen_x, kobby.y + 5, 50, 56)
             elif kobby.mode == 4:
-                kobby.image5.clip_composite_draw(25 * kobby.frame, 152, 25, 40, 0, 'h', kobby.x, kobby.y + 15, 50, 80)
+                kobby.image5.clip_composite_draw(25 * kobby.frame, 152, 25, 40, 0, 'h', kobby.screen_x, kobby.y + 15, 50, 80)
 
 class Walk:
     @staticmethod
@@ -96,26 +96,26 @@ class Walk:
     def draw(kobby):
         if kobby.dir == 1:
             if kobby.mode == 0:
-                kobby.image.clip_draw(25 * kobby.frame, 50, 25, 25, kobby.x, kobby.y, 50, 50)
+                kobby.image.clip_draw(25 * kobby.frame, 50, 25, 25, kobby.screen_x, kobby.y, 50, 50)
             elif kobby.mode == 1:
-                kobby.image2.clip_draw(25 * kobby.frame, 60, 25, 25, kobby.x - 2, kobby.y + 2, 50, 50)
+                kobby.image2.clip_draw(25 * kobby.frame, 60, 25, 25, kobby.screen_x - 2, kobby.y + 2, 50, 50)
             elif kobby.mode == 2:
-                kobby.image3.clip_draw(32 * kobby.frame, 80, 32, 40, kobby.x - 7, kobby.y + 17, 64, 80)
+                kobby.image3.clip_draw(32 * kobby.frame, 80, 32, 40, kobby.screen_x - 7, kobby.y + 17, 64, 80)
             elif kobby.mode == 3:
-                kobby.image4.clip_draw(25 * kobby.frame, 56, 25, 28, kobby.x, kobby.y + 5, 50, 56)
+                kobby.image4.clip_draw(25 * kobby.frame, 56, 25, 28, kobby.screen_x, kobby.y + 5, 50, 56)
             elif kobby.mode == 4:
-                kobby.image5.clip_draw(25 * kobby.frame, 72, 25, 40, kobby.x, kobby.y + 15, 50, 80)
+                kobby.image5.clip_draw(25 * kobby.frame, 72, 25, 40, kobby.screen_x, kobby.y + 15, 50, 80)
         elif kobby.dir == -1:
             if kobby.mode == 0:
-                kobby.image.clip_composite_draw(25 * kobby.frame, 50, 25, 25, 0, 'h', kobby.x, kobby.y, 50, 50)
+                kobby.image.clip_composite_draw(25 * kobby.frame, 50, 25, 25, 0, 'h', kobby.screen_x, kobby.y, 50, 50)
             elif kobby.mode == 1:
-                kobby.image2.clip_composite_draw(25 * kobby.frame, 60, 25, 25, 0, 'h', kobby.x + 2, kobby.y + 2, 50, 50)
+                kobby.image2.clip_composite_draw(25 * kobby.frame, 60, 25, 25, 0, 'h', kobby.screen_x + 2, kobby.y + 2, 50, 50)
             elif kobby.mode == 2:
-                kobby.image3.clip_composite_draw(32 * kobby.frame, 80, 32, 40, 0, 'h', kobby.x + 7, kobby.y + 17, 64, 80)
+                kobby.image3.clip_composite_draw(32 * kobby.frame, 80, 32, 40, 0, 'h', kobby.screen_x + 7, kobby.y + 17, 64, 80)
             elif kobby.mode == 3:
-                kobby.image4.clip_composite_draw(25 * kobby.frame, 56, 25, 28, 0, 'h', kobby.x, kobby.y + 5, 50, 56)
+                kobby.image4.clip_composite_draw(25 * kobby.frame, 56, 25, 28, 0, 'h', kobby.screen_x, kobby.y + 5, 50, 56)
             elif kobby.mode == 4:
-                kobby.image5.clip_composite_draw(25 * kobby.frame, 72, 25, 40, 0, 'h', kobby.x, kobby.y + 15, 50, 80)
+                kobby.image5.clip_composite_draw(25 * kobby.frame, 72, 25, 40, 0, 'h', kobby.screen_x, kobby.y + 15, 50, 80)
 
 class Run:
     @staticmethod
@@ -141,26 +141,26 @@ class Run:
     def draw(kobby):
         if kobby.dir == 2:
             if kobby.mode == 0:
-                kobby.image.clip_draw(25 * kobby.frame, 25, 25, 25, kobby.x, kobby.y, 50, 50)
+                kobby.image.clip_draw(25 * kobby.frame, 25, 25, 25, kobby.screen_x, kobby.y, 50, 50)
             elif kobby.mode == 1:
-                kobby.image2.clip_draw(25 * kobby.frame, 35, 25, 25, kobby.x - 2, kobby.y + 2, 50, 50)
+                kobby.image2.clip_draw(25 * kobby.frame, 35, 25, 25, kobby.screen_x - 2, kobby.y + 2, 50, 50)
             elif kobby.mode == 2:
-                kobby.image3.clip_draw(32 * kobby.frame, 40, 32, 40, kobby.x - 7, kobby.y + 17, 64, 80)
+                kobby.image3.clip_draw(32 * kobby.frame, 40, 32, 40, kobby.screen_x - 7, kobby.y + 17, 64, 80)
             elif kobby.mode == 3:
-                kobby.image4.clip_draw(25 * kobby.frame, 28, 25, 28, kobby.x, kobby.y + 5, 50, 56)
+                kobby.image4.clip_draw(25 * kobby.frame, 28, 25, 28, kobby.screen_x, kobby.y + 5, 50, 56)
             elif kobby.mode == 4:
-                kobby.image5.clip_draw(40 * kobby.frame, 40, 40, 32, kobby.x, kobby.y + 5, 80, 64)
+                kobby.image5.clip_draw(40 * kobby.frame, 40, 40, 32, kobby.screen_x, kobby.y + 5, 80, 64)
         elif kobby.dir == -2:
             if kobby.mode == 0:
-                kobby.image.clip_composite_draw(25 * kobby.frame, 25, 25, 25, 0, 'h', kobby.x, kobby.y, 50, 50)
+                kobby.image.clip_composite_draw(25 * kobby.frame, 25, 25, 25, 0, 'h', kobby.screen_x, kobby.y, 50, 50)
             elif kobby.mode == 1:
-                kobby.image2.clip_composite_draw(25 * kobby.frame, 35, 25, 25, 0, 'h', kobby.x + 2, kobby.y + 2, 50, 50)
+                kobby.image2.clip_composite_draw(25 * kobby.frame, 35, 25, 25, 0, 'h', kobby.screen_x + 2, kobby.y + 2, 50, 50)
             elif kobby.mode == 2:
-                kobby.image3.clip_composite_draw(32 * kobby.frame, 40, 32, 40, 0, 'h', kobby.x + 7, kobby.y + 17, 64, 80)
+                kobby.image3.clip_composite_draw(32 * kobby.frame, 40, 32, 40, 0, 'h', kobby.screen_x + 7, kobby.y + 17, 64, 80)
             elif kobby.mode == 3:
-                kobby.image4.clip_composite_draw(25 * kobby.frame, 28, 25, 28, 0, 'h', kobby.x, kobby.y + 5, 50, 56)
+                kobby.image4.clip_composite_draw(25 * kobby.frame, 28, 25, 28, 0, 'h', kobby.screen_x, kobby.y + 5, 50, 56)
             elif kobby.mode == 4:
-                kobby.image5.clip_composite_draw(40 * kobby.frame, 40, 40, 32, 0, 'h', kobby.x, kobby.y + 5, 80, 64)
+                kobby.image5.clip_composite_draw(40 * kobby.frame, 40, 40, 32, 0, 'h', kobby.screen_x, kobby.y + 5, 80, 64)
 
 
 
@@ -206,26 +206,26 @@ class Squashed:
     def draw(kobby):
         if kobby.face_dir == 1:
             if kobby.mode == 0:
-                kobby.image.clip_draw(25 * kobby.frame, 75, 25, 25, kobby.x, kobby.y, 50, 50)
+                kobby.image.clip_draw(25 * kobby.frame, 75, 25, 25, kobby.screen_x, kobby.y, 50, 50)
             elif kobby.mode == 1:
-                kobby.image2.clip_draw(25 * kobby.frame, 85, 25, 25, kobby.x - 2, kobby.y + 2, 50, 50)
+                kobby.image2.clip_draw(25 * kobby.frame, 85, 25, 25, kobby.screen_x - 2, kobby.y + 2, 50, 50)
             elif kobby.mode == 2:
-                kobby.image3.clip_draw(32 * kobby.frame, 120, 32, 40, kobby.x - 7, kobby.y + 17, 64, 80)
+                kobby.image3.clip_draw(32 * kobby.frame, 120, 32, 40, kobby.screen_x - 7, kobby.y + 17, 64, 80)
             elif kobby.mode == 3:
-                kobby.image4.clip_draw(25 * kobby.frame, 84, 25, 28, kobby.x, kobby.y + 5, 50, 56)
+                kobby.image4.clip_draw(25 * kobby.frame, 84, 25, 28, kobby.screen_x, kobby.y + 5, 50, 56)
             elif kobby.mode == 4:
-                kobby.image5.clip_draw(25 * kobby.frame, 112, 25, 40, kobby.x, kobby.y + 15, 50, 80)
+                kobby.image5.clip_draw(25 * kobby.frame, 112, 25, 40, kobby.screen_x, kobby.y + 15, 50, 80)
         elif kobby.face_dir == -1:
             if kobby.mode == 0:
-                kobby.image.clip_composite_draw(25 * kobby.frame, 75, 25, 25, 0, 'h', kobby.x, kobby.y, 50, 50)
+                kobby.image.clip_composite_draw(25 * kobby.frame, 75, 25, 25, 0, 'h', kobby.screen_x, kobby.y, 50, 50)
             elif kobby.mode == 1:
-                kobby.image2.clip_composite_draw(25 * kobby.frame, 85, 25, 25, 0, 'h', kobby.x + 2, kobby.y + 2, 50, 50)
+                kobby.image2.clip_composite_draw(25 * kobby.frame, 85, 25, 25, 0, 'h', kobby.screen_x + 2, kobby.y + 2, 50, 50)
             elif kobby.mode == 2:
-                kobby.image3.clip_composite_draw(32 * kobby.frame, 120, 32, 40, 0, 'h', kobby.x + 7, kobby.y + 17, 64, 80)
+                kobby.image3.clip_composite_draw(32 * kobby.frame, 120, 32, 40, 0, 'h', kobby.screen_x + 7, kobby.y + 17, 64, 80)
             elif kobby.mode == 3:
-                kobby.image4.clip_composite_draw(25 * kobby.frame, 84, 25, 28, 0, 'h', kobby.x, kobby.y + 5, 50, 56)
+                kobby.image4.clip_composite_draw(25 * kobby.frame, 84, 25, 28, 0, 'h', kobby.screen_x, kobby.y + 5, 50, 56)
             elif kobby.mode == 4:
-                kobby.image5.clip_composite_draw(25 * kobby.frame, 112, 25, 40, 0, 'h', kobby.x, kobby.y + 15, 50, 80)
+                kobby.image5.clip_composite_draw(25 * kobby.frame, 112, 25, 40, 0, 'h', kobby.screen_x, kobby.y + 15, 50, 80)
         pass
 
 
@@ -233,6 +233,7 @@ class Squashed:
 class Jump:
     @staticmethod
     def enter(kobby, e):
+        kobby.frame = 0
         pass
 
     @staticmethod
@@ -241,6 +242,7 @@ class Jump:
 
     @staticmethod
     def do(kobby):
+        kobby.y += 10
         pass
 
     @staticmethod
@@ -268,7 +270,8 @@ class Balloon:
 class Kobby:
     first = None
     def __init__(self):
-        self.x,self.y = 0, 80
+        self.x,self.y = 0, 500
+        self.screen_x = 0
         self.frame = 0
         self.dir = 0
         self.face_dir = 0
@@ -285,7 +288,7 @@ class Kobby:
         self.state_machine.start(Idle)
         self.state_machine.set_transitions(
             {
-                Idle: {left_down: Walk, left_up: Idle, right_down: Walk, right_up: Idle, down_down: Squashed, down_up: Idle, double_right: Run, double_left: Run},
+                Idle: {left_down: Walk, left_up: Idle, right_down: Walk, right_up: Idle, down_down: Squashed, down_up: Idle, double_right: Run, double_left: Run, down_k: Jump},
                 Squashed: {down_up: Idle, left_down: Squashed, right_down: Squashed, left_up: Squashed, right_up: Squashed},
                 Walk: {right_down: Idle, right_up: Idle, left_down: Idle, left_up: Idle, down_down: Squashed, down_up: Idle},
                 Run: {right_down: Run, left_down: Run, right_up: Idle, left_up: Idle},
