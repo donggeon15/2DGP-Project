@@ -8,4 +8,4 @@ class Background:
     def update(self):
         pass
     def draw(self):
-        self.image.draw(self.x,300,1500,600)
+        self.image.draw(self.x,300,3000,800)

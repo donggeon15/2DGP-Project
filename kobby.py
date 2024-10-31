@@ -277,6 +277,7 @@ class Kobby:
         self.face_dir = 0
         self.timer = 0
         self.action = 0
+        self.ground = False
         self.mode = 0 #mode 0: 기본 1: 마법사 2: 검사 3: 얼음 4: 불꽃
         if Kobby.first == None:
             self.image=load_image('nomal_kobby_sheet.png')
