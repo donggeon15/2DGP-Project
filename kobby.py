@@ -90,6 +90,8 @@ class Walk:
             kobby.frame = (kobby.frame + 1) % 10
         elif kobby.mode == 4:
             kobby.frame = (kobby.frame + 1) % 20
+
+        kobby.past_x = kobby.x
         kobby.x += kobby.dir * 5
 
     @staticmethod
@@ -135,6 +137,7 @@ class Run:
     @staticmethod
     def do(kobby):
         kobby.frame = (kobby.frame + 1) % 8
+        kobby.past_x = kobby.x
         kobby.x += kobby.dir * 5
 
     @staticmethod
@@ -234,20 +237,55 @@ class Jump:
     @staticmethod
     def enter(kobby, e):
         kobby.frame = 0
+        if right_down(e) or left_up(e):
+            kobby.dir += 1
+            kobby.face_dir = 1
+        elif left_down(e) or right_up(e):
+            kobby.dir += -1
+            kobby.face_dir = -1
+        elif down_k(e):
+            kobby.y += 1
         pass
 
     @staticmethod
     def exit(kobby, e):
+        kobby.jump_power = 10
         pass
 
     @staticmethod
     def do(kobby):
-        kobby.y += 10
-        pass
+        kobby.past_x = kobby.x
+        kobby.x += kobby.dir * 5
+        if kobby.ground == False:
+            kobby.y += 10
+        else:
+            kobby.state_machine.add_event(('TIME_OUT', 0))
+
 
     @staticmethod
     def draw(kobby):
-        pass
+        if kobby.face_dir == 1:
+            if kobby.mode == 0:
+                kobby.image.clip_draw(25 * kobby.frame, 0, 25, 25, kobby.screen_x, kobby.y, 50, 50)
+            elif kobby.mode == 1:
+                kobby.image2.clip_draw(25 * kobby.frame, 85, 25, 25, kobby.screen_x - 2, kobby.y + 2, 50, 50)
+            elif kobby.mode == 2:
+                kobby.image3.clip_draw(32 * kobby.frame, 120, 32, 40, kobby.screen_x - 7, kobby.y + 17, 64, 80)
+            elif kobby.mode == 3:
+                kobby.image4.clip_draw(25 * kobby.frame, 84, 25, 28, kobby.screen_x, kobby.y + 5, 50, 56)
+            elif kobby.mode == 4:
+                kobby.image5.clip_draw(25 * kobby.frame, 112, 25, 40, kobby.screen_x, kobby.y + 15, 50, 80)
+        elif kobby.face_dir == -1:
+            if kobby.mode == 0:
+                kobby.image.clip_composite_draw(25 * kobby.frame, 0, 25, 25, 0, 'h', kobby.screen_x, kobby.y, 50, 50)
+            elif kobby.mode == 1:
+                kobby.image2.clip_composite_draw(25 * kobby.frame, 85, 25, 25, 0, 'h', kobby.screen_x + 2, kobby.y + 2, 50, 50)
+            elif kobby.mode == 2:
+                kobby.image3.clip_composite_draw(32 * kobby.frame, 120, 32, 40, 0, 'h', kobby.screen_x + 7, kobby.y + 17, 64, 80)
+            elif kobby.mode == 3:
+                kobby.image4.clip_composite_draw(25 * kobby.frame, 84, 25, 28, 0, 'h', kobby.screen_x, kobby.y + 5, 50, 56)
+            elif kobby.mode == 4:
+                kobby.image5.clip_composite_draw(25 * kobby.frame, 112, 25, 40, 0, 'h', kobby.screen_x, kobby.y + 15, 50, 80)
 
 class Balloon:
     @staticmethod
@@ -271,7 +309,10 @@ class Kobby:
     first = None
     def __init__(self):
         self.x,self.y = 0, 500
+        self.past_x = 0
         self.screen_x = 0
+        self.gravity = 1
+        self.jump_power = 10
         self.frame = 0
         self.dir = 0
         self.face_dir = 0
@@ -291,8 +332,9 @@ class Kobby:
             {
                 Idle: {left_down: Walk, left_up: Idle, right_down: Walk, right_up: Idle, down_down: Squashed, down_up: Idle, double_right: Run, double_left: Run, down_k: Jump},
                 Squashed: {down_up: Idle, left_down: Squashed, right_down: Squashed, left_up: Squashed, right_up: Squashed},
-                Walk: {right_down: Idle, right_up: Idle, left_down: Idle, left_up: Idle, down_down: Squashed, down_up: Idle},
-                Run: {right_down: Run, left_down: Run, right_up: Idle, left_up: Idle},
+                Walk: {right_down: Idle, right_up: Idle, left_down: Idle, left_up: Idle, down_down: Squashed, down_up: Idle, down_k: Jump},
+                Run: {right_down: Run, left_down: Run, right_up: Idle, left_up: Idle, down_k: Jump},
+                Jump: {time_out: Idle, left_down: Jump, right_down: Jump, left_up: Jump, right_up: Jump},
             }
         )
 
@@ -302,7 +344,11 @@ class Kobby:
             self.timer += 0.05
             if self.timer >= 0.5:
                 self.timer = 0
-
+        #중력
+        if self.ground == False:
+            self.gravity = (self.gravity + 0.5)
+        else:
+            self.gravity = 1
 
     def handle_event(self, event):
         if event.type == SDL_KEYDOWN and event.key == SDLK_1: # 임시로 변신 키
