@@ -236,20 +236,37 @@ class Squashed:
 class Jump:
     @staticmethod
     def enter(kobby, e):
-        kobby.frame = 0
-        if right_down(e) or left_up(e):
-            kobby.dir += 1
-            kobby.face_dir = 1
-        elif left_down(e) or right_up(e):
-            kobby.dir += -1
-            kobby.face_dir = -1
-        elif down_k(e):
-            kobby.y += 1
+        if kobby.dir != 0:
+            if kobby.dir == 1:
+                kobby.dir = 1
+            elif kobby.dir == -1:
+                kobby.dir = -1
+
+            if left_up(e):
+                kobby.dir += 1
+            elif right_up(e):
+                kobby.dir -= 1
+            elif down_k(e):
+                kobby.frame = 0
+                kobby.y += 1
+        else:
+            if right_down(e):
+                kobby.face_dir = 1
+                kobby.dir += 1
+            elif left_down(e):
+                kobby.face_dir = -1
+                kobby.dir -= 1
+            elif down_k(e):
+                kobby.frame = 0
+                kobby.y += 1
+
         pass
 
     @staticmethod
     def exit(kobby, e):
         kobby.jump_power = 10
+        if kobby.jump_power <= kobby.gravity:
+            kobby.frame = (kobby.frame + 1) % 8 + 1
         pass
 
     @staticmethod
