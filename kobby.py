@@ -236,6 +236,7 @@ class Squashed:
 class Jump:
     @staticmethod
     def enter(kobby, e):
+        kobby.jump_frame = 0
         if kobby.dir != 0:
             if kobby.dir == 1:
                 kobby.dir = 1
@@ -265,12 +266,15 @@ class Jump:
     @staticmethod
     def exit(kobby, e):
         kobby.jump_power = 10
-        if kobby.jump_power <= kobby.gravity:
-            kobby.frame = (kobby.frame + 1) % 8 + 1
         pass
 
     @staticmethod
     def do(kobby):
+        if kobby.jump_power <= kobby.gravity:
+            kobby.jump_frame += 0.45
+            if kobby.jump_frame >= 1.0:
+                kobby.frame = (kobby.frame + 1) % 8 + 1
+                kobby.jump_frame = 0.0
         kobby.past_x = kobby.x
         kobby.x += kobby.dir * 5
         if kobby.ground == False:

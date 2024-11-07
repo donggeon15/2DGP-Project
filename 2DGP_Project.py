@@ -1,5 +1,6 @@
 from pico2d import *
 
+import game_world
 from background import Background
 from ground import Ground
 from kobby import Kobby
@@ -25,28 +26,31 @@ def reset_world():
     global ground1
     global background1
     global kobby
+    global ground1_grass
 
     running = True
-    world= [ ]
-
-    background1 = Background()
-    world.append(background1)
-
-    ground1 = Ground()
-    world.append(ground1)
 
     kobby = Kobby()
-    world.append(kobby)
+    game_world.add_object(kobby, 1)
+
+    background1 = Background()
+    game_world.add_object(background1, 0)
+
+    ground1 = Ground(0)
+    game_world.add_object(ground1, 0)
+
+    ground1_grass = Ground(1)
+    game_world.add_object(ground1_grass, 1)
+
+
 
 
 def update_world():
-    for o in world:
-        o.update()
+    game_world.update()
 
 def render_world():
     clear_canvas()
-    for o in world:
-        o.draw()
+    game_world.render()
     update_canvas()
 
 def check_world():
@@ -55,22 +59,27 @@ def check_world():
         kobby.screen_x = kobby.x
         background1.x = 1500
         ground1.x = 1500
+        ground1_grass.x = 1500
     elif kobby.x > 400 and kobby.x < 2600:
         kobby.screen_x = 400
         background1.x = 1500 - (kobby.x - 400)
         ground1.x = 1500 - (kobby.x - 400)
+        ground1_grass.x = 1500 - (kobby.x - 400)
     elif kobby.x >= 2600:
         kobby.screen_x = kobby.x - 2200
         background1.x = -700
         ground1.x = -700
+        ground1_grass.x = -700
     # 스테이지1 잔디 좌표
     if ((kobby.x > 315 and kobby.x < 515 and kobby.ground == True) or
             (kobby.x > 1550 and kobby.x < 1640 and kobby.ground == True) or
             (kobby.x > 2425 and kobby.x < 2640 and kobby.ground == True)):
-        ground1.frame = (ground1.frame + 1) % 4
+        ground1_grass.frame = (ground1_grass.frame + 1) % 4
+
     # 스테이지1 커비 땅 좌표
     if kobby.x < 0:
         kobby.x = 0
+        kobby.y -= kobby.gravity
     elif ((kobby.x >= 0 and kobby.x < 600) or (kobby.x >= 760 and kobby.x < 1070) or
           (kobby.x >= 1140 and kobby.x < 1350)):
         if kobby.y > ground1.y - 55:
@@ -79,8 +88,8 @@ def check_world():
         else:
             kobby.y = ground1.y - 55
             kobby.ground = True
-
-    elif (kobby.x >= 600 and kobby.x < 760) or (kobby.x >= 1070 and kobby.x < 1140):
+    elif ((kobby.x >= 600 and kobby.x < 760) or (kobby.x >= 1070 and kobby.x < 1140) or
+          (kobby.x >= 1350 and kobby.x < 1525) or (kobby.x > 1820 and kobby.x < 2280)):
         if kobby.y > ground1.y - 25:
             kobby.ground = False
             kobby.y -= kobby.gravity
@@ -90,7 +99,23 @@ def check_world():
         else:
             kobby.x = kobby.past_x
             kobby.ground = True
-
+    elif ((kobby.x >= 1525 and kobby.x < 1640)):
+        if kobby.y > ground1.y + 70:
+            kobby.ground = False
+            kobby.y -= kobby.gravity
+        elif kobby.y <= ground1.y + 70 and kobby.y > ground1.y + 60:
+            kobby.y = ground1.y + 70
+            kobby.ground = True
+        else:
+            kobby.x = kobby.past_x
+            kobby.ground = True
+    elif ((kobby.x >= 1640 and kobby.x <= 1820)):
+        if kobby.y > ground1.y + 70 - ((kobby.x - 1640)*(1/2)):
+            kobby.ground = False
+            kobby.y -= kobby.gravity
+        else:
+            kobby.y = ground1.y + 70 - ((kobby.x - 1640)*(1/2))
+            kobby.ground = True
 
 
 open_canvas()
