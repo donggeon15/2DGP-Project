@@ -93,8 +93,9 @@ def check_world():
         else:
             kobby.y = ground1.y - 55
             kobby.ground = True
-    elif ((kobby.x >= 600 and kobby.x < 760) or (kobby.x >= 1070 and kobby.x < 1140) or
-          (kobby.x >= 1350 and kobby.x < 1525) or (kobby.x > 1820 and kobby.x < 2280)):
+    elif (((kobby.x >= 600 and kobby.x < 760) or (kobby.x >= 1070 and kobby.x < 1140) or
+          (kobby.x >= 1350 and kobby.x < 1525) or (kobby.x > 1820 and kobby.x < 2280)) or
+          ((kobby.x > 2420 and kobby.x < 3000))):
         if kobby.y > ground1.y - 25:
             kobby.ground = False
             kobby.y -= kobby.gravity
@@ -104,7 +105,7 @@ def check_world():
         else:
             kobby.x = kobby.past_x
             kobby.ground = True
-    elif ((kobby.x >= 1525 and kobby.x < 1640)):
+    elif ((kobby.x >= 1525 and kobby.x < 1640) or (kobby.x >= 2370 and kobby.x < 2420)):
         if kobby.y > ground1.y + 70:
             kobby.ground = False
             kobby.y -= kobby.gravity
@@ -121,6 +122,24 @@ def check_world():
         else:
             kobby.y = ground1.y + 70 - ((kobby.x - 1640)*(1/2))
             kobby.ground = True
+    elif ((kobby.x >= 2280 and kobby.x < 2370)):
+        if kobby.y > ground1.y + 135:
+            kobby.ground = False
+            kobby.y -= kobby.gravity
+        elif kobby.y <= ground1.y + 135 and kobby.y > ground1.y + 125:
+            kobby.y = ground1.y + 135
+            kobby.ground = True
+        else:
+            kobby.x = kobby.past_x
+            kobby.ground = True
+    elif kobby.x >= 3000:
+        kobby.x = 3000
+        if kobby.y > ground1.y - 25:
+            kobby.ground = False
+            kobby.y -= kobby.gravity
+        else:
+            kobby.y = ground1.y - 25
+            kobby.ground = True
 
 
 open_canvas()
@@ -133,7 +152,7 @@ while running:
     check_world()
     render_world()
     #print(kobby.x)
-    print(kobby.y)
+    #print(kobby.y)
     #print(kobby.past_x)
     delay(0.04)
 
