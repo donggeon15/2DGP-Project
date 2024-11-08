@@ -1,5 +1,8 @@
 from pico2d import load_image
 from pico2d import *
+
+import game_world
+from air_shoot import Air_shoot
 from state_machine import *
 
 class Idle:
@@ -331,7 +334,8 @@ class Balloon:
 
     @staticmethod
     def exit(kobby, e):
-        pass
+        if down_j(e):
+            kobby.air_shoot()
 
     @staticmethod
     def do(kobby):
@@ -491,3 +495,11 @@ class Kobby:
         self.state_machine.draw()
 
     def air_shoot(self):
+        if self.face_dir == 1:
+            print('Air shoot RIGHT')
+            air = Air_shoot(self.screen_x, self.y, self.face_dir * 15)
+            game_world.add_object(air,1)
+        elif self.face_dir == -1:
+            print('Air shoot LEFT')
+            air = Air_shoot(self.screen_x, self.y, self.face_dir * 15)
+            game_world.add_object(air, 1)
