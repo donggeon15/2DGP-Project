@@ -299,24 +299,24 @@ class Jump:
             if kobby.mode == 0:
                 kobby.image.clip_draw(25 * kobby.frame, 0, 25, 25, kobby.screen_x, kobby.y, 50, 50)
             elif kobby.mode == 1:
-                kobby.image2.clip_draw(25 * kobby.frame, 85, 25, 25, kobby.screen_x - 2, kobby.y + 2, 50, 50)
+                kobby.image2.clip_draw(25 * kobby.frame, 0, 25, 35, kobby.screen_x - 2, kobby.y + 2, 50, 70)
             elif kobby.mode == 2:
-                kobby.image3.clip_draw(32 * kobby.frame, 120, 32, 40, kobby.screen_x - 7, kobby.y + 17, 64, 80)
+                kobby.image3.clip_draw(32 * kobby.frame, 0, 32, 40, kobby.screen_x - 7, kobby.y + 17, 64, 80)
             elif kobby.mode == 3:
-                kobby.image4.clip_draw(25 * kobby.frame, 84, 25, 28, kobby.screen_x, kobby.y + 5, 50, 56)
+                kobby.image4.clip_draw(25 * kobby.frame, 0, 25, 28, kobby.screen_x, kobby.y + 5, 50, 56)
             elif kobby.mode == 4:
-                kobby.image5.clip_draw(25 * kobby.frame, 112, 25, 40, kobby.screen_x, kobby.y + 15, 50, 80)
+                kobby.image5.clip_draw(25 * kobby.frame, 0, 25, 40, kobby.screen_x, kobby.y + 15, 50, 80)
         elif kobby.face_dir == -1:
             if kobby.mode == 0:
                 kobby.image.clip_composite_draw(25 * kobby.frame, 0, 25, 25, 0, 'h', kobby.screen_x, kobby.y, 50, 50)
             elif kobby.mode == 1:
-                kobby.image2.clip_composite_draw(25 * kobby.frame, 85, 25, 25, 0, 'h', kobby.screen_x + 2, kobby.y + 2, 50, 50)
+                kobby.image2.clip_composite_draw(25 * kobby.frame, 0, 25, 35, 0, 'h', kobby.screen_x + 2, kobby.y + 2, 50, 70)
             elif kobby.mode == 2:
-                kobby.image3.clip_composite_draw(32 * kobby.frame, 120, 32, 40, 0, 'h', kobby.screen_x + 7, kobby.y + 17, 64, 80)
+                kobby.image3.clip_composite_draw(32 * kobby.frame, 0, 32, 40, 0, 'h', kobby.screen_x + 7, kobby.y + 17, 64, 80)
             elif kobby.mode == 3:
-                kobby.image4.clip_composite_draw(25 * kobby.frame, 84, 25, 28, 0, 'h', kobby.screen_x, kobby.y + 5, 50, 56)
+                kobby.image4.clip_composite_draw(25 * kobby.frame, 0, 25, 28, 0, 'h', kobby.screen_x, kobby.y + 5, 50, 56)
             elif kobby.mode == 4:
-                kobby.image5.clip_composite_draw(25 * kobby.frame, 112, 25, 40, 0, 'h', kobby.screen_x, kobby.y + 15, 50, 80)
+                kobby.image5.clip_composite_draw(25 * kobby.frame, 0, 25, 40, 0, 'h', kobby.screen_x, kobby.y + 15, 50, 80)
 
 class Balloon:
     @staticmethod
