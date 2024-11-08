@@ -252,6 +252,12 @@ class Jump:
         if down_k(e):
             kobby.frame = 0
             kobby.y += 1
+        if right_down(e):
+            kobby.dir = 1
+            kobby.face_dir = 1
+        if left_down(e):
+            kobby.dir = -1
+            kobby.face_dir = -1
 
         if kobby.action == 2:
             if left_down(e):
@@ -316,6 +322,8 @@ class Balloon:
     @staticmethod
     def enter(kobby, e):
         kobby.dir = 0
+        if double_up(e):
+            kobby.temp = 1
         if kobby.action == 4:
             if right_down(e):
                 kobby.dir = 1
@@ -331,39 +339,50 @@ class Balloon:
                 kobby.y_dir = 0
             if left_up(e) or right_up(e):
                 kobby.dir = 0
+            if down_j(e):
+                kobby.temp = 0
+                kobby.frame = 0
 
     @staticmethod
     def exit(kobby, e):
-        if down_j(e):
-            kobby.air_shoot()
+        pass
+
 
     @staticmethod
     def do(kobby):
-        kobby.past_x = kobby.x
-        kobby.x += kobby.dir * 5
-
-        if kobby.y_dir == 1:
-            kobby.y += 5
-        elif kobby.y_dir == -1:
-            kobby.y -= 5
-
-
-        if kobby.action == 4:
-            kobby.frame = (kobby.frame + 1) % 5 + 5
-        else:
+        if kobby.temp == 0:
             kobby.frame2 += 1
-            kobby.y += 10
             if kobby.frame2 >= 2:
                 kobby.frame = (kobby.frame + 1)
                 kobby.frame2 = 0
             if kobby.frame > 4:
-                kobby.action = 4
+                kobby.air_shoot()
+                kobby.state_machine.add_event(('TIME_OUT', 0))
+        else:
+            kobby.past_x = kobby.x
+            kobby.x += kobby.dir * 5
+
+            if kobby.y_dir == 1:
+                kobby.y += 5
+            elif kobby.y_dir == -1:
+                kobby.y -= 5
+
+            if kobby.action == 4:
+                kobby.frame = (kobby.frame + 1) % 5 + 5
+            else:
+                kobby.frame2 += 1
+                kobby.y += 10
+                if kobby.frame2 >= 2:
+                    kobby.frame = (kobby.frame + 1)
+                    kobby.frame2 = 0
+                if kobby.frame > 4:
+                    kobby.action = 4
 
     @staticmethod
     def draw(kobby):
         if kobby.face_dir == 1:
             if kobby.mode == 0:
-                kobby.image1_1.clip_draw(25 * kobby.frame, 25, 25, 25, kobby.screen_x, kobby.y, 50, 50)
+                kobby.image1_1.clip_draw(25 * kobby.frame, 25 * kobby.temp, 25, 25, kobby.screen_x, kobby.y, 50, 50)
             elif kobby.mode == 1:
                 kobby.image2.clip_draw(25 * kobby.frame, 85, 25, 25, kobby.screen_x - 2, kobby.y + 2, 50, 50)
             elif kobby.mode == 2:
@@ -374,7 +393,7 @@ class Balloon:
                 kobby.image5.clip_draw(25 * kobby.frame, 112, 25, 40, kobby.screen_x, kobby.y + 15, 50, 80)
         elif kobby.face_dir == -1:
             if kobby.mode == 0:
-                kobby.image1_1.clip_composite_draw(25 * kobby.frame, 25, 25, 25, 0, 'h', kobby.screen_x, kobby.y, 50, 50)
+                kobby.image1_1.clip_composite_draw(25 * kobby.frame, 25 * kobby.temp, 25, 25, 0, 'h', kobby.screen_x, kobby.y, 50, 50)
             elif kobby.mode == 1:
                 kobby.image2.clip_composite_draw(25 * kobby.frame, 85, 25, 25, 0, 'h', kobby.screen_x + 2, kobby.y + 2,
                                                  50, 50)
@@ -403,7 +422,8 @@ class Kobby:
         self.y_dir = 0
         self.face_dir = 0
         self.timer = 0
-        self.action = 0 # 0: 기본 상태 1: 찌르러진 2: 걷기 3: 뛰기 4: 풍선
+        self.temp = 0
+        self.action = 0 # 0: 기본 상태 1: 찌그러진 2: 걷기 3: 뛰기 4: 풍선
         self.ground = False
         self.mode = 0 #mode 0: 기본 1: 마법사 2: 검사 3: 얼음 4: 불꽃
         if Kobby.first == None:
@@ -422,7 +442,7 @@ class Kobby:
                 Walk: {right_down: Idle, right_up: Idle, left_down: Idle, left_up: Idle, down_down: Squashed, down_up: Idle, down_k: Jump},
                 Run: {right_down: Run, left_down: Run, right_up: Idle, left_up: Idle, down_k: Jump},
                 Jump: {time_out: Idle, jump_end_walk: Walk, jump_end_run: Run, left_down: Jump, right_down: Jump, left_up: Jump, right_up: Jump},
-                Balloon: {left_down: Balloon, right_down: Balloon, left_up: Balloon, right_up: Balloon, down_down: Balloon, up_down: Balloon, up_up: Balloon, down_up: Balloon, down_j: Idle},
+                Balloon: {left_down: Balloon, right_down: Balloon, left_up: Balloon, right_up: Balloon, down_down: Balloon, up_down: Balloon, up_up: Balloon, down_up: Balloon, down_j: Balloon, time_out: Idle},
             }
         )
 

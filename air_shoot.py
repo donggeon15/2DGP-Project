@@ -17,7 +17,7 @@ class Air_shoot:
         if self.velocity > 0:
             self.image.clip_draw(20 * self.frame, 0, 20, 20, self.x, self.y, 50, 50)
         else:
-            self.image.clip_composite_draw(20 * self.frame, 25, 25, 25, 0, 'h', self.x, self.y, 50, 50)
+            self.image.clip_composite_draw(20 * self.frame, 0, 20, 20, 0, 'h', self.x, self.y, 50, 50)
 
     def update(self):
         self.x += self.velocity
