@@ -407,6 +407,78 @@ class Balloon:
                 kobby.image5.clip_composite_draw(25 * kobby.frame, 112, 25, 40, 0, 'h', kobby.screen_x, kobby.y + 15,
                                                  50, 80)
 
+class Ability:
+    @staticmethod
+    def enter(kobby, e):
+        kobby.dir = 0
+        kobby.frame = 0
+        kobby.frame2 = 0
+        kobby.temp = 0
+        kobby.overtime = 0
+        if up_j(e):
+            kobby.state_machine.add_event(('TIME_OUT', 0))
+
+    @staticmethod
+    def exit(kobby, e):
+        pass
+
+
+    @staticmethod
+    def do(kobby):
+        if kobby.mode == 0:
+            if kobby.temp <= 70:
+                if kobby.frame < 7:
+                    kobby.frame2 += 1
+                    if kobby.frame2 >= 2:
+                        kobby.frame += 1
+                        kobby.frame2 = 0
+                if kobby.frame >= 6:
+                    kobby.frame = (kobby.frame + 1) % 2 + 6
+                    kobby.temp += 1
+            elif kobby.temp > 70:
+                if kobby.overtime == 0:
+                    kobby.overtime = 1
+                    kobby.frame2 = 0
+                    kobby.frame = 0
+                else:
+                    kobby.frame2 += 1
+                    if kobby.frame2 >= 3:
+                        kobby.frame += 1
+                        kobby.frame2 = 0
+                    if kobby.frame >= 5:
+                        kobby.state_machine.add_event(('TIME_OUT', 0))
+                        kobby.temp = 0
+
+    @staticmethod
+    def draw(kobby):
+        if kobby.face_dir == 1:
+            if kobby.mode == 0:
+                if kobby.overtime == 0:
+                    kobby.image1_1.clip_draw(25 * kobby.frame, 50, 25, 25, kobby.screen_x, kobby.y, 50, 50)
+                else:
+                    kobby.image1_1.clip_draw(50 * kobby.frame, 75, 50, 40, kobby.screen_x + 25, kobby.y + 15, 100, 80)
+            elif kobby.mode == 1:
+                kobby.image2.clip_draw(25 * kobby.frame, 85, 25, 25, kobby.screen_x - 2, kobby.y + 2, 50, 50)
+            elif kobby.mode == 2:
+                kobby.image3.clip_draw(32 * kobby.frame, 120, 32, 40, kobby.screen_x - 7, kobby.y + 17, 64, 80)
+            elif kobby.mode == 3:
+                kobby.image4.clip_draw(25 * kobby.frame, 84, 25, 28, kobby.screen_x, kobby.y + 5, 50, 56)
+            elif kobby.mode == 4:
+                kobby.image5.clip_draw(25 * kobby.frame, 112, 25, 40, kobby.screen_x, kobby.y + 15, 50, 80)
+        elif kobby.face_dir == -1:
+            if kobby.mode == 0:
+                if kobby.overtime == 0:
+                    kobby.image1_1.clip_composite_draw(25 * kobby.frame, 50, 25, 25, 0, 'h', kobby.screen_x, kobby.y, 50, 50)
+                else:
+                    kobby.image1_1.clip_composite_draw(50 * kobby.frame, 75, 50, 40, 0, 'h', kobby.screen_x - 25, kobby.y + 15, 100, 80)
+            elif kobby.mode == 1:
+                kobby.image2.clip_composite_draw(25 * kobby.frame, 85, 25, 25, 0, 'h', kobby.screen_x + 2, kobby.y + 2,50, 50)
+            elif kobby.mode == 2:
+                kobby.image3.clip_composite_draw(32 * kobby.frame, 120, 32, 40, 0, 'h', kobby.screen_x + 7,kobby.y + 17, 64, 80)
+            elif kobby.mode == 3:
+                kobby.image4.clip_composite_draw(25 * kobby.frame, 84, 25, 28, 0, 'h', kobby.screen_x, kobby.y + 5, 50,56)
+            elif kobby.mode == 4:
+                kobby.image5.clip_composite_draw(25 * kobby.frame, 112, 25, 40, 0, 'h', kobby.screen_x, kobby.y + 15,50, 80)
 
 class Kobby:
     first = None
@@ -437,12 +509,13 @@ class Kobby:
         self.state_machine.start(Idle)
         self.state_machine.set_transitions(
             {
-                Idle: {left_down: Walk, left_up: Idle, right_down: Walk, right_up: Idle, down_down: Squashed, down_up: Idle, double_right: Run, double_left: Run, down_k: Jump, double_up: Balloon},
+                Idle: {left_down: Walk, left_up: Idle, right_down: Walk, right_up: Idle, down_down: Squashed, down_up: Idle, double_right: Run, double_left: Run, down_k: Jump, double_up: Balloon, down_j: Ability},
                 Squashed: {down_up: Idle, left_down: Squashed, right_down: Squashed, left_up: Squashed, right_up: Squashed},
-                Walk: {right_down: Idle, right_up: Idle, left_down: Idle, left_up: Idle, down_down: Squashed, down_up: Idle, down_k: Jump},
-                Run: {right_down: Run, left_down: Run, right_up: Idle, left_up: Idle, down_k: Jump},
-                Jump: {time_out: Idle, jump_end_walk: Walk, jump_end_run: Run, left_down: Jump, right_down: Jump, left_up: Jump, right_up: Jump},
+                Walk: {right_down: Idle, right_up: Idle, left_down: Idle, left_up: Idle, down_down: Squashed, down_up: Idle, down_k: Jump, down_j: Ability},
+                Run: {right_down: Run, left_down: Run, right_up: Idle, left_up: Idle, down_k: Jump, down_j: Ability},
+                Jump: {time_out: Idle, jump_end_walk: Walk, jump_end_run: Run, left_down: Jump, right_down: Jump, left_up: Jump, right_up: Jump, down_j: Ability},
                 Balloon: {left_down: Balloon, right_down: Balloon, left_up: Balloon, right_up: Balloon, down_down: Balloon, up_down: Balloon, up_up: Balloon, down_up: Balloon, down_j: Balloon, time_out: Idle},
+                Ability: {time_out: Idle, up_j: Ability}
             }
         )
 

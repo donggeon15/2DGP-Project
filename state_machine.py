@@ -51,6 +51,9 @@ def up_up(e):
 def down_j(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_j
 
+def up_j(e):
+    return e[0] == 'INPUT' and e[1].type == SDL_KEYUP and e[1].key == SDLK_j
+
 class StateMachine:
     def __init__(self, o):
         self.o = o
