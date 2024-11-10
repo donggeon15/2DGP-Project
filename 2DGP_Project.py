@@ -70,6 +70,7 @@ def check_world():
         background1.x = -700
         ground1.x = -700
         ground1_grass.x = -700
+
     # 스테이지1 잔디 좌표
     if ((kobby.x > 315 and kobby.x < 515 and kobby.ground == True) or
             (kobby.x > 1550 and kobby.x < 1640 and kobby.ground == True) or
