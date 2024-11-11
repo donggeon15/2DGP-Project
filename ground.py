@@ -15,6 +15,6 @@ class Ground:
 
     def draw(self):
         if self.object == 0:
-            self.image1.clip_draw(0, self.frame * 205, 1585, 205, self.x,self.y,3000,400)
+            self.image1.clip_draw(0, int(self.frame) * 205, 1585, 205, self.x,self.y,3000,400)
         elif self.object == 1:
-            self.image2.clip_draw(0, self.frame * 205, 1585, 205, self.x,self.y,3000,400)
+            self.image2.clip_draw(0, int(self.frame) * 205, 1585, 205, self.x,self.y,3000,400)

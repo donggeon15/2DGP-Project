@@ -6,6 +6,11 @@ from background import Background
 from ground import Ground
 from kobby import Kobby
 
+#Grass Action Speed
+TIME_PER_ACTION = 0.3
+ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
+FRAMES_PER_ACTION = 4
+
 def handle_events():
     events = get_events()
 
@@ -64,7 +69,7 @@ def check_world():
     if ((kobby.x > 315 and kobby.x < 515 and kobby.ground == True) or
             (kobby.x > 1550 and kobby.x < 1640 and kobby.ground == True) or
             (kobby.x > 2425 and kobby.x < 2640 and kobby.ground == True)):
-        ground1_grass.frame = (ground1_grass.frame + 1) % 4
+        ground1_grass.frame = (ground1_grass.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 4
 
     # 스테이지1 커비 땅 좌표
     if kobby.x < 0:
@@ -93,7 +98,10 @@ def check_world():
             kobby.y = ground1.y - 25
             kobby.ground = True
         else:
-            kobby.x = kobby.past_x
+            if kobby.x < kobby.past_x:
+                kobby.x = kobby.past_x + 10
+            else:
+                kobby.x = kobby.past_x - 10
             kobby.ground = True
     elif ((kobby.x >= 1525 and kobby.x < 1640) or (kobby.x >= 2370 and kobby.x < 2420)):
         if kobby.y > ground1.y + 70:
@@ -103,7 +111,10 @@ def check_world():
             kobby.y = ground1.y + 70
             kobby.ground = True
         else:
-            kobby.x = kobby.past_x
+            if kobby.x < kobby.past_x:
+                kobby.x = kobby.past_x + 10
+            else:
+                kobby.x = kobby.past_x - 10
             kobby.ground = True
     elif ((kobby.x >= 1640 and kobby.x <= 1820)):
         if kobby.y > ground1.y + 70 - ((kobby.x - 1640)*(1/2)):
@@ -120,7 +131,10 @@ def check_world():
             kobby.y = ground1.y + 135
             kobby.ground = True
         else:
-            kobby.x = kobby.past_x
+            if kobby.x < kobby.past_x:
+                kobby.x = kobby.past_x + 10
+            else:
+                kobby.x = kobby.past_x - 10
             kobby.ground = True
     elif kobby.x >= 3000:
         kobby.x = 3000
