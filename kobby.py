@@ -563,7 +563,7 @@ class Kobby:
                 self.state_machine.add_event(
                     ('INPUT', event)
                 )
-            elif self.timer <= 0.3:
+            elif self.timer <= 0.7:
                 self.state_machine.add_event(
                     ('DOUBLE_INPUT', event)
                 )
@@ -577,7 +577,7 @@ class Kobby:
                 self.state_machine.add_event(
                     ('INPUT', event)
                 )
-            elif self.timer <= 0.3:
+            elif self.timer <= 0.7:
                 self.state_machine.add_event(
                     ('DOUBLE_INPUT', event)
                 )
@@ -591,7 +591,7 @@ class Kobby:
                 self.state_machine.add_event(
                     ('INPUT', event)
                 )
-            elif self.timer <= 0.3:
+            elif self.timer <= 0.7:
                 self.state_machine.add_event(
                     ('DOUBLE_INPUT', event)
                 )
@@ -616,3 +616,7 @@ class Kobby:
             print('Air shoot LEFT')
             air = Air_shoot(self.screen_x, self.y, self.face_dir * 20)
             game_world.add_object(air, 1)
+
+
+def handle_event(event):
+    return None
