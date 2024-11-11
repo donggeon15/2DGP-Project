@@ -76,7 +76,7 @@ def check_world():
         kobby.x = 0
         if kobby.y > ground1.y - 55:
             kobby.ground = False
-            kobby.y -= kobby.gravity
+            kobby.y -= kobby.gravity * game_framework.frame_time
         else:
             kobby.y = ground1.y - 55
             kobby.ground = True
@@ -84,16 +84,16 @@ def check_world():
           (kobby.x >= 1140 and kobby.x < 1350)):
         if kobby.y > ground1.y - 55:
             kobby.ground = False
-            kobby.y -= kobby.gravity
+            kobby.y -= kobby.gravity * game_framework.frame_time
         else:
             kobby.y = ground1.y - 55
             kobby.ground = True
-    elif (((kobby.x >= 600 and kobby.x < 760) or (kobby.x >= 1070 and kobby.x < 1140) or
-          (kobby.x >= 1350 and kobby.x < 1525) or (kobby.x > 1820 and kobby.x < 2280)) or
-          ((kobby.x > 2420 and kobby.x < 3000))):
+    elif ((kobby.x >= 600 and kobby.x < 760) or (kobby.x >= 1070 and kobby.x < 1140) or
+          (kobby.x >= 1350 and kobby.x < 1525) or (kobby.x > 1820 and kobby.x < 2280) or
+          (kobby.x > 2420 and kobby.x < 3000)):
         if kobby.y > ground1.y - 25:
             kobby.ground = False
-            kobby.y -= kobby.gravity
+            kobby.y -= kobby.gravity * game_framework.frame_time
         elif kobby.y <= ground1.y - 25 and kobby.y > ground1.y - 35:
             kobby.y = ground1.y - 25
             kobby.ground = True
@@ -103,10 +103,14 @@ def check_world():
             else:
                 kobby.x = kobby.past_x - 10
             kobby.ground = True
+            if ((kobby.x >= 601 and kobby.x < 759) or (kobby.x >= 1071 and kobby.x < 1139) or
+                    (kobby.x >= 1351 and kobby.x < 1524) or (kobby.x > 1821 and kobby.x < 2279) or
+                    (kobby.x > 2421 and kobby.x < 2999)):
+                kobby.y = ground1.y - 25
     elif ((kobby.x >= 1525 and kobby.x < 1640) or (kobby.x >= 2370 and kobby.x < 2420)):
         if kobby.y > ground1.y + 70:
             kobby.ground = False
-            kobby.y -= kobby.gravity
+            kobby.y -= kobby.gravity * game_framework.frame_time
         elif kobby.y <= ground1.y + 70 and kobby.y > ground1.y + 60:
             kobby.y = ground1.y + 70
             kobby.ground = True
@@ -116,17 +120,19 @@ def check_world():
             else:
                 kobby.x = kobby.past_x - 10
             kobby.ground = True
+            if ((kobby.x >= 1526 and kobby.x < 1639) or (kobby.x >= 2371 and kobby.x < 2419)):
+                kobby.y = ground1.y + 70
     elif ((kobby.x >= 1640 and kobby.x <= 1820)):
         if kobby.y > ground1.y + 70 - ((kobby.x - 1640)*(1/2)):
             kobby.ground = False
-            kobby.y -= kobby.gravity
+            kobby.y -= kobby.gravity * game_framework.frame_time
         else:
             kobby.y = ground1.y + 70 - ((kobby.x - 1640)*(1/2))
             kobby.ground = True
     elif ((kobby.x >= 2280 and kobby.x < 2370)):
         if kobby.y > ground1.y + 135:
             kobby.ground = False
-            kobby.y -= kobby.gravity
+            kobby.y -= kobby.gravity * game_framework.frame_time
         elif kobby.y <= ground1.y + 135 and kobby.y > ground1.y + 125:
             kobby.y = ground1.y + 135
             kobby.ground = True
@@ -136,11 +142,13 @@ def check_world():
             else:
                 kobby.x = kobby.past_x - 10
             kobby.ground = True
+            if ((kobby.x >= 2281 and kobby.x < 2369)):
+                kobby.y = ground1.y - 25
     elif kobby.x >= 3000:
         kobby.x = 3000
         if kobby.y > ground1.y - 25:
             kobby.ground = False
-            kobby.y -= kobby.gravity
+            kobby.y -= kobby.gravity * game_framework.frame_time
         else:
             kobby.y = ground1.y - 25
             kobby.ground = True
