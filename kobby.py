@@ -29,7 +29,7 @@ JUMP_SPEED_MPM = (JUMP_SPEED_KMPH * 1000.0 / 60.0)
 JUMP_SPEED_MPS = (JUMP_SPEED_MPM / 60.0)
 JUMP_SPEED_PPS = (JUMP_SPEED_MPS * PIXEL_PER_METER)
 #kobby balloon up down speed
-BALLOON_SPEED_KMPH = 5.0
+BALLOON_SPEED_KMPH = 6.0
 BALLOON_SPEED_MPM = (BALLOON_SPEED_KMPH * 1000.0 / 60.0)
 BALLOON_SPEED_MPS = (BALLOON_SPEED_MPM / 60.0)
 BALLOON_SPEED_PPS = (BALLOON_SPEED_MPS * PIXEL_PER_METER)
@@ -395,7 +395,7 @@ class Balloon:
             kobby.y += kobby.y_dir * BALLOON_SPEED_PPS * game_framework.frame_time
 
             if kobby.action == 4:
-                kobby.frame = (kobby.frame + 5 * ACTION_PER_TIME * game_framework.frame_time) % 5 + 5
+                kobby.frame = (kobby.frame + 8 * ACTION_PER_TIME * game_framework.frame_time) % 5 + 5
             else:
                 kobby.y += JUMP_SPEED_PPS * game_framework.frame_time
                 kobby.frame = (kobby.frame + 5 * ACTION_PER_TIME * game_framework.frame_time)
@@ -556,7 +556,7 @@ class Kobby:
         #중력
         if self.ground == False:
             if self.action == 4:
-                self.gravity = GRAVITY_SPEED_PPS * 7 * game_framework.frame_time
+                self.gravity = 98
             else:
                 self.gravity += (1 * GRAVITY_SPEED_PPS * 7 * game_framework.frame_time)
         else:
@@ -579,7 +579,7 @@ class Kobby:
         if event.type == SDL_KEYDOWN and event.key == SDLK_1: # 임시로 변신 키
             self.mode = (self.mode + 1) % 5
         elif event.type == SDL_KEYDOWN and event.key == SDLK_d:
-            if get_time() - self.d_time > 0.1:
+            if get_time() - self.d_time > 0.075:
                 self.state_machine.add_event(
                     ('INPUT', event)
                 )
@@ -589,7 +589,7 @@ class Kobby:
                 )
 
         elif event.type == SDL_KEYDOWN and event.key == SDLK_a:
-            if get_time() - self.a_time > 0.1:
+            if get_time() - self.a_time > 0.075:
                 self.state_machine.add_event(
                     ('INPUT', event)
                 )
@@ -598,7 +598,7 @@ class Kobby:
                     ('DOUBLE_INPUT', event)
                 )
         elif event.type == SDL_KEYDOWN and event.key == SDLK_w:
-            if get_time() - self.w_time > 0.1:
+            if get_time() - self.w_time > 0.075:
                 self.state_machine.add_event(
                     ('INPUT', event)
                 )
@@ -617,10 +617,10 @@ class Kobby:
 
     def air_shoot(self):
         if self.face_dir == 1:
-            air = Air_shoot(self.screen_x, self.y, self.face_dir * 20)
+            air = Air_shoot(self.screen_x, self.y, self.face_dir)
             game_world.add_object(air,1)
         elif self.face_dir == -1:
-            air = Air_shoot(self.screen_x, self.y, self.face_dir * 20)
+            air = Air_shoot(self.screen_x, self.y, self.face_dir)
             game_world.add_object(air, 1)
 
 
