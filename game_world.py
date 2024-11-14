@@ -17,6 +17,7 @@ def remove_object(o):
     for layer in objects:
         if o in layer:
             layer.remove(o)
+            del o # 메모리에서 객체 자체를 삭제
             return
     print(f'CRETICAL: 존재하지않는 객체{o}를 지우려고 합니다.')
 
