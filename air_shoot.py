@@ -43,7 +43,7 @@ class Air_shoot:
             if self.frame >= 5:
                 game_world.remove_object(self)
         else:
-            self.frame = (self.frame + 4 * (1.0 / 1.0) * game_framework.frame_time)
+            self.frame = (self.frame + 4 * (1.0 / 2.0) * game_framework.frame_time)
             if self.frame >= 2:
                 game_world.remove_object(self)
 

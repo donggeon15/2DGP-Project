@@ -208,7 +208,7 @@ class Run:
             elif kobby.mode == 3:
                 kobby.image4.clip_draw(25 * int(kobby.frame), 28, 25, 28, kobby.screen_x, kobby.y + 5, 50, 56)
             elif kobby.mode == 4:
-                kobby.image5.clip_draw(40 * int(kobby.frame), 40, 40, 32, kobby.screen_x, kobby.y + 5, 80, 64)
+                kobby.image5.clip_draw(40 * int(kobby.frame), 40, 40, 32, kobby.screen_x - 15, kobby.y + 5, 80, 64)
         elif kobby.face_dir == -1:
             if kobby.mode == 0:
                 kobby.image.clip_composite_draw(25 * int(kobby.frame), 25, 25, 25, 0, 'h', kobby.screen_x, kobby.y, 50, 50)
@@ -219,7 +219,7 @@ class Run:
             elif kobby.mode == 3:
                 kobby.image4.clip_composite_draw(25 * int(kobby.frame), 28, 25, 28, 0, 'h', kobby.screen_x, kobby.y + 5, 50, 56)
             elif kobby.mode == 4:
-                kobby.image5.clip_composite_draw(40 * int(kobby.frame), 40, 40, 32, 0, 'h', kobby.screen_x, kobby.y + 5, 80, 64)
+                kobby.image5.clip_composite_draw(40 * int(kobby.frame), 40, 40, 32, 0, 'h', kobby.screen_x + 15, kobby.y + 5, 80, 64)
 
 class Squashed:
     @staticmethod
@@ -454,6 +454,14 @@ class Ability:
             else:
                 kobby.temp = 4
                 kobby.frame = 0
+        elif kobby.mode == 3:
+            kobby.temp = 1
+            kobby.frame = 0
+            kobby.ice_time = True
+            if up_j(e):
+                kobby.ice_time = False
+                kobby.frame = 3
+                kobby.temp = 0
 
     @staticmethod
     def exit(kobby, e):
@@ -498,7 +506,20 @@ class Ability:
                     kobby.temp -= 1
                     kobby.frame = 0
                 if kobby.frame > 7 and kobby.temp == 0:
-                    kobby.x += kobby.face_dir * 40
+                    kobby.x += kobby.face_dir * 20
+                    kobby.state_machine.add_event(('TIME_OUT', 0))
+        if kobby.mode == 3: # 얼음 모드
+            if kobby.ice_time == True:
+                kobby.frame = (kobby.frame + 14 * ACTION_PER_TIME * game_framework.frame_time)
+                if kobby.frame > 9:
+                    kobby.temp -= 1
+                    kobby.frame = 0
+                if kobby.frame > 2 and kobby.temp == 0:
+                    kobby.temp = 1
+                    kobby.frame = 1
+            else:
+                kobby.frame = (kobby.frame + 14 * ACTION_PER_TIME * game_framework.frame_time)
+                if kobby.frame > 9 and kobby.temp == 0:
                     kobby.state_machine.add_event(('TIME_OUT', 0))
 
     @staticmethod
@@ -517,7 +538,7 @@ class Ability:
                 else:
                     kobby.image3_1.clip_draw(85 * int(kobby.frame), 100 + (kobby.temp * 50), 85, 50, kobby.screen_x + 25, kobby.y + 2, 170, 100)
             elif kobby.mode == 3:
-                kobby.image4.clip_draw(25 * int(kobby.frame), 84, 25, 28, kobby.screen_x, kobby.y + 5, 50, 56)
+                kobby.image4_1.clip_draw(95 * int(kobby.frame), 64 + (kobby.temp * 45), 95, 45, kobby.screen_x + 40, kobby.y + 5, 190, 90)
             elif kobby.mode == 4:
                 kobby.image5.clip_draw(25 * int(kobby.frame), 112, 25, 40, kobby.screen_x, kobby.y + 15, 50, 80)
         elif kobby.face_dir == -1:
@@ -534,7 +555,7 @@ class Ability:
                 else:
                     kobby.image3_1.clip_composite_draw(85 * int(kobby.frame), 100 + (kobby.temp * 50), 85, 50, 0, 'h', kobby.screen_x - 25, kobby.y + 2, 170, 100)
             elif kobby.mode == 3:
-                kobby.image4.clip_composite_draw(25 * int(kobby.frame), 84, 25, 28, 0, 'h', kobby.screen_x, kobby.y + 5, 50,56)
+                kobby.image4_1.clip_composite_draw(95 * int(kobby.frame), 64 + (kobby.temp * 45), 95, 45, 0, 'h', kobby.screen_x - 40, kobby.y + 5, 190,90)
             elif kobby.mode == 4:
                 kobby.image5.clip_composite_draw(25 * int(kobby.frame), 112, 25, 40, 0, 'h', kobby.screen_x, kobby.y + 15,50, 80)
 
@@ -554,6 +575,7 @@ class Kobby:
         self.d_time = 0
         self.w_time = 0
         self.a_time = 0
+        self.ice_time = False
         self.temp = 0
         self.action = 0 # 0: 기본 상태 1: 찌그러진 2: 걷기 3: 뛰기 4: 풍선
         self.ground = False
