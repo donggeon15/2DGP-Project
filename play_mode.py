@@ -143,7 +143,7 @@ def check_world():
                 kobby.x = kobby.past_x - 10
             kobby.ground = True
             if ((kobby.x >= 2281 and kobby.x < 2369)):
-                kobby.y = ground1.y - 25
+                kobby.y = ground1.y + 135
     elif kobby.x >= 3000:
         kobby.x = 3000
         if kobby.y > ground1.y - 25:
@@ -154,8 +154,8 @@ def check_world():
             kobby.ground = True
 
 def update():
-    check_world()
     game_world.update()
+    check_world()
 
 def draw():
     clear_canvas()

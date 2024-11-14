@@ -322,7 +322,7 @@ class Jump:
         if kobby.ground == False:
             kobby.y += (1 * JUMP_SPEED_PPS * game_framework.frame_time)
         else:
-            if kobby.action == 2:
+            if kobby.action == 2 or kobby.dir != 0:
                 kobby.state_machine.add_event(('JUMP1', 0))
             elif kobby.action == 3:
                 kobby.state_machine.add_event(('JUMP2', 0))
@@ -455,21 +455,21 @@ class Ability:
         if kobby.mode == 0:
             if get_time() - kobby.time <= 3:
                 if kobby.frame < 7:
-                    kobby.frame += (kobby.frame + 1 *  ACTION_PER_TIME * game_framework.frame_time)
+                    kobby.frame = (kobby.frame + 5 *  ACTION_PER_TIME * game_framework.frame_time)
                 if kobby.frame >= 6:
-                    kobby.frame = (kobby.frame + 2 * ACTION_PER_TIME * game_framework.frame_time) % 2 + 6
+                    kobby.frame = (kobby.frame + 3 * ACTION_PER_TIME * game_framework.frame_time) % 2 + 6
             elif get_time() - kobby.time > 3:
                 if kobby.overtime == 0:
                     kobby.overtime = 1
                     kobby.frame = 0
                 else:
-                    kobby.frame += (kobby.frame + 1 * ACTION_PER_TIME * game_framework.frame_time)
+                    kobby.frame = (kobby.frame + 5 * ACTION_PER_TIME * game_framework.frame_time)
                     if kobby.frame >= 5:
                         kobby.state_machine.add_event(('TIME_OUT', 0))
             if kobby.food == True: # 커비가 몬스터 or 별 먹을 경우 바로 time out
                 kobby.state_machine.add_event(('TIME_OUT', 0))
         if kobby.mode == 1: # 마법사 모드
-            kobby.frame += (kobby.frame + 1 * ACTION_PER_TIME * game_framework.frame_time)
+            kobby.frame = (kobby.frame + 16 * ACTION_PER_TIME * game_framework.frame_time)
             if kobby.frame > 9:
                 kobby.temp -= 1
                 kobby.frame = 0
