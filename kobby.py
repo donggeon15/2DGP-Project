@@ -448,8 +448,12 @@ class Ability:
             kobby.temp = 3
             kobby.frame = 2
         elif kobby.mode == 2:
-            kobby.temp = 3
-            kobby.frame = 0
+            if kobby.ground == True:
+                kobby.temp = 3
+                kobby.frame = 0
+            else:
+                kobby.temp = 4
+                kobby.frame = 0
 
     @staticmethod
     def exit(kobby, e):
@@ -481,13 +485,21 @@ class Ability:
             if kobby.frame > 4 and kobby.temp == 0:
                 kobby.state_machine.add_event(('TIME_OUT', 0))
         if kobby.mode == 2: # 검사 모드
-            kobby.frame = (kobby.frame + 16 * ACTION_PER_TIME * game_framework.frame_time)
-            if kobby.frame > 9:
-                kobby.temp -= 1
-                kobby.frame = 0
-            if kobby.frame > 7 and kobby.temp == 0:
-                kobby.x += kobby.face_dir * 40
-                kobby.state_machine.add_event(('TIME_OUT', 0))
+            if kobby.temp == 4:
+                if kobby.frame < 6:
+                    kobby.frame = (kobby.frame + 12 * ACTION_PER_TIME * game_framework.frame_time)
+                if kobby.frame >= 5 and kobby.ground == True:
+                    air = Air_shoot(kobby.screen_x, kobby.y, kobby.face_dir, 1)
+                    game_world.add_object(air, 1)
+                    kobby.state_machine.add_event(('TIME_OUT', 0))
+            else:
+                kobby.frame = (kobby.frame + 16 * ACTION_PER_TIME * game_framework.frame_time)
+                if kobby.frame > 9:
+                    kobby.temp -= 1
+                    kobby.frame = 0
+                if kobby.frame > 7 and kobby.temp == 0:
+                    kobby.x += kobby.face_dir * 40
+                    kobby.state_machine.add_event(('TIME_OUT', 0))
 
     @staticmethod
     def draw(kobby):
@@ -500,7 +512,10 @@ class Ability:
             elif kobby.mode == 1:
                 kobby.image2_1.clip_draw(80 * int(kobby.frame), 64 + (kobby.temp * 100), 80, 100, kobby.screen_x + 50, kobby.y + 2, 160, 200)
             elif kobby.mode == 2:
-                kobby.image3_1.clip_draw(85 * int(kobby.frame), 100 + (kobby.temp * 50), 85, 50, kobby.screen_x + 25, kobby.y + 2, 170, 100)
+                if kobby.temp == 4:
+                    kobby.image3_1.clip_draw(64 * int(kobby.frame), 300, 64, 64,kobby.screen_x + 25, kobby.y + 2, 128, 128)
+                else:
+                    kobby.image3_1.clip_draw(85 * int(kobby.frame), 100 + (kobby.temp * 50), 85, 50, kobby.screen_x + 25, kobby.y + 2, 170, 100)
             elif kobby.mode == 3:
                 kobby.image4.clip_draw(25 * int(kobby.frame), 84, 25, 28, kobby.screen_x, kobby.y + 5, 50, 56)
             elif kobby.mode == 4:
@@ -514,7 +529,10 @@ class Ability:
             elif kobby.mode == 1:
                 kobby.image2_1.clip_composite_draw(80 * int(kobby.frame), 64 + (kobby.temp * 100), 80, 100, 0, 'h', kobby.screen_x - 50, kobby.y + 2, 160, 200)
             elif kobby.mode == 2:
-                kobby.image3_1.clip_composite_draw(85 * int(kobby.frame), 100 + (kobby.temp * 50), 85, 50, 0, 'h', kobby.screen_x - 25, kobby.y + 2, 170, 100)
+                if kobby.temp == 4:
+                    kobby.image3_1.clip_composite_draw(64 * int(kobby.frame), 300, 64, 64, 0, 'h', kobby.screen_x - 25, kobby.y + 2, 128, 128)
+                else:
+                    kobby.image3_1.clip_composite_draw(85 * int(kobby.frame), 100 + (kobby.temp * 50), 85, 50, 0, 'h', kobby.screen_x - 25, kobby.y + 2, 170, 100)
             elif kobby.mode == 3:
                 kobby.image4.clip_composite_draw(25 * int(kobby.frame), 84, 25, 28, 0, 'h', kobby.screen_x, kobby.y + 5, 50,56)
             elif kobby.mode == 4:
