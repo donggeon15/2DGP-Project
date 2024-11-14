@@ -520,7 +520,9 @@ class Kobby:
         self.frame2 = 0
         self.y_dir = 0
         self.face_dir = 0
-        self.timer = 0
+        self.d_time = 0
+        self.w_time = 0
+        self.a_time = 0
         self.temp = 0
         self.action = 0 # 0: 기본 상태 1: 찌그러진 2: 걷기 3: 뛰기 4: 풍선
         self.ground = False
@@ -551,10 +553,6 @@ class Kobby:
 
     def update(self):
         self.state_machine.update()
-        if self.timer != 0:
-            self.timer += 0.05
-            if self.timer >= 0.5:
-                self.timer = 0
         #중력
         if self.ground == False:
             if self.action == 4:
@@ -569,54 +567,44 @@ class Kobby:
             self.dir += 1
         if event.type == SDL_KEYUP and event.key == SDLK_d:
             self.dir -= 1
+            self.d_time = get_time()
         if event.type == SDL_KEYDOWN and event.key == SDLK_a:
             self.dir -= 1
         if event.type == SDL_KEYUP and event.key == SDLK_a:
             self.dir += 1
+            self.a_time = get_time()
+        if event.type == SDL_KEYUP and event.key == SDLK_w:
+            self.w_time = get_time()
 
         if event.type == SDL_KEYDOWN and event.key == SDLK_1: # 임시로 변신 키
             self.mode = (self.mode + 1) % 5
         elif event.type == SDL_KEYDOWN and event.key == SDLK_d:
-            if self.timer == 0:
-                self.timer = 0.01
+            if get_time() - self.d_time > 0.1:
                 self.state_machine.add_event(
                     ('INPUT', event)
-                )
-            elif self.timer <= 0.8:
-                self.state_machine.add_event(
-                    ('DOUBLE_INPUT', event)
                 )
             else:
                 self.state_machine.add_event(
-                    ('INPUT', event)
+                    ('DOUBLE_INPUT', event)
                 )
+
         elif event.type == SDL_KEYDOWN and event.key == SDLK_a:
-            if self.timer == 0:
-                self.timer = 0.01
+            if get_time() - self.a_time > 0.1:
                 self.state_machine.add_event(
                     ('INPUT', event)
-                )
-            elif self.timer <= 0.8:
-                self.state_machine.add_event(
-                    ('DOUBLE_INPUT', event)
                 )
             else:
                 self.state_machine.add_event(
-                    ('INPUT', event)
+                    ('DOUBLE_INPUT', event)
                 )
         elif event.type == SDL_KEYDOWN and event.key == SDLK_w:
-            if self.timer == 0:
-                self.timer = 0.01
+            if get_time() - self.w_time > 0.1:
                 self.state_machine.add_event(
                     ('INPUT', event)
-                )
-            elif self.timer <= 0.8:
-                self.state_machine.add_event(
-                    ('DOUBLE_INPUT', event)
                 )
             else:
                 self.state_machine.add_event(
-                    ('INPUT', event)
+                    ('DOUBLE_INPUT', event)
                 )
         else:
             self.state_machine.add_event(
