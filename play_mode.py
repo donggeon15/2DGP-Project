@@ -5,6 +5,7 @@ import game_world
 from background import Background
 from ground import Ground
 from kobby import Kobby
+from monster import Monster
 
 #Grass Action Speed
 TIME_PER_ACTION = 0.3
@@ -42,6 +43,9 @@ def init():
 
     ground1_grass = Ground(1)
     game_world.add_object(ground1_grass, 1)
+
+    monster = Monster()
+    game_world.add_object(monster, 1)
 
 def finish():
     game_world.clear()
