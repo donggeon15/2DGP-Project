@@ -6,8 +6,8 @@ import game_world
 from pico2d import *
 
 # moster Run Speed
-PIXEL_PER_METER = (25.0 / 0.2)  # 10 pixel 30 cm
-RUN_SPEED_KMPH = 10.0  # Km / Hour
+PIXEL_PER_METER = (25.0 / 0.2)  # 25 pixel 20 cm
+RUN_SPEED_KMPH = 5.0  # Km / Hour
 RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
 RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
 RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
@@ -26,8 +26,11 @@ class Monster:
     images = None
 
     def __init__(self):
-        self.x, self.y = random.randint(1600-800, 1600), 150
-        self.nomal_monster_image = load_image('nomal_monster.png')
+        self.x = 1200
+        self.y = 90
+        self.screen_x = 0
+        if Monster.images is None:
+            self.nomal_monster_image = load_image('nomal_monster.png')
         self.size = 200
         self.action = 0 # 0: 걷기 1: 죽음 2: 공격
         self.collision_size_x = 20
@@ -38,7 +41,7 @@ class Monster:
 
     def update(self):
         if self.action == 0:
-            self.frame = (self.frame + 4 * ACTION_PER_TIME * game_framework.frame_time) % 4
+            self.frame = (self.frame + 5 * ACTION_PER_TIME * game_framework.frame_time) % 5
         if self.action == 1:
             self.frame = (self.frame + 2 * ACTION_DEAD_PER_TIME * game_framework.frame_time)
             if self.frame > 2:
@@ -49,27 +52,26 @@ class Monster:
                 game_framework.quit()
 
         self.x += RUN_SPEED_PPS * self.dir * game_framework.frame_time
-        if self.x > 800:
+        if self.x > 1050:
             self.dir = -1
-        elif self.x < 400:
+        elif self.x < 770:
             self.dir = 1
-        #self.x = clamp(800, self.x, 1600)
         pass
 
 
     def draw(self):
         if self.dir < 0:
             if self.action == 0:
-                self.nomal_monster_image.clip_composite_draw(37 * int(self.frame), 35, 37, 35, 0, 'h', self.x, self.y, 74, 70)
+                self.nomal_monster_image.clip_composite_draw(37 * int(self.frame), 35, 37, 35, 0, 'h', self.screen_x, self.y, 50, 45)
             if self.action == 1:
-                pass
+                self.nomal_monster_image.clip_composite_draw(37 * int(self.frame), 0, 37, 35, 0, 'h', self.screen_x, self.y, 50, 45)
             if self.action == 2:
                 pass
         else:
             if self.action == 0:
-                self.nomal_monster_image.clip_draw(37 * int(self.frame), 35, 37, 35, self.x, self.y, 74, 70)
+                self.nomal_monster_image.clip_draw(37 * int(self.frame), 35, 37, 35, self.screen_x, self.y, 50, 45)
             if self.action == 1:
-                pass
+                self.nomal_monster_image.clip_draw(37 * int(self.frame), 0, 37, 35, self.screen_x, self.y, 50, 45)
             if self.action == 2:
                 pass
         draw_rectangle(*self.get_bb())
@@ -78,7 +80,10 @@ class Monster:
         pass
 
     def get_bb(self):
-        return self.x - self.collision_size_x, self.y - self.collision_size_y, self.x + self.collision_size_x, self.y + self.collision_size_y
+        return self.screen_x - self.collision_size_x, self.y - self.collision_size_y, self.screen_x + self.collision_size_x, self.y + self.collision_size_y
 
     def handle_collision(self, group, other):
-        pass
+        if group == 'air:monster':
+            if self.action == 0:
+                self.action = 1
+                self.frame = 0

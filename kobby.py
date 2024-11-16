@@ -516,6 +516,7 @@ class Ability:
                 if kobby.frame >= 5 and kobby.ground == True:
                     air = Air_shoot(kobby.screen_x, kobby.y, kobby.face_dir, 1)
                     game_world.add_object(air, 1)
+                    game_world.add_collision_pair('air:monster', air, None)
                     kobby.state_machine.add_event(('TIME_OUT', 0))
             else:
                 kobby.frame = (kobby.frame + 16 * ACTION_PER_TIME * game_framework.frame_time)
@@ -704,9 +705,11 @@ class Kobby:
         if self.face_dir == 1:
             air = Air_shoot(self.screen_x, self.y, self.face_dir)
             game_world.add_object(air,1)
+            game_world.add_collision_pair('air:monster', air, None)
         elif self.face_dir == -1:
             air = Air_shoot(self.screen_x, self.y, self.face_dir)
             game_world.add_object(air, 1)
+            game_world.add_collision_pair('air:monster', air, None)
 
     def get_bb(self):
         return self.screen_x - 25, self.y - 20, self.screen_x + 25, self.y + 20

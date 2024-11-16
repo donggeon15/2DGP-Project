@@ -2,6 +2,7 @@ from pico2d import *
 import game_framework
 
 import game_world
+import monster
 from background import Background
 from ground import Ground
 from kobby import Kobby
@@ -29,6 +30,7 @@ def init():
     global background1
     global kobby
     global ground1_grass
+    global monster
 
     running = True
 
@@ -46,6 +48,7 @@ def init():
 
     monster = Monster()
     game_world.add_object(monster, 1)
+    game_world.add_collision_pair('air:monster',None, monster)
 
 def finish():
     game_world.clear()
@@ -58,16 +61,19 @@ def check_world():
         background1.x = 1500
         ground1.x = 1500
         ground1_grass.x = 1500
+        monster.screen_x = monster.x
     elif kobby.x > 400 and kobby.x < 2600:
         kobby.screen_x = 400
         background1.x = 1500 - (kobby.x - 400)
         ground1.x = 1500 - (kobby.x - 400)
         ground1_grass.x = 1500 - (kobby.x - 400)
+        monster.screen_x = monster.x - (kobby.x - 400)
     elif kobby.x >= 2600:
         kobby.screen_x = kobby.x - 2200
         background1.x = -700
         ground1.x = -700
         ground1_grass.x = -700
+        monster.screen_x = monster.x - 2200
 
     # 스테이지1 잔디 좌표
     if ((kobby.x > 315 and kobby.x < 515 and kobby.ground == True) or
@@ -160,6 +166,7 @@ def check_world():
 def update():
     game_world.update()
     check_world()
+    game_world.handle_collisions()
 
 def draw():
     clear_canvas()
