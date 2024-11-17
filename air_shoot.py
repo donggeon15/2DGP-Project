@@ -3,6 +3,7 @@ from pico2d import load_image, draw_rectangle
 import game_framework
 import game_world
 
+
 PIXEL_PER_METER = (25.0 / 0.2) # 25pixel = 20cm
 AIRSHOOT_SPEED_KMPH = 9.0 # km/h
 AIRSHOOT_SPEED_MPM = (AIRSHOOT_SPEED_KMPH * 1000.0 / 60.0)
@@ -20,6 +21,7 @@ class Air_shoot:
         if Air_shoot.image2 == None:
             Air_shoot.image2 = load_image('sword_shoot.png')
         self.x, self.y, self.velocity, self.air = x, y, velocity, air
+        self.screen_x = 0
         self.frame = 0
         self.frame2 = 0
 
@@ -38,6 +40,7 @@ class Air_shoot:
 
     def update(self):
         self.x += self.velocity * AIRSHOOT_SPEED_PPS * game_framework.frame_time
+
         if self.air == 0:
             self.frame = (self.frame + 4 * (1.0 / 0.5) * game_framework.frame_time)
             if self.frame >= 5:

@@ -62,16 +62,16 @@ class Monster:
     def draw(self):
         if self.dir < 0:
             if self.action == 0:
-                self.nomal_monster_image.clip_composite_draw(37 * int(self.frame), 35, 37, 35, 0, 'h', self.screen_x, self.y, 50, 45)
+                self.nomal_monster_image.clip_composite_draw(37 * int(self.frame), 105, 37, 35, 0, 'h', self.screen_x, self.y, 50, 45)
             if self.action == 1:
-                self.nomal_monster_image.clip_composite_draw(37 * int(self.frame), 0, 37, 35, 0, 'h', self.screen_x, self.y, 50, 45)
+                self.nomal_monster_image.clip_composite_draw(37 * int(self.frame), 70, 37, 35, 0, 'h', self.screen_x, self.y, 50, 45)
             if self.action == 2:
                 pass
         else:
             if self.action == 0:
-                self.nomal_monster_image.clip_draw(37 * int(self.frame), 35, 37, 35, self.screen_x, self.y, 50, 45)
+                self.nomal_monster_image.clip_draw(37 * int(self.frame), 105, 37, 35, self.screen_x, self.y, 50, 45)
             if self.action == 1:
-                self.nomal_monster_image.clip_draw(37 * int(self.frame), 0, 37, 35, self.screen_x, self.y, 50, 45)
+                self.nomal_monster_image.clip_draw(37 * int(self.frame), 70, 37, 35, self.screen_x, self.y, 50, 45)
             if self.action == 2:
                 pass
         draw_rectangle(*self.get_bb())
