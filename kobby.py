@@ -4,6 +4,7 @@ from pico2d import *
 import game_framework
 import game_world
 from air_shoot import Air_shoot
+from kobby_UI import UI
 from state_machine import *
 
 #kobby pixel
@@ -331,7 +332,6 @@ class Jump:
                     kobby.state_machine.add_event(('JUMP1', 0))
 
 
-
     @staticmethod
     def draw(kobby):
         if kobby.face_dir == 1:
@@ -452,7 +452,6 @@ class Ability:
             kobby.frame = 0
             kobby.time = get_time()
             if up_j(e):
-                kobby.collision_size = 25
                 kobby.state_machine.add_event(('TIME_OUT', 0))
         elif kobby.mode == 1:
             kobby.temp = 3
@@ -489,7 +488,6 @@ class Ability:
     def do(kobby):
         if kobby.mode == 0:
             if get_time() - kobby.time <= 3:
-                kobby.collision_size += 0.1
                 if kobby.frame < 7:
                     kobby.frame = (kobby.frame + 5 *  ACTION_PER_TIME * game_framework.frame_time)
                 if kobby.frame >= 6:
@@ -501,7 +499,6 @@ class Ability:
                 else:
                     kobby.frame = (kobby.frame + 5 * ACTION_PER_TIME * game_framework.frame_time)
                     if kobby.frame >= 5:
-                        kobby.collision_size = 25
                         kobby.state_machine.add_event(('TIME_OUT', 0))
             if kobby.food == True: # 커비가 몬스터 or 별 먹을 경우 바로 time out
                 kobby.state_machine.add_event(('TIME_OUT', 0))
@@ -593,6 +590,12 @@ class Ability:
             elif kobby.mode == 4:
                 kobby.image5_1.clip_composite_draw(95 * int(kobby.frame), 90 + (kobby.temp * 45), 95, 45, 0, 'h', kobby.screen_x - 40, kobby.y + 5, 190,90)
 
+    @staticmethod
+    def handle_collision(kobby): # 각 공격할때 이제 범위 생성하고 충돌 체크
+        pass
+
+
+
 class Kobby:
     first = None
     def __init__(self):
@@ -612,6 +615,8 @@ class Kobby:
         self.a_time = 0
         self.ice_time = False
         self.temp = 0
+        self.hp = 3    # 하트 하나당 피통
+        self.heart = 3 # 총 하트 갯수
         self.action = 0 # 0: 기본 상태 1: 찌그러진 2: 걷기 3: 뛰기 4: 풍선
         self.ground = False
         self.mode = 0 #mode 0: 기본 1: 마법사 2: 검사 3: 얼음 4: 불꽃

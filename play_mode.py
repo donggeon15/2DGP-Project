@@ -6,6 +6,7 @@ import monster
 from background import Background
 from ground import Ground
 from kobby import Kobby
+from kobby_UI import UI
 from monster import Monster
 
 #Grass Action Speed
@@ -31,8 +32,13 @@ def init():
     global kobby
     global ground1_grass
     global monster
+    global ui
 
     running = True
+
+    # 커비 피 UI 업데이트
+    ui = UI(3, 3)
+    game_world.add_object(ui, 1)
 
     kobby = Kobby()
     game_world.add_object(kobby, 1)
