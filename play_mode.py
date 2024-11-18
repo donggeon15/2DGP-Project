@@ -46,7 +46,7 @@ def init():
     ground1_grass = Ground(1)
     game_world.add_object(ground1_grass, 1)
 
-    monster = Monster()
+    monster = Monster(7)
     game_world.add_object(monster, 1)
     game_world.add_collision_pair('air:monster',None, monster)
 

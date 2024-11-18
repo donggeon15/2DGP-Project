@@ -452,6 +452,7 @@ class Ability:
             kobby.frame = 0
             kobby.time = get_time()
             if up_j(e):
+                kobby.collision_size = 25
                 kobby.state_machine.add_event(('TIME_OUT', 0))
         elif kobby.mode == 1:
             kobby.temp = 3
@@ -488,6 +489,7 @@ class Ability:
     def do(kobby):
         if kobby.mode == 0:
             if get_time() - kobby.time <= 3:
+                kobby.collision_size += 0.1
                 if kobby.frame < 7:
                     kobby.frame = (kobby.frame + 5 *  ACTION_PER_TIME * game_framework.frame_time)
                 if kobby.frame >= 6:
@@ -499,6 +501,7 @@ class Ability:
                 else:
                     kobby.frame = (kobby.frame + 5 * ACTION_PER_TIME * game_framework.frame_time)
                     if kobby.frame >= 5:
+                        kobby.collision_size = 25
                         kobby.state_machine.add_event(('TIME_OUT', 0))
             if kobby.food == True: # 커비가 몬스터 or 별 먹을 경우 바로 time out
                 kobby.state_machine.add_event(('TIME_OUT', 0))
@@ -519,7 +522,7 @@ class Ability:
                     game_world.add_collision_pair('air:monster', air, None)
                     kobby.state_machine.add_event(('TIME_OUT', 0))
             else:
-                kobby.frame = (kobby.frame + 16 * ACTION_PER_TIME * game_framework.frame_time)
+                kobby.frame = (kobby.frame + 24 * ACTION_PER_TIME * game_framework.frame_time)
                 if kobby.frame > 9:
                     kobby.temp -= 1
                     kobby.frame = 0
@@ -603,6 +606,7 @@ class Kobby:
         self.frame2 = 0
         self.y_dir = 0
         self.face_dir = 0
+        self.collision_size = 25
         self.d_time = 0
         self.w_time = 0
         self.a_time = 0
@@ -712,7 +716,10 @@ class Kobby:
             game_world.add_collision_pair('air:monster', air, None)
 
     def get_bb(self):
-        return self.screen_x - 25, self.y - 20, self.screen_x + 25, self.y + 20
+        if self.face_dir == 1:
+            return self.screen_x - 25, self.y - 20, self.screen_x + self.collision_size, self.y + 20
+        if self.face_dir == -1:
+            return self.screen_x - self.collision_size, self.y - 20, self.screen_x + 25, self.y + 20
 
     def handle_collision(self, group, other):
         pass
