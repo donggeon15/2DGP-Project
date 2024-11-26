@@ -516,7 +516,7 @@ class Ability:
                 if kobby.frame < 6:
                     kobby.frame = (kobby.frame + 10 * ACTION_PER_TIME * game_framework.frame_time)
                 if kobby.frame >= 5 and kobby.ground == True:
-                    air = Air_shoot(kobby.sx, kobby.sy, kobby.face_dir, 1)
+                    air = Air_shoot(kobby.x, kobby.y, kobby.face_dir, 1)
                     game_world.add_object(air, 1)
                     game_world.add_collision_pair('air:monster', air, None)
                     kobby.state_machine.add_event(('TIME_OUT', 0))
@@ -591,6 +591,10 @@ class Ability:
                 kobby.image4_1.clip_composite_draw(95 * int(kobby.frame), 64 + (kobby.temp * 45), 95, 45, 0, 'h', kobby.sx - 40, kobby.sy + 5, 190,90)
             elif kobby.mode == 4:
                 kobby.image5_1.clip_composite_draw(95 * int(kobby.frame), 90 + (kobby.temp * 45), 95, 45, 0, 'h', kobby.sx - 40, kobby.sy + 5, 190,90)
+
+    @staticmethod
+    def get_bb(kobby):  # 각 공격할때 이제 범위 생성하고 충돌 체크
+        pass
 
     @staticmethod
     def handle_collision(kobby): # 각 공격할때 이제 범위 생성하고 충돌 체크
@@ -682,8 +686,8 @@ class Kobby:
         self.state_machine.update()
 
         # 월드 기준으로  x,y 위치 제한
-        self.x = clamp(25.0, self.x, server.ground1.w - 25.0)
-        self.y = clamp(30.0, self.y, server.ground1.h - 30.0)
+        self.x = clamp(20.0, self.x, server.ground1.w - 20.0)
+        self.y = clamp(-50.0, self.y, server.ground1.h - 30.0)
 
         # 좌표계 변환 월드 -> 화면
         self.sx = self.x - server.ground1.window_left
@@ -697,9 +701,79 @@ class Kobby:
             if self.action == 4:
                 self.gravity = 98
             else:
-                self.gravity += (1 * GRAVITY_SPEED_PPS * 7 * game_framework.frame_time)
+                if self.gravity <= 1200:
+                    self.gravity += (1 * GRAVITY_SPEED_PPS * 7 * game_framework.frame_time)
         else:
             self.gravity = 1
+
+        #중력 + 벽 충돌
+        # 스테이지1 커비 땅 좌표
+        if ((self.x >= 0 and self.x < 600) or (self.x >= 760 and self.x < 1070) or
+              (self.x >= 1140 and self.x < 1350)):
+            if self.y > 200 - 55:
+                self.ground = False
+                self.y -= self.gravity * game_framework.frame_time
+            else:
+                self.y = 200 - 55
+                self.ground = True
+        elif ((self.x >= 600 and self.x < 760) or (self.x >= 1070 and self.x < 1140) or
+              (self.x >= 1350 and self.x < 1525) or (self.x > 1820 and self.x < 2280) or
+              (self.x > 2420 and self.x < 3000)):
+            if self.y > 200 - 25:
+                self.ground = False
+                self.y -= self.gravity * game_framework.frame_time
+            elif self.y <= 200 - 25 and self.y > 200 - 35:
+                self.y = 200 - 25
+                self.ground = True
+            else:
+                if self.x < self.past_x:
+                    self.x = self.past_x + 10
+                else:
+                    self.x = self.past_x - 10
+                self.ground = True
+                if ((self.x >= 601 and self.x < 759) or (self.x >= 1071 and self.x < 1139) or
+                        (self.x >= 1351 and self.x < 1524) or (self.x > 1821 and self.x < 2279) or
+                        (self.x > 2421 and self.x < 2999)):
+                    self.y = 200 - 25
+        elif ((self.x >= 1525 and self.x < 1640) or (self.x >= 2370 and self.x < 2420)):
+            if self.y > 200 + 70:
+                self.ground = False
+                self.y -= self.gravity * game_framework.frame_time
+            elif self.y <= 200 + 70 and self.y > 200 + 60:
+                self.y = 200 + 70
+                self.ground = True
+            else:
+                if self.x < self.past_x:
+                    self.x = self.past_x + 10
+                else:
+                    self.x = self.past_x - 10
+                self.ground = True
+                if ((self.x >= 1526 and self.x < 1639) or (self.x >= 2371 and self.x < 2419)):
+                    self.y = 200 + 70
+        elif ((self.x >= 1640 and self.x <= 1820)):
+            if self.y > 200 + 70 - ((self.x - 1640) * (1 / 2)):
+                self.ground = False
+                self.y -= self.gravity * game_framework.frame_time
+            else:
+                self.y = 200 + 70 - ((self.x - 1640) * (1 / 2))
+                self.ground = True
+        elif ((self.x >= 2280 and self.x < 2370)):
+            if self.y > 200 + 135:
+                self.ground = False
+                self.y -= self.gravity * game_framework.frame_time
+            elif self.y <= 200 + 135 and self.y > 200 + 125:
+                self.y = 200 + 135
+                self.ground = True
+            else:
+                if self.x < self.past_x:
+                    self.x = self.past_x + 10
+                else:
+                    self.x = self.past_x - 10
+                self.ground = True
+                if ((self.x >= 2281 and self.x < 2369)):
+                    self.y = 200 + 135
+
+
 
     def handle_event(self, event):
         if event.type == SDL_KEYDOWN and event.key == SDLK_d:
@@ -770,11 +844,11 @@ class Kobby:
 
     def air_shoot(self):
         if self.face_dir == 1:
-            air = Air_shoot(self.sx, self.sy, self.face_dir)
+            air = Air_shoot(self.x, self.y, self.face_dir)
             game_world.add_object(air,1)
             game_world.add_collision_pair('air:monster', air, None)
         elif self.face_dir == -1:
-            air = Air_shoot(self.sx, self.sy, self.face_dir)
+            air = Air_shoot(self.x, self.y, self.face_dir)
             game_world.add_object(air, 1)
             game_world.add_collision_pair('air:monster', air, None)
 

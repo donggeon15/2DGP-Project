@@ -21,7 +21,8 @@ class Air_shoot:
         if Air_shoot.image2 == None:
             Air_shoot.image2 = load_image('sword_shoot.png')
         self.x, self.y, self.velocity, self.air = x, y, velocity, air
-        self.screen_x = 0
+        self.sx = self.x - server.ground1.window_left
+        self.sy = self.y - server.ground1.window_bottom
         self.frame = 0
         self.frame2 = 0
 
@@ -29,24 +30,20 @@ class Air_shoot:
         draw_rectangle(*self.get_bb())
         if self.air == 0:
             if self.velocity > 0:
-                self.image.clip_draw(20 * int(self.frame), 0, 20, 20, self.screen_x, self.y, 50, 50)
+                self.image.clip_draw(20 * int(self.frame), 0, 20, 20, self.sx, self.sy, 50, 50)
             else:
-                self.image.clip_composite_draw(20 * int(self.frame), 0, 20, 20, 0, 'h', self.screen_x, self.y, 50, 50)
+                self.image.clip_composite_draw(20 * int(self.frame), 0, 20, 20, 0, 'h', self.sx, self.sy, 50, 50)
         else:
             if self.velocity > 0:
-                self.image2.clip_draw(35 * int(self.frame), 0, 35, 30, self.screen_x, self.y, 70, 60)
+                self.image2.clip_draw(35 * int(self.frame), 0, 35, 30, self.sx, self.sy, 70, 60)
             else:
-                self.image2.clip_composite_draw(35 * int(self.frame), 0, 35, 30, 0, 'h', self.screen_x, self.y, 70, 60)
+                self.image2.clip_composite_draw(35 * int(self.frame), 0, 35, 30, 0, 'h', self.sx, self.sy, 70, 60)
 
     def update(self):
         self.x += self.velocity * AIRSHOOT_SPEED_PPS * game_framework.frame_time
 
-        if self.x <= 400:
-            self.screen_x = self.x
-        elif self.x > 400 and self.x < 2600:
-            self.screen_x = self.x - (self.x - 400)
-        elif self.x >= 2600:
-            self.screen_x = self.x - 2200
+        self.sx = self.x - server.ground1.window_left
+        self.sy = self.y - server.ground1.window_bottom
 
         if self.air == 0:
             self.frame = (self.frame + 4 * (1.0 / 0.5) * game_framework.frame_time)
@@ -58,7 +55,7 @@ class Air_shoot:
                 game_world.remove_object(self)
 
     def get_bb(self):
-        return self.x - 20, self.y - 20, self.x + 20, self.y + 20
+        return self.sx - 20, self.sy - 20, self.sx + 20, self.sy + 20
 
     def handle_collision(self, group, other):
         if group == 'air:monster':

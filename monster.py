@@ -5,6 +5,8 @@ import game_world
 
 from pico2d import *
 
+import server
+
 # moster Run Speed
 PIXEL_PER_METER = (25.0 / 0.2)  # 25 pixel 20 cm
 RUN_SPEED_KMPH = 5.0  # Km / Hour
@@ -28,7 +30,6 @@ class Monster:
     def __init__(self, d = 0):
         self.x = 1200
         self.y = 90
-        self.screen_x = 0
         self.number = d #1 기본 몬스터 / 2.기본 몬스터2 / 3. 법사 몬스터 / 4. 검사 몬스터
         # 5. 얼음몬스터1 / 6. 얼음몬스터2 / 7. 불꽃 몬스터1 / 8. 불꽃 몬스터2
         if Monster.images is None:
@@ -76,48 +77,50 @@ class Monster:
 
 
     def draw(self):
+        sx = self.x - server.ground1.window_left
+        sy = self.y - server.ground1.window_bottom
         if self.dir < 0:
             if self.action == 0:  # 기본
                 if self.number == 0:
-                    self.nomal_monster_image.clip_composite_draw(37 * int(self.frame), 105, 37, 35, 0, 'h', self.screen_x, self.y, 74, 70)
+                    self.nomal_monster_image.clip_composite_draw(37 * int(self.frame), 105, 37, 35, 0, 'h', sx, sy, 74, 70)
                 if self.number == 1:
-                    self.nomal_monster_image2.clip_composite_draw(35 * int(self.frame), 66, 35, 40, 0, 'h', self.screen_x, self.y, 70, 80)
+                    self.nomal_monster_image2.clip_composite_draw(35 * int(self.frame), 66, 35, 40, 0, 'h', sx, sy, 70, 80)
                 if self.number == 2:
-                    self.magic_monster_image.clip_composite_draw(30 * int(self.frame), 75, 30, 30, 0, 'h', self.screen_x, self.y, 60, 60)
+                    self.magic_monster_image.clip_composite_draw(30 * int(self.frame), 75, 30, 30, 0, 'h', sx, sy, 60, 60)
                 if self.number == 3:
-                    self.sword_monster_image.clip_composite_draw(30 * int(self.frame), 64, 30, 30, 0, 'h', self.screen_x, self.y, 60, 60)
+                    self.sword_monster_image.clip_composite_draw(30 * int(self.frame), 64, 30, 30, 0, 'h', sx, sy, 60, 60)
                 if self.number == 4:
-                    self.ice_monster_image.clip_draw(32 * int(self.frame), 62, 32, 30, self.screen_x, self.y, 64, 60)
+                    self.ice_monster_image.clip_draw(32 * int(self.frame), 62, 32, 30, sx, self.y, 64, 60)
                 if self.number == 5:
-                    self.ice_monster_image2.clip_composite_draw(32 * int(self.frame), 34, 32, 34, 0, 'h', self.screen_x, self.y, 64, 68)
+                    self.ice_monster_image2.clip_composite_draw(32 * int(self.frame), 34, 32, 34, 0, 'h', sx, sy, 64, 68)
                 if self.number == 6:
-                    self.fire_monster_image.clip_composite_draw(28 * int(self.frame), 52, 28, 26, 0, 'h', self.screen_x, self.y, 56, 52)
+                    self.fire_monster_image.clip_composite_draw(28 * int(self.frame), 52, 28, 26, 0, 'h', sx, sy, 56, 52)
                 if self.number == 7:
-                    self.fire_monster_image2.clip_draw(28 * int(self.frame), 56, 28, 28, self.screen_x, self.y, 56, 56)
+                    self.fire_monster_image2.clip_draw(28 * int(self.frame), 56, 28, 28, sx, sy, 56, 56)
             if self.action == 1:  # 죽을때
-                self.nomal_monster_image.clip_composite_draw(37 * int(self.frame), 70, 37, 35, 0, 'h', self.screen_x, self.y, 50, 45)
+                self.nomal_monster_image.clip_composite_draw(37 * int(self.frame), 70, 37, 35, 0, 'h', sx, sy, 50, 45)
             if self.action == 2:  # 공격
                 pass
         else:
             if self.action == 0:
                 if self.number == 0:
-                    self.nomal_monster_image.clip_draw(37 * int(self.frame), 105, 37, 35, self.screen_x, self.y, 74, 70)
+                    self.nomal_monster_image.clip_draw(37 * int(self.frame), 105, 37, 35, sx, sy, 74, 70)
                 if self.number == 1:
-                    self.nomal_monster_image2.clip_draw(35 * int(self.frame), 66, 35, 40, self.screen_x, self.y, 70, 80)
+                    self.nomal_monster_image2.clip_draw(35 * int(self.frame), 66, 35, 40, sx, sy, 70, 80)
                 if self.number == 2:
-                    self.magic_monster_image.clip_draw(30 * int(self.frame), 75, 30, 30, self.screen_x, self.y, 60, 60)
+                    self.magic_monster_image.clip_draw(30 * int(self.frame), 75, 30, 30, sx, sy, 60, 60)
                 if self.number == 3:
-                    self.sword_monster_image.clip_draw(30 * int(self.frame), 64, 30, 30, self.screen_x, self.y, 60, 60)
+                    self.sword_monster_image.clip_draw(30 * int(self.frame), 64, 30, 30, sx, sy, 60, 60)
                 if self.number == 4:
-                    self.ice_monster_image.clip_composite_draw(32 * int(self.frame), 62, 32, 30, 0, 'h',self.screen_x, self.y, 64, 60)
+                    self.ice_monster_image.clip_composite_draw(32 * int(self.frame), 62, 32, 30, 0, 'h',sx, sy, 64, 60)
                 if self.number == 5:
-                    self.ice_monster_image2.clip_draw(32 * int(self.frame), 34, 32, 34, self.screen_x, self.y, 64, 68)
+                    self.ice_monster_image2.clip_draw(32 * int(self.frame), 34, 32, 34, sx, sy, 64, 68)
                 if self.number == 6:
-                    self.fire_monster_image.clip_draw(28 * int(self.frame), 52, 28, 26, self.screen_x, self.y, 56, 52)
+                    self.fire_monster_image.clip_draw(28 * int(self.frame), 52, 28, 26, sx, sy, 56, 52)
                 if self.number == 7:
-                    self.fire_monster_image2.clip_composite_draw(28 * int(self.frame), 56, 28, 28, 0, 'h', self.screen_x, self.y, 56, 56)
+                    self.fire_monster_image2.clip_composite_draw(28 * int(self.frame), 56, 28, 28, 0, 'h', sx, sy, 56, 56)
             if self.action == 1:
-                self.nomal_monster_image.clip_draw(37 * int(self.frame), 70, 37, 35, self.screen_x, self.y, 50, 45)
+                self.nomal_monster_image.clip_draw(37 * int(self.frame), 70, 37, 35, sx, sy, 50, 45)
             if self.action == 2:
                 pass
         draw_rectangle(*self.get_bb())
@@ -126,7 +129,9 @@ class Monster:
         pass
 
     def get_bb(self):
-        return self.screen_x - self.collision_size_x, self.y - self.collision_size_y, self.screen_x + self.collision_size_x, self.y + self.collision_size_y
+        sx = self.x - server.ground1.window_left
+        sy = self.y - server.ground1.window_bottom
+        return sx - self.collision_size_x, sy - self.collision_size_y, sx + self.collision_size_x, sy + self.collision_size_y
 
     def handle_collision(self, group, other):
         if group == 'air:monster':
