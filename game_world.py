@@ -32,7 +32,9 @@ def remove_object(o):
 
 def clear():
     global objects
+    global collision_pairs
     objects = [[] for _ in range(4)]
+    collision_pairs = { }
 
 def collide(a, b):
     al, ab, ar, at = a.get_bb()

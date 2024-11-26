@@ -3,8 +3,10 @@ from pico2d import *
 
 import game_framework
 import game_world
+import play_mode
+import server
+import title_mode
 from air_shoot import Air_shoot
-from kobby_UI import UI
 from state_machine import *
 
 #kobby pixel
@@ -84,26 +86,26 @@ class Idle:
     def draw(kobby):
         if kobby.face_dir == 1:
             if kobby.mode == 0:
-                kobby.image.clip_draw(25 * int(kobby.frame), 100, 25, 25, kobby.screen_x, kobby.y, 50, 50)
+                kobby.image.clip_draw(25 * int(kobby.frame), 100, 25, 25, kobby.sx, kobby.sy, 50, 50)
             elif kobby.mode == 1:
-                kobby.image2.clip_draw(25 * int(kobby.frame), 110, 25, 25, kobby.screen_x - 2, kobby.y + 2, 50, 50)
+                kobby.image2.clip_draw(25 * int(kobby.frame), 110, 25, 25, kobby.sx - 2, kobby.sy + 2, 50, 50)
             elif kobby.mode == 2:
-                kobby.image3.clip_draw(32 * int(kobby.frame), 160, 32, 40, kobby.screen_x - 7, kobby.y + 17, 64, 80)
+                kobby.image3.clip_draw(32 * int(kobby.frame), 160, 32, 40, kobby.sx - 7, kobby.sy + 17, 64, 80)
             elif kobby.mode == 3:
-                kobby.image4.clip_draw(25 * int(kobby.frame), 112, 25, 28, kobby.screen_x, kobby.y + 5, 50, 56)
+                kobby.image4.clip_draw(25 * int(kobby.frame), 112, 25, 28, kobby.sx, kobby.sy + 5, 50, 56)
             elif kobby.mode == 4:
-                kobby.image5.clip_draw(25 * int(kobby.frame), 152, 25, 40, kobby.screen_x, kobby.y + 15, 50, 80)
+                kobby.image5.clip_draw(25 * int(kobby.frame), 152, 25, 40, kobby.sx, kobby.sy + 15, 50, 80)
         elif kobby.face_dir == -1:
             if kobby.mode == 0:
-                kobby.image.clip_composite_draw(25 * int(kobby.frame), 100, 25, 25, 0, 'h', kobby.screen_x, kobby.y, 50, 50)
+                kobby.image.clip_composite_draw(25 * int(kobby.frame), 100, 25, 25, 0, 'h', kobby.sx, kobby.sy, 50, 50)
             elif kobby.mode == 1:
-                kobby.image2.clip_composite_draw(25 * int(kobby.frame), 110, 25, 25, 0, 'h', kobby.screen_x + 2, kobby.y + 2, 50, 50)
+                kobby.image2.clip_composite_draw(25 * int(kobby.frame), 110, 25, 25, 0, 'h', kobby.sx + 2, kobby.sy + 2, 50, 50)
             elif kobby.mode == 2:
-                kobby.image3.clip_composite_draw(32 * int(kobby.frame), 160, 32, 40, 0, 'h', kobby.screen_x + 7, kobby.y + 17, 64, 80)
+                kobby.image3.clip_composite_draw(32 * int(kobby.frame), 160, 32, 40, 0, 'h', kobby.sx + 7, kobby.sy + 17, 64, 80)
             elif kobby.mode == 3:
-                kobby.image4.clip_composite_draw(25 * int(kobby.frame), 112, 25, 28, 0, 'h', kobby.screen_x, kobby.y + 5, 50, 56)
+                kobby.image4.clip_composite_draw(25 * int(kobby.frame), 112, 25, 28, 0, 'h', kobby.sx, kobby.sy + 5, 50, 56)
             elif kobby.mode == 4:
-                kobby.image5.clip_composite_draw(25 * int(kobby.frame), 152, 25, 40, 0, 'h', kobby.screen_x, kobby.y + 15, 50, 80)
+                kobby.image5.clip_composite_draw(25 * int(kobby.frame), 152, 25, 40, 0, 'h', kobby.sx, kobby.sy + 15, 50, 80)
 
 class Walk:
     @staticmethod
@@ -148,26 +150,26 @@ class Walk:
     def draw(kobby):
         if kobby.face_dir == 1:
             if kobby.mode == 0:
-                kobby.image.clip_draw(25 * int(kobby.frame), 50, 25, 25, kobby.screen_x, kobby.y, 50, 50)
+                kobby.image.clip_draw(25 * int(kobby.frame), 50, 25, 25, kobby.sx, kobby.sy, 50, 50)
             elif kobby.mode == 1:
-                kobby.image2.clip_draw(25 * int(kobby.frame), 60, 25, 25, kobby.screen_x - 2, kobby.y + 2, 50, 50)
+                kobby.image2.clip_draw(25 * int(kobby.frame), 60, 25, 25, kobby.sx - 2, kobby.sy + 2, 50, 50)
             elif kobby.mode == 2:
-                kobby.image3.clip_draw(32 * int(kobby.frame), 80, 32, 40, kobby.screen_x - 7, kobby.y + 17, 64, 80)
+                kobby.image3.clip_draw(32 * int(kobby.frame), 80, 32, 40, kobby.sx - 7, kobby.sy + 17, 64, 80)
             elif kobby.mode == 3:
-                kobby.image4.clip_draw(25 * int(kobby.frame), 56, 25, 28, kobby.screen_x, kobby.y + 5, 50, 56)
+                kobby.image4.clip_draw(25 * int(kobby.frame), 56, 25, 28, kobby.sx, kobby.sy + 5, 50, 56)
             elif kobby.mode == 4:
-                kobby.image5.clip_draw(25 * int(kobby.frame), 72, 25, 40, kobby.screen_x, kobby.y + 15, 50, 80)
+                kobby.image5.clip_draw(25 * int(kobby.frame), 72, 25, 40, kobby.sx, kobby.sy + 15, 50, 80)
         elif kobby.face_dir == -1:
             if kobby.mode == 0:
-                kobby.image.clip_composite_draw(25 * int(kobby.frame), 50, 25, 25, 0, 'h', kobby.screen_x, kobby.y, 50, 50)
+                kobby.image.clip_composite_draw(25 * int(kobby.frame), 50, 25, 25, 0, 'h', kobby.sx, kobby.sy, 50, 50)
             elif kobby.mode == 1:
-                kobby.image2.clip_composite_draw(25 * int(kobby.frame), 60, 25, 25, 0, 'h', kobby.screen_x + 2, kobby.y + 2, 50, 50)
+                kobby.image2.clip_composite_draw(25 * int(kobby.frame), 60, 25, 25, 0, 'h', kobby.sx + 2, kobby.sy + 2, 50, 50)
             elif kobby.mode == 2:
-                kobby.image3.clip_composite_draw(32 * int(kobby.frame), 80, 32, 40, 0, 'h', kobby.screen_x + 7, kobby.y + 17, 64, 80)
+                kobby.image3.clip_composite_draw(32 * int(kobby.frame), 80, 32, 40, 0, 'h', kobby.sx + 7, kobby.sy + 17, 64, 80)
             elif kobby.mode == 3:
-                kobby.image4.clip_composite_draw(25 * int(kobby.frame), 56, 25, 28, 0, 'h', kobby.screen_x, kobby.y + 5, 50, 56)
+                kobby.image4.clip_composite_draw(25 * int(kobby.frame), 56, 25, 28, 0, 'h', kobby.sx, kobby.sy + 5, 50, 56)
             elif kobby.mode == 4:
-                kobby.image5.clip_composite_draw(25 * int(kobby.frame), 72, 25, 40, 0, 'h', kobby.screen_x, kobby.y + 15, 50, 80)
+                kobby.image5.clip_composite_draw(25 * int(kobby.frame), 72, 25, 40, 0, 'h', kobby.sx, kobby.sy + 15, 50, 80)
 
 class Run:
     @staticmethod
@@ -201,26 +203,26 @@ class Run:
     def draw(kobby):
         if kobby.face_dir == 1:
             if kobby.mode == 0:
-                kobby.image.clip_draw(25 * int(kobby.frame), 25, 25, 25, kobby.screen_x, kobby.y, 50, 50)
+                kobby.image.clip_draw(25 * int(kobby.frame), 25, 25, 25, kobby.sx, kobby.sy, 50, 50)
             elif kobby.mode == 1:
-                kobby.image2.clip_draw(25 * int(kobby.frame), 35, 25, 25, kobby.screen_x - 2, kobby.y + 2, 50, 50)
+                kobby.image2.clip_draw(25 * int(kobby.frame), 35, 25, 25, kobby.sx - 2, kobby.sy + 2, 50, 50)
             elif kobby.mode == 2:
-                kobby.image3.clip_draw(32 * int(kobby.frame), 40, 32, 40, kobby.screen_x - 7, kobby.y + 17, 64, 80)
+                kobby.image3.clip_draw(32 * int(kobby.frame), 40, 32, 40, kobby.sx - 7, kobby.sy + 17, 64, 80)
             elif kobby.mode == 3:
-                kobby.image4.clip_draw(25 * int(kobby.frame), 28, 25, 28, kobby.screen_x, kobby.y + 5, 50, 56)
+                kobby.image4.clip_draw(25 * int(kobby.frame), 28, 25, 28, kobby.sx, kobby.sy + 5, 50, 56)
             elif kobby.mode == 4:
-                kobby.image5.clip_draw(40 * int(kobby.frame), 40, 40, 32, kobby.screen_x - 15, kobby.y + 5, 80, 64)
+                kobby.image5.clip_draw(40 * int(kobby.frame), 40, 40, 32, kobby.sx - 15, kobby.sy + 5, 80, 64)
         elif kobby.face_dir == -1:
             if kobby.mode == 0:
-                kobby.image.clip_composite_draw(25 * int(kobby.frame), 25, 25, 25, 0, 'h', kobby.screen_x, kobby.y, 50, 50)
+                kobby.image.clip_composite_draw(25 * int(kobby.frame), 25, 25, 25, 0, 'h', kobby.sx, kobby.sy, 50, 50)
             elif kobby.mode == 1:
-                kobby.image2.clip_composite_draw(25 * int(kobby.frame), 35, 25, 25, 0, 'h', kobby.screen_x + 2, kobby.y + 2, 50, 50)
+                kobby.image2.clip_composite_draw(25 * int(kobby.frame), 35, 25, 25, 0, 'h', kobby.sx + 2, kobby.sy + 2, 50, 50)
             elif kobby.mode == 2:
-                kobby.image3.clip_composite_draw(32 * int(kobby.frame), 40, 32, 40, 0, 'h', kobby.screen_x + 7, kobby.y + 17, 64, 80)
+                kobby.image3.clip_composite_draw(32 * int(kobby.frame), 40, 32, 40, 0, 'h', kobby.sx + 7, kobby.sy + 17, 64, 80)
             elif kobby.mode == 3:
-                kobby.image4.clip_composite_draw(25 * int(kobby.frame), 28, 25, 28, 0, 'h', kobby.screen_x, kobby.y + 5, 50, 56)
+                kobby.image4.clip_composite_draw(25 * int(kobby.frame), 28, 25, 28, 0, 'h', kobby.sx, kobby.sy + 5, 50, 56)
             elif kobby.mode == 4:
-                kobby.image5.clip_composite_draw(40 * int(kobby.frame), 40, 40, 32, 0, 'h', kobby.screen_x + 15, kobby.y + 5, 80, 64)
+                kobby.image5.clip_composite_draw(40 * int(kobby.frame), 40, 40, 32, 0, 'h', kobby.sx + 15, kobby.sy + 5, 80, 64)
 
 class Squashed:
     @staticmethod
@@ -266,26 +268,26 @@ class Squashed:
     def draw(kobby):
         if kobby.face_dir == 1:
             if kobby.mode == 0:
-                kobby.image.clip_draw(25 * kobby.frame, 75, 25, 25, kobby.screen_x, kobby.y, 50, 50)
+                kobby.image.clip_draw(25 * kobby.frame, 75, 25, 25, kobby.sx, kobby.sy, 50, 50)
             elif kobby.mode == 1:
-                kobby.image2.clip_draw(25 * kobby.frame, 85, 25, 25, kobby.screen_x - 2, kobby.y + 2, 50, 50)
+                kobby.image2.clip_draw(25 * kobby.frame, 85, 25, 25, kobby.sx - 2, kobby.sy + 2, 50, 50)
             elif kobby.mode == 2:
-                kobby.image3.clip_draw(32 * kobby.frame, 120, 32, 40, kobby.screen_x - 7, kobby.y + 17, 64, 80)
+                kobby.image3.clip_draw(32 * kobby.frame, 120, 32, 40, kobby.sx - 7, kobby.sy + 17, 64, 80)
             elif kobby.mode == 3:
-                kobby.image4.clip_draw(25 * kobby.frame, 84, 25, 28, kobby.screen_x, kobby.y + 5, 50, 56)
+                kobby.image4.clip_draw(25 * kobby.frame, 84, 25, 28, kobby.sx, kobby.sy + 5, 50, 56)
             elif kobby.mode == 4:
-                kobby.image5.clip_draw(25 * int(kobby.frame), 112, 25, 40, kobby.screen_x, kobby.y + 15, 50, 80)
+                kobby.image5.clip_draw(25 * int(kobby.frame), 112, 25, 40, kobby.sx, kobby.sy + 15, 50, 80)
         elif kobby.face_dir == -1:
             if kobby.mode == 0:
-                kobby.image.clip_composite_draw(25 * kobby.frame, 75, 25, 25, 0, 'h', kobby.screen_x, kobby.y, 50, 50)
+                kobby.image.clip_composite_draw(25 * kobby.frame, 75, 25, 25, 0, 'h', kobby.sx, kobby.sy, 50, 50)
             elif kobby.mode == 1:
-                kobby.image2.clip_composite_draw(25 * kobby.frame, 85, 25, 25, 0, 'h', kobby.screen_x + 2, kobby.y + 2, 50, 50)
+                kobby.image2.clip_composite_draw(25 * kobby.frame, 85, 25, 25, 0, 'h', kobby.sx + 2, kobby.sy + 2, 50, 50)
             elif kobby.mode == 2:
-                kobby.image3.clip_composite_draw(32 * kobby.frame, 120, 32, 40, 0, 'h', kobby.screen_x + 7, kobby.y + 17, 64, 80)
+                kobby.image3.clip_composite_draw(32 * kobby.frame, 120, 32, 40, 0, 'h', kobby.sx + 7, kobby.sy + 17, 64, 80)
             elif kobby.mode == 3:
-                kobby.image4.clip_composite_draw(25 * kobby.frame, 84, 25, 28, 0, 'h', kobby.screen_x, kobby.y + 5, 50, 56)
+                kobby.image4.clip_composite_draw(25 * kobby.frame, 84, 25, 28, 0, 'h', kobby.sx, kobby.sy + 5, 50, 56)
             elif kobby.mode == 4:
-                kobby.image5.clip_composite_draw(25 * int(kobby.frame), 112, 25, 40, 0, 'h', kobby.screen_x, kobby.y + 15, 50, 80)
+                kobby.image5.clip_composite_draw(25 * int(kobby.frame), 112, 25, 40, 0, 'h', kobby.sx, kobby.sy + 15, 50, 80)
         pass
 
 class Jump:
@@ -336,26 +338,26 @@ class Jump:
     def draw(kobby):
         if kobby.face_dir == 1:
             if kobby.mode == 0:
-                kobby.image.clip_draw(25 * int(kobby.frame), 0, 25, 25, kobby.screen_x, kobby.y, 50, 50)
+                kobby.image.clip_draw(25 * int(kobby.frame), 0, 25, 25, kobby.sx, kobby.sy, 50, 50)
             elif kobby.mode == 1:
-                kobby.image2.clip_draw(25 * int(kobby.frame), 0, 25, 35, kobby.screen_x - 2, kobby.y + 2, 50, 70)
+                kobby.image2.clip_draw(25 * int(kobby.frame), 0, 25, 35, kobby.sx - 2, kobby.sy + 2, 50, 70)
             elif kobby.mode == 2:
-                kobby.image3.clip_draw(32 * int(kobby.frame), 0, 32, 40, kobby.screen_x - 7, kobby.y + 17, 64, 80)
+                kobby.image3.clip_draw(32 * int(kobby.frame), 0, 32, 40, kobby.sx - 7, kobby.sy + 17, 64, 80)
             elif kobby.mode == 3:
-                kobby.image4.clip_draw(25 * int(kobby.frame), 0, 25, 28, kobby.screen_x, kobby.y + 5, 50, 56)
+                kobby.image4.clip_draw(25 * int(kobby.frame), 0, 25, 28, kobby.sx, kobby.sy + 5, 50, 56)
             elif kobby.mode == 4:
-                kobby.image5.clip_draw(25 * int(kobby.frame), 0, 25, 40, kobby.screen_x, kobby.y + 15, 50, 80)
+                kobby.image5.clip_draw(25 * int(kobby.frame), 0, 25, 40, kobby.sx, kobby.sy + 15, 50, 80)
         elif kobby.face_dir == -1:
             if kobby.mode == 0:
-                kobby.image.clip_composite_draw(25 * int(kobby.frame), 0, 25, 25, 0, 'h', kobby.screen_x, kobby.y, 50, 50)
+                kobby.image.clip_composite_draw(25 * int(kobby.frame), 0, 25, 25, 0, 'h', kobby.sx, kobby.sy, 50, 50)
             elif kobby.mode == 1:
-                kobby.image2.clip_composite_draw(25 * int(kobby.frame), 0, 25, 35, 0, 'h', kobby.screen_x + 2, kobby.y + 2, 50, 70)
+                kobby.image2.clip_composite_draw(25 * int(kobby.frame), 0, 25, 35, 0, 'h', kobby.sx + 2, kobby.sy + 2, 50, 70)
             elif kobby.mode == 2:
-                kobby.image3.clip_composite_draw(32 * int(kobby.frame), 0, 32, 40, 0, 'h', kobby.screen_x + 7, kobby.y + 17, 64, 80)
+                kobby.image3.clip_composite_draw(32 * int(kobby.frame), 0, 32, 40, 0, 'h', kobby.sx + 7, kobby.sy + 17, 64, 80)
             elif kobby.mode == 3:
-                kobby.image4.clip_composite_draw(25 * int(kobby.frame), 0, 25, 28, 0, 'h', kobby.screen_x, kobby.y + 5, 50, 56)
+                kobby.image4.clip_composite_draw(25 * int(kobby.frame), 0, 25, 28, 0, 'h', kobby.sx, kobby.sy + 5, 50, 56)
             elif kobby.mode == 4:
-                kobby.image5.clip_composite_draw(25 * int(kobby.frame), 0, 25, 40, 0, 'h', kobby.screen_x, kobby.y + 15, 50, 80)
+                kobby.image5.clip_composite_draw(25 * int(kobby.frame), 0, 25, 40, 0, 'h', kobby.sx, kobby.sy + 15, 50, 80)
 
 class Balloon:
     @staticmethod
@@ -417,32 +419,32 @@ class Balloon:
     def draw(kobby):
         if kobby.face_dir == 1:
             if kobby.mode == 0:
-                kobby.image1_1.clip_draw(25 * int(kobby.frame), 25 * kobby.temp, 25, 25, kobby.screen_x, kobby.y, 50, 50)
+                kobby.image1_1.clip_draw(25 * int(kobby.frame), 25 * kobby.temp, 25, 25, kobby.sx, kobby.sy, 50, 50)
             elif kobby.mode == 1:
-                kobby.image2_1.clip_draw(26 * int(kobby.frame), 32 * kobby.temp, 26, 32, kobby.screen_x - 2, kobby.y + 2, 52, 64)
+                kobby.image2_1.clip_draw(26 * int(kobby.frame), 32 * kobby.temp, 26, 32, kobby.sx - 2, kobby.sy + 2, 52, 64)
             elif kobby.mode == 2:
                 if kobby.frame >= 0 and kobby.frame <= 4:
-                    kobby.image3_1.clip_draw(32 * int(kobby.frame), 50 * kobby.temp, 32, 50, kobby.screen_x - 7, kobby.y + 17, 64, 100)
+                    kobby.image3_1.clip_draw(32 * int(kobby.frame), 50 * kobby.temp, 32, 50, kobby.sx - 7, kobby.sy + 17, 64, 100)
                 else:
-                    kobby.image3_1.clip_draw(32 * int(kobby.frame), 50 * kobby.temp, 32, 50, kobby.screen_x - 3, kobby.y + 17, 64, 100)
+                    kobby.image3_1.clip_draw(32 * int(kobby.frame), 50 * kobby.temp, 32, 50, kobby.sx - 3, kobby.sy + 17, 64, 100)
             elif kobby.mode == 3:
-                kobby.image4_1.clip_draw(28 * int(kobby.frame), 32 * kobby.temp, 28, 32, kobby.screen_x, kobby.y + 5, 56, 64)
+                kobby.image4_1.clip_draw(28 * int(kobby.frame), 32 * kobby.temp, 28, 32, kobby.sx, kobby.sy + 5, 56, 64)
             elif kobby.mode == 4:
-                kobby.image5_1.clip_draw(28 * int(kobby.frame), 45 * kobby.temp, 28, 45, kobby.screen_x, kobby.y + 15, 56, 90)
+                kobby.image5_1.clip_draw(28 * int(kobby.frame), 45 * kobby.temp, 28, 45, kobby.sx, kobby.sy + 15, 56, 90)
         elif kobby.face_dir == -1:
             if kobby.mode == 0:
-                kobby.image1_1.clip_composite_draw(25 * int(kobby.frame), 25 * kobby.temp, 25, 25, 0, 'h', kobby.screen_x, kobby.y, 50, 50)
+                kobby.image1_1.clip_composite_draw(25 * int(kobby.frame), 25 * kobby.temp, 25, 25, 0, 'h', kobby.sx, kobby.sy, 50, 50)
             elif kobby.mode == 1:
-                kobby.image2_1.clip_composite_draw(26 * int(kobby.frame), 32 * kobby.temp, 26, 32, 0, 'h', kobby.screen_x + 2, kobby.y + 2, 52, 64)
+                kobby.image2_1.clip_composite_draw(26 * int(kobby.frame), 32 * kobby.temp, 26, 32, 0, 'h', kobby.sx + 2, kobby.sy + 2, 52, 64)
             elif kobby.mode == 2:
                 if kobby.frame >= 0 and kobby.frame <= 4:
-                    kobby.image3_1.clip_composite_draw(32 * int(kobby.frame), 50 * kobby.temp, 32, 50, 0, 'h', kobby.screen_x + 7, kobby.y + 17, 64, 100)
+                    kobby.image3_1.clip_composite_draw(32 * int(kobby.frame), 50 * kobby.temp, 32, 50, 0, 'h', kobby.sx + 7, kobby.sy + 17, 64, 100)
                 else:
-                    kobby.image3_1.clip_composite_draw(32 * int(kobby.frame), 50 * kobby.temp, 32, 50, 0, 'h', kobby.screen_x + 3, kobby.y + 17, 64, 100)
+                    kobby.image3_1.clip_composite_draw(32 * int(kobby.frame), 50 * kobby.temp, 32, 50, 0, 'h', kobby.sx + 3, kobby.sy + 17, 64, 100)
             elif kobby.mode == 3:
-                kobby.image4_1.clip_composite_draw(28 * int(kobby.frame), 32 * kobby.temp, 28, 32, 0, 'h', kobby.screen_x, kobby.y + 5, 56, 64)
+                kobby.image4_1.clip_composite_draw(28 * int(kobby.frame), 32 * kobby.temp, 28, 32, 0, 'h', kobby.sx, kobby.sy + 5, 56, 64)
             elif kobby.mode == 4:
-                kobby.image5_1.clip_composite_draw(28 * int(kobby.frame), 45 * kobby.temp, 28, 45, 0, 'h', kobby.screen_x, kobby.y + 15, 56, 90)
+                kobby.image5_1.clip_composite_draw(28 * int(kobby.frame), 45 * kobby.temp, 28, 45, 0, 'h', kobby.sx, kobby.sy + 15, 56, 90)
 
 class Ability:
     @staticmethod
@@ -514,7 +516,7 @@ class Ability:
                 if kobby.frame < 6:
                     kobby.frame = (kobby.frame + 10 * ACTION_PER_TIME * game_framework.frame_time)
                 if kobby.frame >= 5 and kobby.ground == True:
-                    air = Air_shoot(kobby.screen_x, kobby.y, kobby.face_dir, 1)
+                    air = Air_shoot(kobby.sx, kobby.sy, kobby.face_dir, 1)
                     game_world.add_object(air, 1)
                     game_world.add_collision_pair('air:monster', air, None)
                     kobby.state_machine.add_event(('TIME_OUT', 0))
@@ -558,50 +560,71 @@ class Ability:
         if kobby.face_dir == 1:
             if kobby.mode == 0:
                 if kobby.overtime == 0:
-                    kobby.image1_1.clip_draw(25 * int(kobby.frame), 50, 25, 25, kobby.screen_x, kobby.y, 50, 50)
+                    kobby.image1_1.clip_draw(25 * int(kobby.frame), 50, 25, 25, kobby.sx, kobby.sy, 50, 50)
                 else:
-                    kobby.image1_1.clip_draw(50 * int(kobby.frame), 75, 50, 40, kobby.screen_x + 25, kobby.y + 15, 100, 80)
+                    kobby.image1_1.clip_draw(50 * int(kobby.frame), 75, 50, 40, kobby.sx + 25, kobby.sy + 15, 100, 80)
             elif kobby.mode == 1:
-                kobby.image2_1.clip_draw(80 * int(kobby.frame), 64 + (kobby.temp * 100), 80, 100, kobby.screen_x + 50, kobby.y + 2, 160, 200)
+                kobby.image2_1.clip_draw(80 * int(kobby.frame), 64 + (kobby.temp * 100), 80, 100, kobby.sx + 50, kobby.sy + 2, 160, 200)
             elif kobby.mode == 2:
                 if kobby.temp == 4:
-                    kobby.image3_1.clip_draw(64 * int(kobby.frame), 300, 64, 64,kobby.screen_x + 25, kobby.y + 2, 128, 128)
+                    kobby.image3_1.clip_draw(64 * int(kobby.frame), 300, 64, 64,kobby.sx + 25, kobby.sy + 2, 128, 128)
                 else:
-                    kobby.image3_1.clip_draw(85 * int(kobby.frame), 100 + (kobby.temp * 50), 85, 50, kobby.screen_x + 25, kobby.y + 2, 170, 100)
+                    kobby.image3_1.clip_draw(85 * int(kobby.frame), 100 + (kobby.temp * 50), 85, 50, kobby.sx + 25, kobby.sy + 2, 170, 100)
             elif kobby.mode == 3:
-                kobby.image4_1.clip_draw(95 * int(kobby.frame), 64 + (kobby.temp * 45), 95, 45, kobby.screen_x + 40, kobby.y + 5, 190, 90)
+                kobby.image4_1.clip_draw(95 * int(kobby.frame), 64 + (kobby.temp * 45), 95, 45, kobby.sx + 40, kobby.sy + 5, 190, 90)
             elif kobby.mode == 4:
-                kobby.image5_1.clip_draw(95 * int(kobby.frame), 90 + (kobby.temp * 45), 95, 45, kobby.screen_x + 40, kobby.y + 5, 190, 90)
+                kobby.image5_1.clip_draw(95 * int(kobby.frame), 90 + (kobby.temp * 45), 95, 45, kobby.sx + 40, kobby.sy + 5, 190, 90)
         elif kobby.face_dir == -1:
             if kobby.mode == 0:
                 if kobby.overtime == 0:
-                    kobby.image1_1.clip_composite_draw(25 * int(kobby.frame), 50, 25, 25, 0, 'h', kobby.screen_x, kobby.y, 50, 50)
+                    kobby.image1_1.clip_composite_draw(25 * int(kobby.frame), 50, 25, 25, 0, 'h', kobby.sx, kobby.sy, 50, 50)
                 else:
-                    kobby.image1_1.clip_composite_draw(50 * int(kobby.frame), 75, 50, 40, 0, 'h', kobby.screen_x - 25, kobby.y + 15, 100, 80)
+                    kobby.image1_1.clip_composite_draw(50 * int(kobby.frame), 75, 50, 40, 0, 'h', kobby.sx - 25, kobby.sy + 15, 100, 80)
             elif kobby.mode == 1:
-                kobby.image2_1.clip_composite_draw(80 * int(kobby.frame), 64 + (kobby.temp * 100), 80, 100, 0, 'h', kobby.screen_x - 50, kobby.y + 2, 160, 200)
+                kobby.image2_1.clip_composite_draw(80 * int(kobby.frame), 64 + (kobby.temp * 100), 80, 100, 0, 'h', kobby.sx - 50, kobby.sy + 2, 160, 200)
             elif kobby.mode == 2:
                 if kobby.temp == 4:
-                    kobby.image3_1.clip_composite_draw(64 * int(kobby.frame), 300, 64, 64, 0, 'h', kobby.screen_x - 25, kobby.y + 2, 128, 128)
+                    kobby.image3_1.clip_composite_draw(64 * int(kobby.frame), 300, 64, 64, 0, 'h', kobby.sx - 25, kobby.sy + 2, 128, 128)
                 else:
-                    kobby.image3_1.clip_composite_draw(85 * int(kobby.frame), 100 + (kobby.temp * 50), 85, 50, 0, 'h', kobby.screen_x - 25, kobby.y + 2, 170, 100)
+                    kobby.image3_1.clip_composite_draw(85 * int(kobby.frame), 100 + (kobby.temp * 50), 85, 50, 0, 'h', kobby.sx - 25, kobby.sy + 2, 170, 100)
             elif kobby.mode == 3:
-                kobby.image4_1.clip_composite_draw(95 * int(kobby.frame), 64 + (kobby.temp * 45), 95, 45, 0, 'h', kobby.screen_x - 40, kobby.y + 5, 190,90)
+                kobby.image4_1.clip_composite_draw(95 * int(kobby.frame), 64 + (kobby.temp * 45), 95, 45, 0, 'h', kobby.sx - 40, kobby.sy + 5, 190,90)
             elif kobby.mode == 4:
-                kobby.image5_1.clip_composite_draw(95 * int(kobby.frame), 90 + (kobby.temp * 45), 95, 45, 0, 'h', kobby.screen_x - 40, kobby.y + 5, 190,90)
+                kobby.image5_1.clip_composite_draw(95 * int(kobby.frame), 90 + (kobby.temp * 45), 95, 45, 0, 'h', kobby.sx - 40, kobby.sy + 5, 190,90)
 
     @staticmethod
     def handle_collision(kobby): # 각 공격할때 이제 범위 생성하고 충돌 체크
         pass
 
 
+class Hurt:
+    @staticmethod
+    def enter(kobby, e):
+        kobby.time = get_time()
+        kobby.frame = 0
+
+    @staticmethod
+    def exit(kobby, e):
+        pass
+
+    @staticmethod
+    def do(kobby):
+        if get_time() - kobby.time > 0.5:
+            kobby.state_machine.add_event(('TIME_OUT', 0))
+
+    @staticmethod
+    def draw(kobby):
+        if kobby.face_dir == 1:
+            kobby.hurt_image.clip_draw(34 * int(kobby.frame), 102, 34, 34, kobby.sx, kobby.sy, 68, 68)
+        elif kobby.face_dir == -1:
+            kobby.hurt_image.clip_composite_draw(34 * int(kobby.frame), 102, 34, 34, 0, 'h', kobby.sx, kobby.sy, 68, 68)
 
 class Kobby:
     first = None
     def __init__(self):
-        self.x,self.y = 0, 500
+        self.x = 0
+        self.y = 100
         self.past_x = 0
-        self.screen_x = 0
         self.gravity = 1
         self.food = False
         self.frame = 0
@@ -609,12 +632,14 @@ class Kobby:
         self.frame2 = 0
         self.y_dir = 0
         self.face_dir = 0
-        self.collision_size = 25
+        self.collision_size = 20
         self.d_time = 0
         self.w_time = 0
         self.a_time = 0
         self.ice_time = False
         self.temp = 0
+        self.no_damage = False
+        self.no_damage_time = 0
         self.hp = 3    # 하트 하나당 피통
         self.heart = 3 # 총 하트 갯수
         self.action = 0 # 0: 기본 상태 1: 찌그러진 2: 걷기 3: 뛰기 4: 풍선
@@ -631,22 +656,42 @@ class Kobby:
             self.image4_1 = load_image('ice_kobby_sheet2.png')
             self.image5=load_image('fire_kobby_sheet.png')
             self.image5_1 = load_image('fire_kobby_sheet2.png')
+            self.hurt_image = load_image('kobby_hurt_sheet.png')
+            self.hp_image1 = load_image('hpUI1.png')
+            self.hp_image2 = load_image('hpUI2.png')
+            self.hp_image3 = load_image('hpUI3.png')
+            self.icon_image = load_image('heart_icon1.png')
+            self.icon_image2 = load_image('heart_icon2.png')
+            self.icon_image3 = load_image('heart_icon3.png')
         self.state_machine = StateMachine(self)
         self.state_machine.start(Idle)
         self.state_machine.set_transitions(
             {
-                Idle: {left_down: Walk, left_up: Walk, right_down: Walk, right_up: Walk, down_down: Squashed, down_up: Idle, double_right: Run, double_left: Run, down_k: Jump, double_up: Balloon, down_j: Ability},
-                Squashed: {down_up: Idle, left_down: Squashed, right_down: Squashed, left_up: Squashed, right_up: Squashed},
-                Walk: {time_out: Idle, right_down: Walk, right_up: Walk, left_down: Walk, left_up: Walk, down_down: Squashed, down_up: Idle, down_k: Jump, down_j: Ability},
-                Run: {time_out: Idle, right_down: Run, left_down: Run, right_up: Idle, left_up: Idle, down_k: Jump, down_j: Ability, down_down: Squashed},
-                Jump: {time_out: Idle, jump_end_walk: Walk, jump_end_run: Run, left_down: Jump, right_down: Jump, left_up: Jump, right_up: Jump, down_j: Ability, down_down: Squashed},
-                Balloon: {left_down: Balloon, right_down: Balloon, left_up: Balloon, right_up: Balloon, down_down: Balloon, up_down: Balloon, up_up: Balloon, down_up: Balloon, down_j: Balloon, time_out: Idle},
-                Ability: {time_out: Idle, up_j: Ability}
+                Idle: {left_down: Walk, left_up: Walk, right_down: Walk, right_up: Walk, down_down: Squashed, down_up: Idle, double_right: Run, double_left: Run, down_k: Jump, double_up: Balloon, down_j: Ability, hurt_event: Hurt},
+                Squashed: {down_up: Idle, left_down: Squashed, right_down: Squashed, left_up: Squashed, right_up: Squashed, hurt_event: Hurt},
+                Walk: {time_out: Idle, right_down: Walk, right_up: Walk, left_down: Walk, left_up: Walk, down_down: Squashed, down_up: Idle, down_k: Jump, down_j: Ability, hurt_event: Hurt},
+                Run: {time_out: Idle, right_down: Run, left_down: Run, right_up: Idle, left_up: Idle, down_k: Jump, down_j: Ability, down_down: Squashed, hurt_event: Hurt},
+                Jump: {time_out: Idle, jump_end_walk: Walk, jump_end_run: Run, left_down: Jump, right_down: Jump, left_up: Jump, right_up: Jump, down_j: Ability, down_down: Squashed, hurt_event: Hurt},
+                Balloon: {left_down: Balloon, right_down: Balloon, left_up: Balloon, right_up: Balloon, down_down: Balloon, up_down: Balloon, up_up: Balloon, down_up: Balloon, down_j: Balloon, time_out: Idle, hurt_event: Hurt},
+                Ability: {time_out: Idle, up_j: Ability, hurt_event: Hurt},
+                Hurt: {time_out: Idle}
             }
         )
 
     def update(self):
         self.state_machine.update()
+
+        # 월드 기준으로  x,y 위치 제한
+        self.x = clamp(25.0, self.x, server.ground1.w - 25.0)
+        self.y = clamp(30.0, self.y, server.ground1.h - 30.0)
+
+        # 좌표계 변환 월드 -> 화면
+        self.sx = self.x - server.ground1.window_left
+        self.sy = self.y - server.ground1.window_bottom
+
+        if get_time() - self.no_damage_time > 3:
+            self.no_damage = False
+
         #중력
         if self.ground == False:
             if self.action == 4:
@@ -708,23 +753,47 @@ class Kobby:
 
     def draw(self):
         self.state_machine.draw()
+
+        if self.hp == 3:
+            self.hp_image1.draw(100, 550, 162, 56)
+        if self.hp == 2:
+            self.hp_image2.draw(100, 550, 162, 56)
+        if self.hp == 1:
+            self.hp_image3.draw(100, 550, 162, 56)
+        if self.heart == 3:
+            self.icon_image3.draw(60, 500, 74, 32)
+        if self.heart == 2:
+            self.icon_image2.draw(60, 500, 74, 32)
+        if self.heart == 1:
+            self.icon_image.draw(60, 500, 74, 32)
         draw_rectangle(*self.get_bb())
 
     def air_shoot(self):
         if self.face_dir == 1:
-            air = Air_shoot(self.screen_x, self.y, self.face_dir)
+            air = Air_shoot(self.sx, self.sy, self.face_dir)
             game_world.add_object(air,1)
             game_world.add_collision_pair('air:monster', air, None)
         elif self.face_dir == -1:
-            air = Air_shoot(self.screen_x, self.y, self.face_dir)
+            air = Air_shoot(self.sx, self.sy, self.face_dir)
             game_world.add_object(air, 1)
             game_world.add_collision_pair('air:monster', air, None)
 
     def get_bb(self):
         if self.face_dir == 1:
-            return self.screen_x - 25, self.y - 20, self.screen_x + self.collision_size, self.y + 20
+            return self.sx - 20, self.sy - 20, self.sx + self.collision_size, self.sy + 20
         if self.face_dir == -1:
-            return self.screen_x - self.collision_size, self.y - 20, self.screen_x + 25, self.y + 20
+            return self.sx - self.collision_size, self.sy - 20, self.sx + 20, self.sy + 20
 
     def handle_collision(self, group, other):
-        pass
+        if group == 'kobby:monster':
+            if self.no_damage == False:
+                self.state_machine.add_event(('HURT', 0))
+                self.hp -= 1
+                self.no_damage = True
+                self.no_damage_time = get_time()
+                if self.hp <= 0:
+                    self.heart -= 1
+                    if self.heart <= 0:
+                        game_world.clear()
+                        game_framework.change_mode(title_mode)
+                    self.hp = 3

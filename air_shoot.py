@@ -2,7 +2,7 @@ from pico2d import load_image, draw_rectangle
 
 import game_framework
 import game_world
-
+import server
 
 PIXEL_PER_METER = (25.0 / 0.2) # 25pixel = 20cm
 AIRSHOOT_SPEED_KMPH = 9.0 # km/h
@@ -29,17 +29,24 @@ class Air_shoot:
         draw_rectangle(*self.get_bb())
         if self.air == 0:
             if self.velocity > 0:
-                self.image.clip_draw(20 * int(self.frame), 0, 20, 20, self.x, self.y, 50, 50)
+                self.image.clip_draw(20 * int(self.frame), 0, 20, 20, self.screen_x, self.y, 50, 50)
             else:
-                self.image.clip_composite_draw(20 * int(self.frame), 0, 20, 20, 0, 'h', self.x, self.y, 50, 50)
+                self.image.clip_composite_draw(20 * int(self.frame), 0, 20, 20, 0, 'h', self.screen_x, self.y, 50, 50)
         else:
             if self.velocity > 0:
-                self.image2.clip_draw(35 * int(self.frame), 0, 35, 30, self.x, self.y, 70, 60)
+                self.image2.clip_draw(35 * int(self.frame), 0, 35, 30, self.screen_x, self.y, 70, 60)
             else:
-                self.image2.clip_composite_draw(35 * int(self.frame), 0, 35, 30, 0, 'h', self.x, self.y, 70, 60)
+                self.image2.clip_composite_draw(35 * int(self.frame), 0, 35, 30, 0, 'h', self.screen_x, self.y, 70, 60)
 
     def update(self):
         self.x += self.velocity * AIRSHOOT_SPEED_PPS * game_framework.frame_time
+
+        if self.x <= 400:
+            self.screen_x = self.x
+        elif self.x > 400 and self.x < 2600:
+            self.screen_x = self.x - (self.x - 400)
+        elif self.x >= 2600:
+            self.screen_x = self.x - 2200
 
         if self.air == 0:
             self.frame = (self.frame + 4 * (1.0 / 0.5) * game_framework.frame_time)

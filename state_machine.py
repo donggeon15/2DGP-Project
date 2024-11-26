@@ -6,6 +6,9 @@ def start_event(e):
 def time_out(e):
     return e[0] == 'TIME_OUT'
 
+def hurt_event(e):
+    return e[0] == 'HURT'
+
 def right_down(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_d
 
