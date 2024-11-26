@@ -627,7 +627,7 @@ class Kobby:
     first = None
     def __init__(self):
         self.x = 0
-        self.y = 100
+        self.y = 800
         self.past_x = 0
         self.gravity = 1
         self.food = False
@@ -644,6 +644,7 @@ class Kobby:
         self.temp = 0
         self.no_damage = False
         self.no_damage_time = 0
+        self.stage = 1
         self.hp = 3    # 하트 하나당 피통
         self.heart = 3 # 총 하트 갯수
         self.action = 0 # 0: 기본 상태 1: 찌그러진 2: 걷기 3: 뛰기 4: 풍선
@@ -693,10 +694,11 @@ class Kobby:
         self.sx = self.x - server.ground1.window_left
         self.sy = self.y - server.ground1.window_bottom
 
+        # 3초 무적
         if get_time() - self.no_damage_time > 3:
             self.no_damage = False
 
-        #중력
+        # 중력
         if self.ground == False:
             if self.action == 4:
                 self.gravity = 98
@@ -708,70 +710,78 @@ class Kobby:
 
         #중력 + 벽 충돌
         # 스테이지1 커비 땅 좌표
-        if ((self.x >= 0 and self.x < 600) or (self.x >= 760 and self.x < 1070) or
-              (self.x >= 1140 and self.x < 1350)):
+        if self.stage == 1:
+            if ((self.x >= 0 and self.x < 600) or (self.x >= 760 and self.x < 1070) or
+                    (self.x >= 1140 and self.x < 1350)):
+                if self.y > 200 - 55:
+                    self.ground = False
+                    self.y -= self.gravity * game_framework.frame_time
+                else:
+                    self.y = 200 - 55
+                    self.ground = True
+            elif ((self.x >= 600 and self.x < 760) or (self.x >= 1070 and self.x < 1140) or
+                  (self.x >= 1350 and self.x < 1525) or (self.x > 1820 and self.x < 2280) or
+                  (self.x > 2420 and self.x < 3000)):
+                if self.y > 200 - 25:
+                    self.ground = False
+                    self.y -= self.gravity * game_framework.frame_time
+                elif self.y <= 200 - 25 and self.y > 200 - 35:
+                    self.y = 200 - 25
+                    self.ground = True
+                else:
+                    if self.x < self.past_x:
+                        self.x = self.past_x + 10
+                    else:
+                        self.x = self.past_x - 10
+                    self.ground = True
+                    if ((self.x >= 601 and self.x < 759) or (self.x >= 1071 and self.x < 1139) or
+                            (self.x >= 1351 and self.x < 1524) or (self.x > 1821 and self.x < 2279) or
+                            (self.x > 2421 and self.x < 2999)):
+                        self.y = 200 - 25
+            elif ((self.x >= 1525 and self.x < 1640) or (self.x >= 2370 and self.x < 2420)):
+                if self.y > 200 + 70:
+                    self.ground = False
+                    self.y -= self.gravity * game_framework.frame_time
+                elif self.y <= 200 + 70 and self.y > 200 + 60:
+                    self.y = 200 + 70
+                    self.ground = True
+                else:
+                    if self.x < self.past_x:
+                        self.x = self.past_x + 10
+                    else:
+                        self.x = self.past_x - 10
+                    self.ground = True
+                    if ((self.x >= 1526 and self.x < 1639) or (self.x >= 2371 and self.x < 2419)):
+                        self.y = 200 + 70
+            elif ((self.x >= 1640 and self.x <= 1820)):
+                if self.y > 200 + 70 - ((self.x - 1640) * (1 / 2)):
+                    self.ground = False
+                    self.y -= self.gravity * game_framework.frame_time
+                else:
+                    self.y = 200 + 70 - ((self.x - 1640) * (1 / 2))
+                    self.ground = True
+            elif ((self.x >= 2280 and self.x < 2370)):
+                if self.y > 200 + 135:
+                    self.ground = False
+                    self.y -= self.gravity * game_framework.frame_time
+                elif self.y <= 200 + 135 and self.y > 200 + 125:
+                    self.y = 200 + 135
+                    self.ground = True
+                else:
+                    if self.x < self.past_x:
+                        self.x = self.past_x + 10
+                    else:
+                        self.x = self.past_x - 10
+                    self.ground = True
+                    if ((self.x >= 2281 and self.x < 2369)):
+                        self.y = 200 + 135
+        elif self.stage == 2:
             if self.y > 200 - 55:
                 self.ground = False
                 self.y -= self.gravity * game_framework.frame_time
             else:
                 self.y = 200 - 55
                 self.ground = True
-        elif ((self.x >= 600 and self.x < 760) or (self.x >= 1070 and self.x < 1140) or
-              (self.x >= 1350 and self.x < 1525) or (self.x > 1820 and self.x < 2280) or
-              (self.x > 2420 and self.x < 3000)):
-            if self.y > 200 - 25:
-                self.ground = False
-                self.y -= self.gravity * game_framework.frame_time
-            elif self.y <= 200 - 25 and self.y > 200 - 35:
-                self.y = 200 - 25
-                self.ground = True
-            else:
-                if self.x < self.past_x:
-                    self.x = self.past_x + 10
-                else:
-                    self.x = self.past_x - 10
-                self.ground = True
-                if ((self.x >= 601 and self.x < 759) or (self.x >= 1071 and self.x < 1139) or
-                        (self.x >= 1351 and self.x < 1524) or (self.x > 1821 and self.x < 2279) or
-                        (self.x > 2421 and self.x < 2999)):
-                    self.y = 200 - 25
-        elif ((self.x >= 1525 and self.x < 1640) or (self.x >= 2370 and self.x < 2420)):
-            if self.y > 200 + 70:
-                self.ground = False
-                self.y -= self.gravity * game_framework.frame_time
-            elif self.y <= 200 + 70 and self.y > 200 + 60:
-                self.y = 200 + 70
-                self.ground = True
-            else:
-                if self.x < self.past_x:
-                    self.x = self.past_x + 10
-                else:
-                    self.x = self.past_x - 10
-                self.ground = True
-                if ((self.x >= 1526 and self.x < 1639) or (self.x >= 2371 and self.x < 2419)):
-                    self.y = 200 + 70
-        elif ((self.x >= 1640 and self.x <= 1820)):
-            if self.y > 200 + 70 - ((self.x - 1640) * (1 / 2)):
-                self.ground = False
-                self.y -= self.gravity * game_framework.frame_time
-            else:
-                self.y = 200 + 70 - ((self.x - 1640) * (1 / 2))
-                self.ground = True
-        elif ((self.x >= 2280 and self.x < 2370)):
-            if self.y > 200 + 135:
-                self.ground = False
-                self.y -= self.gravity * game_framework.frame_time
-            elif self.y <= 200 + 135 and self.y > 200 + 125:
-                self.y = 200 + 135
-                self.ground = True
-            else:
-                if self.x < self.past_x:
-                    self.x = self.past_x + 10
-                else:
-                    self.x = self.past_x - 10
-                self.ground = True
-                if ((self.x >= 2281 and self.x < 2369)):
-                    self.y = 200 + 135
 
 
 
@@ -871,3 +881,8 @@ class Kobby:
                         game_world.clear()
                         game_framework.change_mode(title_mode)
                     self.hp = 3
+        if group == 'kobby:portal':
+            self.stage += 1
+            self.x = 0
+            self.y = 800
+            server.ground1.stage += 1
