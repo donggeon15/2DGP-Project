@@ -41,9 +41,9 @@ def setting_stage1():
     game_world.add_collision_pair('kobby:portal', None, portal)
 
 def setting_stage2():
-    remove_object(portal)
-    remove_object(monster)
-    remove_object(ground1_grass)
+    #remove_object(portal)
+    #remove_object(monster)
+    #remove_object(ground1_grass)
 
     global portal2
 
@@ -58,14 +58,14 @@ def init():
     game_world.add_collision_pair('kobby:monster', server.kobby, None)
     game_world.add_collision_pair('kobby:portal', server.kobby, None)
 
-    server.background1 = Background(1)
+    server.background1 = Background(2)
     game_world.add_object(server.background1, 0)
-
-    server.ground1 = Ground(0, 1)
+    server.kobby.stage = 2
+    server.ground1 = Ground(0, 2)
     game_world.add_object(server.ground1, 0)
 
     # 스테이지 1 셋팅
-    setting_stage1()
+    setting_stage2()
 
 def finish():
     game_world.clear()
