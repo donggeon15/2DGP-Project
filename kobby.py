@@ -708,6 +708,18 @@ class Kobby:
         else:
             self.gravity = 1
 
+        # 낙사
+        if self.y <= -50:
+            self.y = 500
+            self.x = 0
+            self.hp -= 2
+            if self.hp <= 0:
+                self.heart -= 1
+                if self.heart <= 0:
+                    game_world.clear()
+                    game_framework.change_mode(title_mode)
+                self.hp = 3
+
         #중력 + 벽 충돌
         # 스테이지1 커비 땅 좌표
         if self.stage == 1:
@@ -730,9 +742,9 @@ class Kobby:
                     self.ground = True
                 else:
                     if self.x < self.past_x:
-                        self.x = self.past_x + 10
+                        self.x = self.past_x + 1
                     else:
-                        self.x = self.past_x - 10
+                        self.x = self.past_x - 1
                     self.ground = True
                     if ((self.x >= 601 and self.x < 759) or (self.x >= 1071 and self.x < 1139) or
                             (self.x >= 1351 and self.x < 1524) or (self.x > 1821 and self.x < 2279) or
@@ -747,9 +759,9 @@ class Kobby:
                     self.ground = True
                 else:
                     if self.x < self.past_x:
-                        self.x = self.past_x + 10
+                        self.x = self.past_x + 1
                     else:
-                        self.x = self.past_x - 10
+                        self.x = self.past_x - 1
                     self.ground = True
                     if ((self.x >= 1526 and self.x < 1639) or (self.x >= 2371 and self.x < 2419)):
                         self.y = 200 + 70
@@ -769,19 +781,24 @@ class Kobby:
                     self.ground = True
                 else:
                     if self.x < self.past_x:
-                        self.x = self.past_x + 10
+                        self.x = self.past_x + 1
                     else:
-                        self.x = self.past_x - 10
+                        self.x = self.past_x - 1
                     self.ground = True
                     if ((self.x >= 2281 and self.x < 2369)):
                         self.y = 200 + 135
         elif self.stage == 2:
-            if self.y > 200 - 55:
+            if self.x < 1000:
+                if self.y > 200 - 55:
+                    self.ground = False
+                    self.y -= self.gravity * game_framework.frame_time
+                else:
+                    self.y = 200 - 55
+                    self.ground = True
+            else:
                 self.ground = False
                 self.y -= self.gravity * game_framework.frame_time
-            else:
-                self.y = 200 - 55
-                self.ground = True
+
 
 
 
@@ -892,4 +909,5 @@ class Kobby:
             self.x = 0
             self.y = 800
             server.ground1.stage += 1
+            server.background1.stage += 1
             play_mode.setting_stage2()

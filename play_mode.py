@@ -28,12 +28,6 @@ def setting_stage1():
     global monster
     global portal
 
-    server.background1 = Background()
-    game_world.add_object(server.background1, 0)
-
-    server.ground1 = Ground(0, 1)
-    game_world.add_object(server.ground1, 0)
-
     ground1_grass = Ground(1)
     game_world.add_object(ground1_grass, 1)
 
@@ -64,10 +58,14 @@ def init():
     game_world.add_collision_pair('kobby:monster', server.kobby, None)
     game_world.add_collision_pair('kobby:portal', server.kobby, None)
 
+    server.background1 = Background(1)
+    game_world.add_object(server.background1, 0)
+
+    server.ground1 = Ground(0, 1)
+    game_world.add_object(server.ground1, 0)
 
     # 스테이지 1 셋팅
     setting_stage1()
-
 
 def finish():
     game_world.clear()

@@ -16,11 +16,11 @@ class Portal:
 
 
     def update(self):
-        self.sx = self.x - server.ground1.window_left
-        self.sy = self.y - server.ground1.window_bottom
         pass
 
     def get_bb(self):
+        self.sx = self.x - server.ground1.window_left
+        self.sy = self.y - server.ground1.window_bottom
         if self.num == 0:
             return self.sx - 25, self.sy - 35, self.sx + 25, self.sy + 30
 
