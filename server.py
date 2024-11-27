@@ -4,5 +4,3 @@
 kobby = None
 background1 = None
 ground1 = None
-monster = None
-ground1_grass = None

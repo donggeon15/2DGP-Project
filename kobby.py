@@ -873,6 +873,12 @@ class Kobby:
             if self.no_damage == False:
                 self.state_machine.add_event(('HURT', 0))
                 self.hp -= 1
+                if self.face_dir == 1:
+                    self.x -= 70
+                    self.y += 70
+                if self.face_dir == -1:
+                    self.x += 70
+                    self.y += 70
                 self.no_damage = True
                 self.no_damage_time = get_time()
                 if self.hp <= 0:
@@ -886,3 +892,4 @@ class Kobby:
             self.x = 0
             self.y = 800
             server.ground1.stage += 1
+            play_mode.setting_stage2()

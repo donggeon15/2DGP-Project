@@ -5,6 +5,7 @@ import game_world
 import monster
 import server
 from background import Background
+from game_world import remove_object
 from ground import Ground
 from kobby import Kobby
 from monster import Monster
@@ -23,35 +24,41 @@ def handle_events():
                 server.kobby.handle_event(event)
 
 def setting_stage1():
+    global ground1_grass
+    global monster
+    global portal
+
     server.background1 = Background()
     game_world.add_object(server.background1, 0)
 
     server.ground1 = Ground(0, 1)
     game_world.add_object(server.ground1, 0)
 
-    server.ground1_grass = Ground(1)
-    game_world.add_object(server.ground1_grass, 1)
+    ground1_grass = Ground(1)
+    game_world.add_object(ground1_grass, 1)
 
-    server.monster = Monster(7)
-    game_world.add_object(server.monster, 1)
-    game_world.add_collision_pair('kobby:monster', None, server.monster)
-    game_world.add_collision_pair('air:monster', None, server.monster)
+    monster = Monster(7)
+    game_world.add_object(monster, 1)
+    game_world.add_collision_pair('kobby:monster', None,monster)
+    game_world.add_collision_pair('air:monster', None, monster)
 
-    potal = Portal(2935, 190, 0)
-    game_world.add_object(potal, 1)
-    game_world.add_collision_pair('kobby:portal', None, potal)
+    portal = Portal(2935, 190, 0)
+    game_world.add_object(portal, 1)
+    game_world.add_collision_pair('kobby:portal', None, portal)
 
 def setting_stage2():
+    remove_object(portal)
+    remove_object(monster)
+    remove_object(ground1_grass)
+
+    global portal2
+
+    portal2 = Portal(2935, 200, 0)
+    game_world.add_object(portal2, 1)
+
     pass
 
 def init():
-    global ground1
-    global background1
-    global kobby
-    global ground1_grass
-    global monster
-    global potal
-
     server.kobby = Kobby()
     game_world.add_object(server.kobby, 1)
     game_world.add_collision_pair('kobby:monster', server.kobby, None)

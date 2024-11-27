@@ -24,12 +24,20 @@ TIME_PER_ACTION_DEAD = 10.0
 ACTION_DEAD_PER_TIME = 1.0 / TIME_PER_ACTION
 FRAMES_PER_ACTION_DEAD = 12.0
 
+GRAVITY_SPEED_KMPH = 9.8
+GRAVITY_SPEED_MPM = (GRAVITY_SPEED_KMPH * 1000.0 / 60.0)
+GRAVITY_SPEED_MPS = (GRAVITY_SPEED_MPM / 60.0)
+GRAVITY_SPEED_PPS = (GRAVITY_SPEED_MPS * PIXEL_PER_METER)
+
 class Monster:
     images = None
 
     def __init__(self, d = 0):
         self.x = 1200
+        self.past_x = 0
         self.y = 90
+        self.ground = False
+        self.gravity = 1
         self.number = d #1 기본 몬스터 / 2.기본 몬스터2 / 3. 법사 몬스터 / 4. 검사 몬스터
         # 5. 얼음몬스터1 / 6. 얼음몬스터2 / 7. 불꽃 몬스터1 / 8. 불꽃 몬스터2
         if Monster.images is None:
@@ -68,12 +76,87 @@ class Monster:
             if self.frame >= 7:
                 game_framework.quit()
 
+        self.past_x = self.x
         self.x += RUN_SPEED_PPS * self.dir * game_framework.frame_time
-        if self.x > 1050:
-            self.dir = -1
-        elif self.x < 770:
-            self.dir = 1
-        pass
+
+
+        # 중력
+        if self.ground == False:
+            if self.action == 4:
+                self.gravity = 98
+            else:
+                if self.gravity <= 1200:
+                    self.gravity += (1 * GRAVITY_SPEED_PPS * 7 * game_framework.frame_time)
+        else:
+            self.gravity = 1
+
+
+        if ((self.x >= 0 and self.x < 600) or (self.x >= 760 and self.x < 1070) or
+                (self.x >= 1140 and self.x < 1350)):
+            if self.y > 200 - 55:
+                self.ground = False
+                self.y -= self.gravity * game_framework.frame_time
+            else:
+                self.y = 200 - 55
+                self.ground = True
+        elif ((self.x >= 600 and self.x < 760) or (self.x >= 1070 and self.x < 1140) or
+              (self.x >= 1350 and self.x < 1525) or (self.x > 1820 and self.x < 2280) or
+              (self.x > 2420 and self.x < 3000)):
+            if self.y > 200 - 25:
+                self.ground = False
+                self.y -= self.gravity * game_framework.frame_time
+            elif self.y <= 200 - 25 and self.y > 200 - 35:
+                self.y = 200 - 25
+                self.ground = True
+            else:
+                if self.x < self.past_x:
+                    self.x = self.past_x + 10
+                    self.dir = 1
+                else:
+                    self.x = self.past_x - 10
+                    self.dir = -1
+                self.ground = True
+                if ((self.x >= 601 and self.x < 759) or (self.x >= 1071 and self.x < 1139) or
+                        (self.x >= 1351 and self.x < 1524) or (self.x > 1821 and self.x < 2279) or
+                        (self.x > 2421 and self.x < 2999)):
+                    self.y = 200 - 25
+        elif ((self.x >= 1525 and self.x < 1640) or (self.x >= 2370 and self.x < 2420)):
+            if self.y > 200 + 70:
+                self.ground = False
+                self.y -= self.gravity * game_framework.frame_time
+            elif self.y <= 200 + 70 and self.y > 200 + 60:
+                self.y = 200 + 70
+                self.ground = True
+            else:
+                if self.x < self.past_x:
+                    self.x = self.past_x + 10
+                else:
+                    self.x = self.past_x - 10
+                self.ground = True
+                if ((self.x >= 1526 and self.x < 1639) or (self.x >= 2371 and self.x < 2419)):
+                    self.y = 200 + 70
+        elif ((self.x >= 1640 and self.x <= 1820)):
+            if self.y > 200 + 70 - ((self.x - 1640) * (1 / 2)):
+                self.ground = False
+                self.y -= self.gravity * game_framework.frame_time
+            else:
+                self.y = 200 + 70 - ((self.x - 1640) * (1 / 2))
+                self.ground = True
+        elif ((self.x >= 2280 and self.x < 2370)):
+            if self.y > 200 + 135:
+                self.ground = False
+                self.y -= self.gravity * game_framework.frame_time
+            elif self.y <= 200 + 135 and self.y > 200 + 125:
+                self.y = 200 + 135
+                self.ground = True
+            else:
+                if self.x < self.past_x:
+                    self.x = self.past_x + 10
+                else:
+                    self.x = self.past_x - 10
+                self.ground = True
+                if ((self.x >= 2281 and self.x < 2369)):
+                    self.y = 200 + 135
 
 
     def draw(self):
@@ -82,21 +165,21 @@ class Monster:
         if self.dir < 0:
             if self.action == 0:  # 기본
                 if self.number == 0:
-                    self.nomal_monster_image.clip_composite_draw(37 * int(self.frame), 105, 37, 35, 0, 'h', sx, sy, 74, 70)
+                    self.nomal_monster_image.clip_composite_draw(37 * int(self.frame), 105, 37, 35, 0, 'h', sx, sy + 3, 55, 52)
                 if self.number == 1:
-                    self.nomal_monster_image2.clip_composite_draw(35 * int(self.frame), 66, 35, 40, 0, 'h', sx, sy, 70, 80)
+                    self.nomal_monster_image2.clip_composite_draw(35 * int(self.frame), 66, 35, 40, 0, 'h', sx, sy + 10, 70, 80)
                 if self.number == 2:
-                    self.magic_monster_image.clip_composite_draw(30 * int(self.frame), 75, 30, 30, 0, 'h', sx, sy, 60, 60)
+                    self.magic_monster_image.clip_composite_draw(30 * int(self.frame), 75, 30, 30, 0, 'h', sx, sy + 3, 60, 60)
                 if self.number == 3:
-                    self.sword_monster_image.clip_composite_draw(30 * int(self.frame), 64, 30, 30, 0, 'h', sx, sy, 60, 60)
+                    self.sword_monster_image.clip_composite_draw(30 * int(self.frame), 64, 30, 30, 0, 'h', sx, sy + 5, 60, 60)
                 if self.number == 4:
-                    self.ice_monster_image.clip_draw(32 * int(self.frame), 62, 32, 30, sx, self.y, 64, 60)
+                    self.ice_monster_image.clip_draw(32 * int(self.frame), 62, 32, 30, sx, sy + 5, 64, 60)
                 if self.number == 5:
-                    self.ice_monster_image2.clip_composite_draw(32 * int(self.frame), 34, 32, 34, 0, 'h', sx, sy, 64, 68)
+                    self.ice_monster_image2.clip_composite_draw(32 * int(self.frame), 34, 32, 34, 0, 'h', sx, sy + 10, 64, 68)
                 if self.number == 6:
                     self.fire_monster_image.clip_composite_draw(28 * int(self.frame), 52, 28, 26, 0, 'h', sx, sy, 56, 52)
                 if self.number == 7:
-                    self.fire_monster_image2.clip_draw(28 * int(self.frame), 56, 28, 28, sx, sy, 56, 56)
+                    self.fire_monster_image2.clip_draw(28 * int(self.frame), 56, 28, 28, sx, sy + 5, 56, 56)
             if self.action == 1:  # 죽을때
                 self.nomal_monster_image.clip_composite_draw(37 * int(self.frame), 70, 37, 35, 0, 'h', sx, sy, 50, 45)
             if self.action == 2:  # 공격
@@ -104,21 +187,21 @@ class Monster:
         else:
             if self.action == 0:
                 if self.number == 0:
-                    self.nomal_monster_image.clip_draw(37 * int(self.frame), 105, 37, 35, sx, sy, 74, 70)
+                    self.nomal_monster_image.clip_draw(37 * int(self.frame), 105, 37, 35, sx, sy + 3, 55, 52)
                 if self.number == 1:
-                    self.nomal_monster_image2.clip_draw(35 * int(self.frame), 66, 35, 40, sx, sy, 70, 80)
+                    self.nomal_monster_image2.clip_draw(35 * int(self.frame), 66, 35, 40, sx, sy + 10, 70, 80)
                 if self.number == 2:
-                    self.magic_monster_image.clip_draw(30 * int(self.frame), 75, 30, 30, sx, sy, 60, 60)
+                    self.magic_monster_image.clip_draw(30 * int(self.frame), 75, 30, 30, sx, sy + 3, 60, 60)
                 if self.number == 3:
-                    self.sword_monster_image.clip_draw(30 * int(self.frame), 64, 30, 30, sx, sy, 60, 60)
+                    self.sword_monster_image.clip_draw(30 * int(self.frame), 64, 30, 30, sx, sy + 5, 60, 60)
                 if self.number == 4:
-                    self.ice_monster_image.clip_composite_draw(32 * int(self.frame), 62, 32, 30, 0, 'h',sx, sy, 64, 60)
+                    self.ice_monster_image.clip_composite_draw(32 * int(self.frame), 62, 32, 30, 0, 'h', sx, sy + 5, 64, 60)
                 if self.number == 5:
-                    self.ice_monster_image2.clip_draw(32 * int(self.frame), 34, 32, 34, sx, sy, 64, 68)
+                    self.ice_monster_image2.clip_draw(32 * int(self.frame), 34, 32, 34, sx, sy + 10, 64, 68)
                 if self.number == 6:
                     self.fire_monster_image.clip_draw(28 * int(self.frame), 52, 28, 26, sx, sy, 56, 52)
                 if self.number == 7:
-                    self.fire_monster_image2.clip_composite_draw(28 * int(self.frame), 56, 28, 28, 0, 'h', sx, sy, 56, 56)
+                    self.fire_monster_image2.clip_composite_draw(28 * int(self.frame), 56, 28, 28, 0, 'h', sx, sy + 5, 56, 56)
             if self.action == 1:
                 self.nomal_monster_image.clip_draw(37 * int(self.frame), 70, 37, 35, sx, sy, 50, 45)
             if self.action == 2:
