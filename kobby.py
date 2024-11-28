@@ -687,12 +687,20 @@ class Kobby:
         self.state_machine.update()
 
         # 월드 기준으로  x,y 위치 제한
-        self.x = clamp(20.0, self.x, server.ground1.w - 20.0)
-        self.y = clamp(-50.0, self.y, server.ground1.h - 30.0)
+        if self.stage == 4:
+            self.x = clamp(20.0, self.x, 780)
+            self.y = clamp(20, self.y, 580)
+        else:
+            self.x = clamp(20.0, self.x, server.ground1.w - 20.0)
+            self.y = clamp(-50.0, self.y, server.ground1.h - 30.0)
 
         # 좌표계 변환 월드 -> 화면
-        self.sx = self.x - server.ground1.window_left
-        self.sy = self.y - server.ground1.window_bottom
+        if self.stage == 4:
+            self.sx = self.x
+            self.sy = self.y
+        else:
+            self.sx = self.x - server.ground1.window_left
+            self.sy = self.y - server.ground1.window_bottom
 
         # 3초 무적
         if get_time() - self.no_damage_time > 3:
@@ -952,7 +960,20 @@ class Kobby:
                     else:
                         self.y = 210
                         self.ground = True
-
+        elif self.stage == 3:
+            if self.y > 110:
+                self.ground = False
+                self.y -= self.gravity * game_framework.frame_time
+            else:
+                self.y = 110
+                self.ground = True
+        elif self.stage == 4:
+            if self.y > 165:
+                self.ground = False
+                self.y -= self.gravity * game_framework.frame_time
+            else:
+                self.y = 165
+                self.ground = True
 
 
     def handle_event(self, event):

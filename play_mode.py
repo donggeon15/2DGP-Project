@@ -58,10 +58,10 @@ def init():
     game_world.add_collision_pair('kobby:monster', server.kobby, None)
     game_world.add_collision_pair('kobby:portal', server.kobby, None)
 
-    server.background1 = Background(2)
+    server.background1 = Background(3)
     game_world.add_object(server.background1, 0)
-    server.kobby.stage = 2
-    server.ground1 = Ground(0, 2)
+    server.kobby.stage = 3
+    server.ground1 = Ground(0, 3)
     game_world.add_object(server.ground1, 0)
 
     # 스테이지 1 셋팅

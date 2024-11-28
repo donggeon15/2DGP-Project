@@ -164,8 +164,12 @@ class Monster:
 
 
     def draw(self):
-        sx = self.x - server.ground1.window_left
-        sy = self.y - server.ground1.window_bottom
+        if server.ground1.stage == 4:
+            sx = self.x
+            sy = self.y
+        else:
+            sx = self.x - server.ground1.window_left
+            sy = self.y - server.ground1.window_bottom
         if self.dir < 0:
             if self.action == 0:  # 기본
                 if self.number == 0:
@@ -225,106 +229,3 @@ class Monster:
             if self.action == 0:
                 self.action = 1
                 self.frame = 0
-
-
-    def set_target_location(self, x=None, y=None):
-        if not x or not y:
-            raise ValueError('Location should be given')
-        self.tx, self.ty = x, y
-        return BehaviorTree.SUCCESS
-
-    def distance_less_than(self, x1, y1, x2, y2, r):
-        distance2 = (x1- x2) **2 + (y1- y2) ** 2
-        return distance2 < (PIXEL_PER_METER * r) ** 2
-
-    def move_slightly_to(self, tx, ty):
-        self.dir = math.atan2(ty-self.y, tx-self.x)
-        distance = RUN_SPEED_PPS * game_framework.frame_time
-        self.x += distance * math.cos(self.dir)
-        self.y += distance * math.sin(self.dir)
-
-    def run_slightly_to(self, tx, ty):
-        self.dir = math.atan2(self.y - ty, self.x - tx)
-        distance = RUN_SPEED_PPS * game_framework.frame_time
-        self.x += distance * math.cos(self.dir)
-        self.y += distance * math.sin(self.dir)
-
-    def move_to(self, r=0.5): #r은 범위
-        #이동하는데 속도와 시간 필요
-        self.state = 'Walk'
-        self.move_slightly_to(self.tx, self.ty)
-        if self.distance_less_than(self.tx, self.ty, self.x, self.y, r):
-            return BehaviorTree.SUCCESS
-        else:
-            return BehaviorTree.RUNNING
-
-    def set_random_location(self):
-        self.tx, self.ty = randint(100, 1280 - 100), random.randint(100, 1024 - 100)
-        return BehaviorTree.SUCCESS
-
-    def is_boy_nearby(self, distance):
-        if self.distance_less_than(play_mode.boy.x, play_mode.boy.y, self.x, self.y, distance):
-            return BehaviorTree.SUCCESS
-        else:
-            return BehaviorTree.FAIL
-        pass
-
-    def is_ball_more_boy(self):
-        if self.ball_count >= play_mode.boy.ball_count:
-            return BehaviorTree.SUCCESS
-        else:
-            return BehaviorTree.FAIL
-        pass
-
-    def move_to_boy(self, r=0.5):
-        self.state = 'Walk'
-        self.move_slightly_to(play_mode.boy.x, play_mode.boy.y)
-        if self.distance_less_than(play_mode.boy.x, play_mode.boy.y, self.x, self.y, r):
-            return BehaviorTree.SUCCESS
-        else:
-            return BehaviorTree.RUNNING
-        pass
-
-    def run_to_boy(self, r=0.5):
-        self.state = 'Walk'
-        self.run_slightly_to(play_mode.boy.x, play_mode.boy.y)
-        if self.distance_less_than(play_mode.boy.x, play_mode.boy.y, self.x, self.y, r):
-            return BehaviorTree.SUCCESS
-        else:
-            return BehaviorTree.RUNNING
-        pass
-
-    def get_patrol_location(self):
-        self.tx, self.ty = self.patrol_loactions[self.loc_no]
-        self.loc_no = (self.loc_no + 1) % len(self.patrol_loactions)
-        return BehaviorTree.SUCCESS
-        pass
-
-    def build_behavior_tree(self):
-        a1 = Action('Set target location', self.set_target_location, 1000, 1000)
-
-        a2 = Action('Move to', self.move_to)
-
-        root = move_to_target_location = Sequence('Move to target location', a1, a2)
-
-        a3 = Action('Set random location', self.set_random_location)
-        root = wander = Sequence('Wander', a3, a2)
-
-        c1 = Condition('좀비 공 >= 소년 공?', self.is_ball_more_boy)
-        a4 = Action('소년한데 접근', self.move_to_boy)
-        root = chase_boy = Sequence('소년을 추적', c1, a4)
-
-        a5 = Action('소년한데 도망', self.run_to_boy)
-        root = run_boy = Sequence('소년한데 도망', a5)
-
-        root = chase_or_run_boy = Selector('소년을 추적 또는 도망', chase_boy, run_boy)
-
-        c2 = Condition('소년이 근처에 있는가?', self.is_boy_nearby, 7)
-        root = chase_run_boy = Sequence('소년 추적, 도망', c2, chase_or_run_boy)
-
-        root = chase_run_or_flee = Selector('추적 또는 배회', chase_run_boy, wander)
-
-        #a5 = Action('순찰 위치 가져오기', self.get_patrol_location)
-        #root = patrol = Sequence('순찰', a5, a2)
-
-        self.bt = BehaviorTree(root)

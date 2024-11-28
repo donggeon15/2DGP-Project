@@ -42,8 +42,12 @@ class Air_shoot:
     def update(self):
         self.x += self.velocity * AIRSHOOT_SPEED_PPS * game_framework.frame_time
 
-        self.sx = self.x - server.ground1.window_left
-        self.sy = self.y - server.ground1.window_bottom
+        if server.kobby.stage == 4:
+            self.sx = self.x
+            self.sy = self.y
+        else:
+            self.sx = self.x - server.ground1.window_left
+            self.sy = self.y - server.ground1.window_bottom
 
         if self.air == 0:
             self.frame = (self.frame + 4 * (1.0 / 0.5) * game_framework.frame_time)

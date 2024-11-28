@@ -7,6 +7,7 @@ class Background:
     def __init__(self, stage = 1):
         self.image = load_image('background1.png')
         self.image2 = load_image('background2.png')
+        self.image3 = load_image('background_stage3.png')
         self.cw = get_canvas_width()
         self.ch = get_canvas_height()
         self.w = self.image.w
@@ -22,3 +23,7 @@ class Background:
             self.image.clip_draw_to_origin(self.window_left, self.window_bottom, self.cw, self.ch, 0, 0)
         if self.stage == 2:
             self.image2.clip_draw_to_origin(self.window_left, self.window_bottom, self.cw, self.ch, 0, 0)
+        if self.stage == 3:
+            self.image3.clip_draw_to_origin(self.window_left, self.window_bottom, self.cw, self.ch, 0, 0)
+        if self.stage == 4:
+            pass
