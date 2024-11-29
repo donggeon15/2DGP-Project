@@ -1079,22 +1079,23 @@ class Kobby:
                         game_framework.change_mode(title_mode)
                     self.hp = 3
         if group == 'kobby:air':
-            self.state_machine.add_event(('HURT', 0))
-            self.hp -= 1
-            if self.face_dir == 1:
-                self.x -= 70
-                self.y += 70
-            if self.face_dir == -1:
-                self.x += 70
-                self.y += 70
-            self.no_damage = True
-            self.no_damage_time = get_time()
-            if self.hp <= 0:
-                self.heart -= 1
-                if self.heart <= 0:
-                    game_world.clear()
-                    game_framework.change_mode(title_mode)
-                self.hp = 3
+            if self.no_damage == False:
+                self.state_machine.add_event(('HURT', 0))
+                self.hp -= 1
+                if self.face_dir == 1:
+                    self.x -= 70
+                    self.y += 70
+                if self.face_dir == -1:
+                    self.x += 70
+                    self.y += 70
+                self.no_damage = True
+                self.no_damage_time = get_time()
+                if self.hp <= 0:
+                    self.heart -= 1
+                    if self.heart <= 0:
+                        game_world.clear()
+                        game_framework.change_mode(title_mode)
+                    self.hp = 3
         if group == 'kobby:portal':
             self.stage += 1
             self.x = 0

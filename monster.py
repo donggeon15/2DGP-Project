@@ -32,8 +32,52 @@ GRAVITY_SPEED_MPM = (GRAVITY_SPEED_KMPH * 1000.0 / 60.0)
 GRAVITY_SPEED_MPS = (GRAVITY_SPEED_MPM / 60.0)
 GRAVITY_SPEED_PPS = (GRAVITY_SPEED_MPS * PIXEL_PER_METER)
 
+
+# 공격 범위
+class Attack:
+    @staticmethod
+    def enter(monster):
+        #Attack.get_bb()
+        #attack_range = Attack(.x, self.y, 50, 30)
+        #game_world.add_object(attack_range, 1)
+        #game_world.add_collision_pair('kobby:air', attack_range, None)
+        #game_world.remove_object(attack_range)
+        pass
+
+    @staticmethod
+    def exit(monster):
+        pass
+
+    @staticmethod
+    def draw(self):
+        draw_rectangle(*self.get_bb())
+
+    @staticmethod
+    def update(self, monster):
+        self.x = monster.x
+        self.y = monster.y
+        if server.kobby.stage == 4:
+            self.sx = self.x
+            self.sy = self.y
+        else:
+            self.sx = self.x - server.ground1.window_left
+            self.sy = self.y - server.ground1.window_bottom
+
+    @staticmethod
+    def get_bb(self):
+        return self.sx - self.range_x, self.sy - self.range_y, self.sx + self.range_x, self.sy + self.range_y
+
+    @staticmethod
+    def handle_collision(self, group, other):
+        pass
+        # if group == 'air:monster' or group == 'kobby:air':
+        # if self in game_world.objects[1]:
+        # game_world.remove_object(self)
+
+
 class Monster:
     images = None
+    attack_range = None
 
     def __init__(self, d = 0, x = 0, y = 90, move_time = 2, stage = 1):
         self.x = x
@@ -44,14 +88,14 @@ class Monster:
         self.number = d #1 기본 몬스터 / 2.기본 몬스터2 / 3. 법사 몬스터 / 4. 검사 몬스터
         # 5. 얼음몬스터1 / 6. 얼음몬스터2 / 7. 불꽃 몬스터1 / 8. 불꽃 몬스터2
         if Monster.images is None:
-            self.nomal_monster_image = load_image('nomal_monster.png')
+            self.nomal_monster_image = load_image('nomal_monster.png') # 일반 몬스터
             self.nomal_monster_image2 = load_image('nomal_monster_2.png')
             self.magic_monster_image = load_image('magic_monster.png')
             self.sword_monster_image = load_image('sword_monster.png')
             self.ice_monster_image = load_image('ice_monster_1.png')
-            self.ice_monster_image2 = load_image('ice_monster_2.png')
+            self.ice_monster_image2 = load_image('ice_monster_2.png') # 눈사람
             self.fire_monster_image = load_image('fire_monster_1.png')
-            self.fire_monster_image2 = load_image('fire_monster_2.png')
+            self.fire_monster_image2 = load_image('fire_monster_2.png') #불꽃 돼지
         self.size = 200
         self.stage = stage
         self.action = 0 # 0: 걷기 1: 죽음 2: 공격
@@ -62,6 +106,7 @@ class Monster:
         self.dir = 1
         self.build_behavior_tree()
         self.time = get_time()
+        self.attack_time = 0
 
 
     def update(self):
@@ -79,14 +124,64 @@ class Monster:
 
         if self.action == 1: # 죽을떄
             self.frame = (self.frame + 2 * ACTION_DEAD_PER_TIME * game_framework.frame_time)
-            if self.number == 0 or self.number == 7:
+            if self.number == 0 or self.number == 7 or self.number == 5 or self.number == 2 or self.number == 3 or self.number == 4 or self.number == 6:
                 if self.frame > 2:
+                    game_world.remove_object(self)
+            if self.number == 1:
+                if self.frame > 3:
                     game_world.remove_object(self)
 
         if self.action == 2: # 공격할때
             if self.number == 0:
                 self.frame = (self.frame + 8 * ACTION_PER_TIME * game_framework.frame_time)
                 if self.frame > 4:
+                    self.action = 0
+                    self.frame = 0
+            if self.number == 1:
+                self.collision_size_x = 20
+                self.frame = (self.frame + 8 * ACTION_PER_TIME * game_framework.frame_time)
+
+                if self.frame > 4:
+                    self.action = 0
+                    self.frame = 0
+                    self.collision_size_x = 20
+            if self.number == 2:
+                self.collision_size_x = 90
+                self.collision_size_y = 35
+                self.frame = ((self.frame - 3) + 8 * ACTION_PER_TIME * game_framework.frame_time) % 4 + 3
+                if get_time() - self.attack_time > 2.5:
+                    self.action = 0
+                    self.frame = 0
+                    self.collision_size_x = 20
+                    self.collision_size_y = 20
+            if self.number == 3:
+                self.collision_size_x = 20
+                self.frame = (self.frame + 8 * ACTION_PER_TIME * 2 * game_framework.frame_time)
+
+                if self.frame > 8:
+                    self.action = 0
+                    self.frame = 0
+                    self.collision_size_x = 20
+            if self.number == 4:
+                self.collision_size_x = 90
+                self.collision_size_y = 35
+                self.frame = ((self.frame - 1) + 8 * ACTION_PER_TIME * game_framework.frame_time) % 7 + 1
+                if get_time() - self.attack_time > 0.05:
+                    self.action = 0
+                    self.frame = 0
+                    self.collision_size_x = 20
+                    self.collision_size_y = 20
+            if self.number == 5:
+                self.frame = (self.frame + 8 * ACTION_PER_TIME/4 * game_framework.frame_time)
+                if self.frame > 3:
+                    ice = Air_shoot(self.x, self.y, self.dir, 3)
+                    game_world.add_object(ice, 1)
+                    game_world.add_collision_pair('kobby:air', ice, None)
+                    self.action = 0
+                    self.frame = 0
+            if self.number == 6:
+                self.frame = (self.frame + 8 * ACTION_PER_TIME * 2 * game_framework.frame_time) % 4
+                if get_time() - self.attack_time > 0.05:
                     self.action = 0
                     self.frame = 0
             if self.number == 7:
@@ -108,6 +203,9 @@ class Monster:
                     self.gravity += (1 * GRAVITY_SPEED_PPS * 7 * game_framework.frame_time)
         else:
             self.gravity = 1
+
+        if self.number == 6:
+            self.gravity = 0
 
         # 스테이지 1 몬스터
         if self.stage == 1:
@@ -215,14 +313,34 @@ class Monster:
                 if self.number == 0:
                     self.nomal_monster_image.clip_composite_draw(37 * int(self.frame), 70, 37, 35, 0, 'h', sx, sy, 55, 52)
                 if self.number == 1:
-                    pass
+                    self.nomal_monster_image2.clip_composite_draw(36 * int(self.frame), 30, 36, 36, 0, 'h', sx, sy + 10, 72, 72)
                 if self.number == 2:
-                    pass
+                    self.magic_monster_image.clip_composite_draw(0 * int(self.frame), 45, 30, 30, 0, 'h', sx, sy + 3, 60, 60)
+                if self.number == 3:
+                    self.sword_monster_image.clip_composite_draw(30 * int(self.frame), 34, 30, 30, 0, 'h', sx, sy + 5, 60, 60)
+                if self.number == 4:
+                    self.ice_monster_image.clip_draw(32 * int(self.frame), 32, 32, 30, sx, sy + 5, 64, 60)
+                if self.number == 5:
+                    self.ice_monster_image2.clip_composite_draw(0 * int(self.frame), 0, 32, 34, 0, 'h', sx, sy + 10, 64, 68)
+                if self.number == 6:
+                    self.fire_monster_image.clip_composite_draw(28 * int(self.frame), 26, 28, 26, 0, 'h', sx, sy, 56, 52)
                 if self.number == 7:
                     self.fire_monster_image2.clip_draw(28 * int(self.frame), 28, 28, 28, sx, sy + 5, 56, 56)
             if self.action == 2:  # 공격
                 if self.number == 0:
                     self.nomal_monster_image.clip_composite_draw(37 * int(self.frame), 0, 37, 70, 0, 'h', sx, sy, 50, 105)
+                if self.number == 1:
+                    self.nomal_monster_image2.clip_composite_draw(90 * int(self.frame), 0, 90, 30, 0, 'h', sx - 40, sy, 180, 60)
+                if self.number == 2:
+                    self.magic_monster_image.clip_composite_draw(70 * int(self.frame), 0, 70, 45, 0, 'h', sx - 30, sy + 3, 140, 90)
+                if self.number == 3:
+                    self.sword_monster_image.clip_composite_draw(65 * int(self.frame), 0, 65, 34, 0, 'h', sx, sy + 5, 130, 68)
+                if self.number == 4:
+                    self.ice_monster_image.clip_draw(64 * int(self.frame), 0, 64, 32, sx - 30, sy + 5, 128, 64)
+                if self.number == 5:
+                    self.ice_monster_image2.clip_composite_draw(32 * int(self.frame) + 1, 0, 32, 34, 0, 'h', sx, sy + 10, 64, 68)
+                if self.number == 6:
+                    self.fire_monster_image.clip_composite_draw(28 * int(self.frame), 0, 28, 26, 0, 'h', sx, sy, 56, 52)
                 if self.number == 7:
                     self.fire_monster_image2.clip_draw(28 * int(self.frame), 0, 28, 28, sx, sy + 5, 56, 56)
         else:
@@ -246,11 +364,35 @@ class Monster:
             if self.action == 1:
                 if self.number == 0:
                     self.nomal_monster_image.clip_draw(37 * int(self.frame), 70, 37, 35, sx, sy, 55, 52)
+                if self.number == 1:
+                    self.nomal_monster_image2.clip_draw(36 * int(self.frame), 30, 36, 36, sx, sy + 10, 72, 72)
+                if self.number == 2:
+                    self.magic_monster_image.clip_draw(0 * int(self.frame), 45, 30, 30, sx, sy + 3, 60, 60)
+                if self.number == 3:
+                    self.sword_monster_image.clip_draw(30 * int(self.frame), 34, 30, 30, sx, sy + 5, 60, 60)
+                if self.number == 4:
+                    self.ice_monster_image.clip_composite_draw(32 * int(self.frame), 32, 32, 30, 0, 'h', sx, sy + 5, 64, 60)
+                if self.number == 5:
+                    self.ice_monster_image2.clip_draw(0 * int(self.frame), 0, 32, 34, sx, sy + 10, 64, 68)
+                if self.number == 6:
+                    self.fire_monster_image.clip_draw(28 * int(self.frame), 26, 28, 26, sx, sy, 56, 52)
                 if self.number == 7:
                     self.fire_monster_image2.clip_composite_draw(28 * int(self.frame), 28, 28, 28, 0, 'h', sx, sy + 5, 56, 56)
             if self.action == 2:
                 if self.number == 0:
                     self.nomal_monster_image.clip_draw(37 * int(self.frame), 0, 37, 70, sx, sy, 50, 105)
+                if self.number == 1:
+                    self.nomal_monster_image2.clip_draw(90 * int(self.frame), 0, 90, 30, sx + 40, sy, 180, 60)
+                if self.number == 2:
+                    self.magic_monster_image.clip_draw(70 * int(self.frame), 0, 70, 45, sx + 30, sy + 3, 140, 90)
+                if self.number == 3:
+                    self.sword_monster_image.clip_draw(65 * int(self.frame), 0, 65, 34, sx, sy + 5, 130, 68)
+                if self.number == 4:
+                    self.ice_monster_image.clip_composite_draw(64 * int(self.frame), 0, 64, 32, 0, 'h', sx, sy + 5, 128, 64)
+                if self.number == 5:
+                    self.ice_monster_image2.clip_draw(32 * int(self.frame) + 1, 0, 32, 34, sx, sy + 10, 64, 68)
+                if self.number == 6:
+                    self.fire_monster_image.clip_draw(28 * int(self.frame), 0, 28, 26, sx, sy, 56, 52)
                 if self.number == 7:
                     self.fire_monster_image2.clip_composite_draw(28 * int(self.frame), 0, 28, 28, 0, 'h', sx, sy + 5, 56, 56)
         draw_rectangle(*self.get_bb())
@@ -261,7 +403,11 @@ class Monster:
     def get_bb(self):
         sx = self.x - server.ground1.window_left
         sy = self.y - server.ground1.window_bottom
-        return sx - self.collision_size_x, sy - self.collision_size_y, sx + self.collision_size_x, sy + self.collision_size_y
+        if self.dir < 0:
+            return sx - self.collision_size_x, sy - self.collision_size_y, sx + 20, sy + self.collision_size_y
+        else:
+            return sx - 20, sy - self.collision_size_y, sx + self.collision_size_x, sy + self.collision_size_y
+
 
     def handle_collision(self, group, other):
         if group == 'air:monster':
@@ -317,6 +463,9 @@ class Monster:
 
     def move_to_kobby(self, r=0.5):
         #self.action = 0
+        if self.number == 6 and self.action == 0:
+            self.action = 2
+            self.attack_time = get_time()
         self.move_slightly_to(server.kobby.x, server.kobby.y)
         if self.distance_less_than(server.kobby.x, server.kobby.y, self.x, self.y, r):
             return BehaviorTree.SUCCESS
@@ -326,7 +475,10 @@ class Monster:
 
     def move_to_LR(self):
         self.past_x = self.x
-        self.x += self.dir * RUN_SPEED_PPS * game_framework.frame_time
+        if self.number == 4:
+            self.x += self.dir * RUN_SPEED_PPS * 2 * game_framework.frame_time
+        else:
+            self.x += self.dir * RUN_SPEED_PPS * game_framework.frame_time
         if get_time() - self.time > self.move_time:
             self.dir = -self.dir
             self.time = get_time()
@@ -342,25 +494,80 @@ class Monster:
             self.action = 2
         return BehaviorTree.SUCCESS
 
+    def attack_to_move_kobby(self):
+        if server.kobby.x < self.x:
+            self.dir = -1
+        else :
+            self.dir = 1
+
+        self.past_x = self.x
+        if self.number == 1:
+            self.x += self.dir * 0.2
+        if self.number == 3:
+            self.x += self.dir * 0.4
+
+        if self.action == 0:
+            self.action = 2
+
+        return BehaviorTree.SUCCESS
+
+    def change_attack_mode(self):
+        if self.action == 0:
+            self.action = 2
+        self.attack_time = get_time()
+        return BehaviorTree.SUCCESS
+
     def build_behavior_tree(self):
         # 좌우 왔다 갔다
         a1 = Action('repeat left right', self.move_to_LR)
+        c1 = Condition('커비 근처에 있는가?', self.is_kobby_nearby, 0.75)
 
         # 커비가 근처에 있나
         c2 = Condition('커비 근처에 있는가?', self.is_kobby_nearby, 1)
         a2 = Action('커비한데 접근', self.move_to_kobby)
 
+        # 범위안에 들어오면 공격
         c3 = Condition('커비 근처에 있는가?', self.is_kobby_nearby, 2)
         a3 = Action('커비를 향해 공격', self.attack_to_kobby)
-        # 범위안에 들어오면 공격
+
+        # 근처 오면 각성
+        c4 = Condition('커비 근처에 있는가?', self.is_kobby_nearby, 2.5)
+        a4 = Action('각성모드로 변경', self.change_attack_mode)
+
+        c5 = Condition('커비 근처에 있는가?', self.is_kobby_nearby, 1.5)
+        a5 = Action('커비 향해 이동 공격', self.attack_to_move_kobby)
 
         if self.number == 0:
             root = move_repeat = Sequence('move repeat', a1)
             root = chase_kobby = Sequence('커비를 추적', c2, a2)
-            root = monster1 = Selector("일반 Ai", chase_kobby, move_repeat)
+            root = monster0 = Selector("일반 Ai", chase_kobby, move_repeat)
+        if self.number == 1:
+            root = move_repeat = Sequence('move repeat', a1)
+            root = attack_move_kobby = Sequence('커비를 이동 공격', c3, a5)
+            root = monster1 = Selector('창 Ai', attack_move_kobby, move_repeat)
+        if self.number == 2:
+            root = move_repeat = Sequence('move repeat', a1)
+            root = change_attack = Sequence('커비를 공격', c4, a4, a1)
+            root = monster2 = Selector('마법사 Ai', change_attack, move_repeat)
+        if self.number == 3:
+            root = move_repeat = Sequence('move repeat', a1)
+            root = attack_move_kobby = Sequence('커비를 이동 공격', c5, a5)
+            root = monster1 = Selector('검 Ai', attack_move_kobby, move_repeat)
+        if self.number == 4:
+            root = move_repeat = Sequence('move repeat', a1)
+            root = change_attack = Sequence('커비를 공격', c1, a4)
+            root = monster2 = Selector('팽귄 Ai', change_attack, move_repeat)
+        if self.number == 5:
+            root = move_repeat = Sequence('move repeat', a1)
+            root = attack_kobby = Sequence('커비를 공격', c3, a3)
+            root = monster5 = Selector('눈사람 Ai', attack_kobby, move_repeat)
+        if self.number == 6:
+            root = move_repeat = Sequence('move repeat', a1)
+            root = chase_kobby = Sequence('커비를 추적', c2, a2)
+            root = monster0 = Selector("불꽃 Ai", chase_kobby, move_repeat)
         if self.number == 7:
             root = move_repeat = Sequence('move repeat', a1)
-            root = attack_kobby = Sequence('커비를 추적', c3, a3)
+            root = attack_kobby = Sequence('커비를 공격', c3, a3)
             root = monster7 = Selector('불꽃 돼지 Ai', attack_kobby, move_repeat)
 
         self.bt = BehaviorTree(root)
@@ -388,5 +595,3 @@ class Monster:
     #    root = chase_run_boy = Sequence('소년 추적, 도망', c2, chase_or_run_boy)
 
     #    root = chase_run_or_flee = Selector('추적 또는 배회', chase_run_boy, wander)
-
-    #

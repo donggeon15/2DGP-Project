@@ -15,6 +15,7 @@ class Air_shoot:
     image = None
     image2 = None
     image3 = None
+    image4 = None
 
     def __init__(self, x=400, y=300, velocity = 1, air = 0):
         if Air_shoot.image == None:
@@ -23,6 +24,8 @@ class Air_shoot:
             Air_shoot.image2 = load_image('sword_shoot.png')
         if Air_shoot.image3 == None:
             Air_shoot.image3 = load_image('fire_shoot.png')
+        if Air_shoot.image4 == None:
+            Air_shoot.image4 = load_image('ice_shoot.png')
         self.x, self.y, self.velocity, self.air = x, y, velocity, air
         self.sx = self.x - server.ground1.window_left
         self.sy = self.y - server.ground1.window_bottom
@@ -46,6 +49,11 @@ class Air_shoot:
                 self.image3.clip_draw(20 * int(self.frame), 0, 20, 20, self.sx, self.sy, 40, 40)
             else:
                 self.image3.clip_composite_draw(20 * int(self.frame), 0, 20, 20, 0, 'h', self.sx, self.sy, 40, 40)
+        elif self.air == 3:
+            if self.velocity > 0:
+                self.image4.clip_draw(24 * int(self.frame), 0, 24, 24, self.sx, self.sy, 48, 48)
+            else:
+                self.image4.clip_composite_draw(24 * int(self.frame), 0, 24, 24, 0, 'h', self.sx, self.sy, 48, 48)
 
     def update(self):
         self.x += self.velocity * AIRSHOOT_SPEED_PPS * game_framework.frame_time
@@ -69,11 +77,15 @@ class Air_shoot:
             self.frame = (self.frame + 4 * (1.0 / 1.0) * game_framework.frame_time)
             if self.frame >= 3:
                 game_world.remove_object(self)
+        if self.air == 3:
+            self.frame = (self.frame + 4 * (1.0 / 0.7) * game_framework.frame_time)
+            if self.frame >= 6:
+                game_world.remove_object(self)
 
     def get_bb(self):
         if self.air == 0 or self.air == 1:
             return self.sx - 20, self.sy - 20, self.sx + 20, self.sy + 20
-        if self.air == 2:
+        if self.air == 2 or self.air == 3:
             return self.sx - 10, self.sy - 10, self.sx + 10, self.sy + 10
 
     def handle_collision(self, group, other):
