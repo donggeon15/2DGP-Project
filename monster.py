@@ -5,7 +5,10 @@ import game_world
 
 from pico2d import *
 
+import play_mode
 import server
+from air_shoot import Air_shoot
+from behavior_tree import *
 
 # moster Run Speed
 PIXEL_PER_METER = (25.0 / 0.2)  # 25 pixel 20 cm
@@ -32,10 +35,10 @@ GRAVITY_SPEED_PPS = (GRAVITY_SPEED_MPS * PIXEL_PER_METER)
 class Monster:
     images = None
 
-    def __init__(self, d = 0):
-        self.x = 1200
-        self.past_x = 0
-        self.y = 90
+    def __init__(self, d = 0, x = 0, y = 90, move_time = 2, stage = 1):
+        self.x = x
+        self.past_x = x
+        self.y = y
         self.ground = False
         self.gravity = 1
         self.number = d #1 기본 몬스터 / 2.기본 몬스터2 / 3. 법사 몬스터 / 4. 검사 몬스터
@@ -50,14 +53,20 @@ class Monster:
             self.fire_monster_image = load_image('fire_monster_1.png')
             self.fire_monster_image2 = load_image('fire_monster_2.png')
         self.size = 200
+        self.stage = stage
         self.action = 0 # 0: 걷기 1: 죽음 2: 공격
+        self.move_time = move_time
         self.collision_size_x = 20
         self.collision_size_y = 20
         self.frame = random.randint(0, 9)
-        self.dir = random.choice([-1,1])
+        self.dir = 1
+        self.build_behavior_tree()
+        self.time = get_time()
 
 
     def update(self):
+        self.x = clamp(25, self.x, 3000 - 25)
+
         if self.action == 0: # 기본 돌아다니는
             if self.number == 0 or self.number == 1 or self.number == 3:
                 self.frame = (self.frame + 5 * ACTION_PER_TIME * game_framework.frame_time) % 5
@@ -67,17 +76,27 @@ class Monster:
                 self.frame = (self.frame + 3 * ACTION_PER_TIME * game_framework.frame_time) % 3
             if self.number == 7:
                 self.frame = (self.frame + 8 * ACTION_PER_TIME * game_framework.frame_time) % 8
+
         if self.action == 1: # 죽을떄
             self.frame = (self.frame + 2 * ACTION_DEAD_PER_TIME * game_framework.frame_time)
-            if self.frame > 2:
-                game_world.remove_object(self)
-        if self.action == 2: # 공격할때
-            self.frame = (self.frame + 8 * ACTION_PER_TIME * game_framework.frame_time)
-            if self.frame >= 7:
-                game_framework.quit()
+            if self.number == 0 or self.number == 7:
+                if self.frame > 2:
+                    game_world.remove_object(self)
 
-        self.past_x = self.x
-        self.x += RUN_SPEED_PPS * self.dir * game_framework.frame_time
+        if self.action == 2: # 공격할때
+            if self.number == 0:
+                self.frame = (self.frame + 8 * ACTION_PER_TIME * game_framework.frame_time)
+                if self.frame > 4:
+                    self.action = 0
+                    self.frame = 0
+            if self.number == 7:
+                self.frame = (self.frame + 8 * ACTION_PER_TIME/4 * game_framework.frame_time)
+                if self.frame > 3:
+                    fire = Air_shoot(self.x, self.y, self.dir, 2)
+                    game_world.add_object(fire, 1)
+                    game_world.add_collision_pair('kobby:air', fire, None)
+                    self.action = 0
+                    self.frame = 0
 
 
         # 중력
@@ -90,77 +109,81 @@ class Monster:
         else:
             self.gravity = 1
 
-
-        if ((self.x >= 0 and self.x < 600) or (self.x >= 760 and self.x < 1070) or
-                (self.x >= 1140 and self.x < 1350)):
-            if self.y > 200 - 55:
-                self.ground = False
-                self.y -= self.gravity * game_framework.frame_time
-            else:
-                self.y = 200 - 55
-                self.ground = True
-        elif ((self.x >= 600 and self.x < 760) or (self.x >= 1070 and self.x < 1140) or
-              (self.x >= 1350 and self.x < 1525) or (self.x > 1820 and self.x < 2280) or
-              (self.x > 2420 and self.x < 3000)):
-            if self.y > 200 - 25:
-                self.ground = False
-                self.y -= self.gravity * game_framework.frame_time
-            elif self.y <= 200 - 25 and self.y > 200 - 35:
-                self.y = 200 - 25
-                self.ground = True
-            else:
-                if self.x < self.past_x:
-                    self.x = self.past_x + 10
-                    self.dir = 1
+        # 스테이지 1 몬스터
+        if self.stage == 1:
+            if ((self.x >= 0 and self.x < 600) or (self.x >= 760 and self.x < 1070) or
+                    (self.x >= 1140 and self.x < 1350)):
+                if self.y > 200 - 55:
+                    self.ground = False
+                    self.y -= self.gravity * game_framework.frame_time
                 else:
-                    self.x = self.past_x - 10
-                    self.dir = -1
-                self.ground = True
-                if ((self.x >= 601 and self.x < 759) or (self.x >= 1071 and self.x < 1139) or
-                        (self.x >= 1351 and self.x < 1524) or (self.x > 1821 and self.x < 2279) or
-                        (self.x > 2421 and self.x < 2999)):
+                    self.y = 200 - 55
+                    self.ground = True
+            elif ((self.x >= 600 and self.x < 760) or (self.x >= 1070 and self.x < 1140) or
+                  (self.x >= 1350 and self.x < 1525) or (self.x > 1820 and self.x < 2280) or
+                  (self.x > 2420 and self.x < 3000)):
+                if self.y > 200 - 25:
+                    self.ground = False
+                    self.y -= self.gravity * game_framework.frame_time
+                elif self.y <= 200 - 25 and self.y > 200 - 35:
                     self.y = 200 - 25
-        elif ((self.x >= 1525 and self.x < 1640) or (self.x >= 2370 and self.x < 2420)):
-            if self.y > 200 + 70:
-                self.ground = False
-                self.y -= self.gravity * game_framework.frame_time
-            elif self.y <= 200 + 70 and self.y > 200 + 60:
-                self.y = 200 + 70
-                self.ground = True
-            else:
-                if self.x < self.past_x:
-                    self.x = self.past_x + 10
-                    self.dir = 1
+                    self.ground = True
                 else:
-                    self.x = self.past_x - 10
-                    self.dir = -1
-                self.ground = True
-                if ((self.x >= 1526 and self.x < 1639) or (self.x >= 2371 and self.x < 2419)):
+                    if self.x < self.past_x:
+                        self.x = self.past_x + 1
+                        self.dir = 1
+                    else:
+                        self.x = self.past_x - 1
+                        self.dir = -1
+                    self.ground = True
+                    if ((self.x >= 601 and self.x < 759) or (self.x >= 1071 and self.x < 1139) or
+                            (self.x >= 1351 and self.x < 1524) or (self.x > 1821 and self.x < 2279) or
+                            (self.x > 2421 and self.x < 2999)):
+                        self.y = 200 - 25
+            elif ((self.x >= 1525 and self.x < 1640) or (self.x >= 2370 and self.x < 2420)):
+                if self.y > 200 + 70:
+                    self.ground = False
+                    self.y -= self.gravity * game_framework.frame_time
+                elif self.y <= 200 + 70 and self.y > 200 + 60:
                     self.y = 200 + 70
-        elif ((self.x >= 1640 and self.x <= 1820)):
-            if self.y > 200 + 70 - ((self.x - 1640) * (1 / 2)):
-                self.ground = False
-                self.y -= self.gravity * game_framework.frame_time
-            else:
-                self.y = 200 + 70 - ((self.x - 1640) * (1 / 2))
-                self.ground = True
-        elif ((self.x >= 2280 and self.x < 2370)):
-            if self.y > 200 + 135:
-                self.ground = False
-                self.y -= self.gravity * game_framework.frame_time
-            elif self.y <= 200 + 135 and self.y > 200 + 125:
-                self.y = 200 + 135
-                self.ground = True
-            else:
-                if self.x < self.past_x:
-                    self.x = self.past_x + 10
-                    self.dir = 1
+                    self.ground = True
                 else:
-                    self.x = self.past_x - 10
-                    self.dir = -1
-                self.ground = True
-                if ((self.x >= 2281 and self.x < 2369)):
+                    if self.x < self.past_x:
+                        self.x = self.past_x + 1
+                        self.dir = 1
+                    else:
+                        self.x = self.past_x - 1
+                        self.dir = -1
+                    self.ground = True
+                    if ((self.x >= 1526 and self.x < 1639) or (self.x >= 2371 and self.x < 2419)):
+                        self.y = 200 + 70
+            elif ((self.x >= 1640 and self.x <= 1820)):
+                if self.y > 200 + 70 - ((self.x - 1640) * (1 / 2)):
+                    self.ground = False
+                    self.y -= self.gravity * game_framework.frame_time
+                else:
+                    self.y = 200 + 70 - ((self.x - 1640) * (1 / 2))
+                    self.ground = True
+            elif ((self.x >= 2280 and self.x < 2370)):
+                if self.y > 200 + 135:
+                    self.ground = False
+                    self.y -= self.gravity * game_framework.frame_time
+                elif self.y <= 200 + 135 and self.y > 200 + 125:
                     self.y = 200 + 135
+                    self.ground = True
+                else:
+                    if self.x < self.past_x:
+                        self.x = self.past_x + 1
+                        self.dir = 1
+                    else:
+                        self.x = self.past_x - 1
+                        self.dir = -1
+                    self.ground = True
+                    if ((self.x >= 2281 and self.x < 2369)):
+                        self.y = 200 + 135
+
+        # ai 작동
+        self.bt.run()
 
 
     def draw(self):
@@ -189,9 +212,19 @@ class Monster:
                 if self.number == 7:
                     self.fire_monster_image2.clip_draw(28 * int(self.frame), 56, 28, 28, sx, sy + 5, 56, 56)
             if self.action == 1:  # 죽을때
-                self.nomal_monster_image.clip_composite_draw(37 * int(self.frame), 70, 37, 35, 0, 'h', sx, sy, 50, 45)
+                if self.number == 0:
+                    self.nomal_monster_image.clip_composite_draw(37 * int(self.frame), 70, 37, 35, 0, 'h', sx, sy, 55, 52)
+                if self.number == 1:
+                    pass
+                if self.number == 2:
+                    pass
+                if self.number == 7:
+                    self.fire_monster_image2.clip_draw(28 * int(self.frame), 28, 28, 28, sx, sy + 5, 56, 56)
             if self.action == 2:  # 공격
-                pass
+                if self.number == 0:
+                    self.nomal_monster_image.clip_composite_draw(37 * int(self.frame), 0, 37, 70, 0, 'h', sx, sy, 50, 105)
+                if self.number == 7:
+                    self.fire_monster_image2.clip_draw(28 * int(self.frame), 0, 28, 28, sx, sy + 5, 56, 56)
         else:
             if self.action == 0:
                 if self.number == 0:
@@ -211,9 +244,15 @@ class Monster:
                 if self.number == 7:
                     self.fire_monster_image2.clip_composite_draw(28 * int(self.frame), 56, 28, 28, 0, 'h', sx, sy + 5, 56, 56)
             if self.action == 1:
-                self.nomal_monster_image.clip_draw(37 * int(self.frame), 70, 37, 35, sx, sy, 50, 45)
+                if self.number == 0:
+                    self.nomal_monster_image.clip_draw(37 * int(self.frame), 70, 37, 35, sx, sy, 55, 52)
+                if self.number == 7:
+                    self.fire_monster_image2.clip_composite_draw(28 * int(self.frame), 28, 28, 28, 0, 'h', sx, sy + 5, 56, 56)
             if self.action == 2:
-                pass
+                if self.number == 0:
+                    self.nomal_monster_image.clip_draw(37 * int(self.frame), 0, 37, 70, sx, sy, 50, 105)
+                if self.number == 7:
+                    self.fire_monster_image2.clip_composite_draw(28 * int(self.frame), 0, 28, 28, 0, 'h', sx, sy + 5, 56, 56)
         draw_rectangle(*self.get_bb())
 
     def handle_event(self, event):
@@ -226,6 +265,128 @@ class Monster:
 
     def handle_collision(self, group, other):
         if group == 'air:monster':
-            if self.action == 0:
+            if self.action == 0 or self.action == 2:
                 self.action = 1
                 self.frame = 0
+        if group == 'kobby:monster':
+            if self.number == 0:
+                if self.action == 0:
+                    self.action = 2
+                    self.frame = 0
+
+    def set_target_location(self, x=None, y=None):
+        if not x or not y:
+            raise ValueError('Location should be given')
+        self.tx, self.ty = x, y
+        return BehaviorTree.SUCCESS
+
+    def distance_less_than(self, x1, y1, x2, y2, r):
+        distance2 = (x1- x2) **2 + (y1- y2) ** 2
+        return distance2 < (PIXEL_PER_METER * r) ** 2
+
+    def move_slightly_to(self, tx, ty):
+        self.dir2 = math.atan2(ty - self.y, tx - self.x)
+        if server.kobby.x < self.x:
+            self.dir = -1
+        else :
+            self.dir = 1
+        distance = RUN_SPEED_PPS * game_framework.frame_time
+        self.past_x = self.x
+        self.x += distance * math.cos(self.dir2)
+        if self.number == 6:
+            self.y += distance * math.sin(self.dir2)
+
+
+    def move_to(self, r=0.5): #r은 범위
+        #이동하는데 속도와 시간 필요
+        self.action = 0  # 돌아 다니는 상태
+        self.move_slightly_to(self.tx, self.ty)
+        if self.distance_less_than(self.tx, self.ty, self.x, self.y, r):
+            return BehaviorTree.SUCCESS
+        else:
+            return BehaviorTree.RUNNING
+
+
+    def is_kobby_nearby(self, distance):
+        if self.distance_less_than(server.kobby.x, server.kobby.y, self.x, self.y, distance):
+            return BehaviorTree.SUCCESS
+        else:
+            return BehaviorTree.FAIL
+        pass
+
+
+    def move_to_kobby(self, r=0.5):
+        #self.action = 0
+        self.move_slightly_to(server.kobby.x, server.kobby.y)
+        if self.distance_less_than(server.kobby.x, server.kobby.y, self.x, self.y, r):
+            return BehaviorTree.SUCCESS
+        else:
+            return BehaviorTree.RUNNING
+        pass
+
+    def move_to_LR(self):
+        self.past_x = self.x
+        self.x += self.dir * RUN_SPEED_PPS * game_framework.frame_time
+        if get_time() - self.time > self.move_time:
+            self.dir = -self.dir
+            self.time = get_time()
+        return BehaviorTree.SUCCESS
+
+    def attack_to_kobby(self):
+        if server.kobby.x < self.x:
+            self.dir = -1
+        else :
+            self.dir = 1
+
+        if self.action == 0:
+            self.action = 2
+        return BehaviorTree.SUCCESS
+
+    def build_behavior_tree(self):
+        # 좌우 왔다 갔다
+        a1 = Action('repeat left right', self.move_to_LR)
+
+        # 커비가 근처에 있나
+        c2 = Condition('커비 근처에 있는가?', self.is_kobby_nearby, 1)
+        a2 = Action('커비한데 접근', self.move_to_kobby)
+
+        c3 = Condition('커비 근처에 있는가?', self.is_kobby_nearby, 2)
+        a3 = Action('커비를 향해 공격', self.attack_to_kobby)
+        # 범위안에 들어오면 공격
+
+        if self.number == 0:
+            root = move_repeat = Sequence('move repeat', a1)
+            root = chase_kobby = Sequence('커비를 추적', c2, a2)
+            root = monster1 = Selector("일반 Ai", chase_kobby, move_repeat)
+        if self.number == 7:
+            root = move_repeat = Sequence('move repeat', a1)
+            root = attack_kobby = Sequence('커비를 추적', c3, a3)
+            root = monster7 = Selector('불꽃 돼지 Ai', attack_kobby, move_repeat)
+
+        self.bt = BehaviorTree(root)
+
+
+    #a1 = Action('Set target location', self.set_target_location, 1000, 1000)
+
+    #    a2 = Action('Move to', self.move_to)
+
+    #    root = move_to_target_location = Sequence('Move to target location', a1, a2)
+
+    #    a3 = Action('Set random location', self.set_random_location)
+    #    root = wander = Sequence('Wander', a3, a2)
+
+    #    c1 = Condition('좀비 공 >= 소년 공?', self.is_ball_more_boy)
+    #    a4 = Action('소년한데 접근', self.move_to_boy)
+    #    root = chase_boy = Sequence('소년을 추적', c1, a4)
+
+    #    a5 = Action('소년한데 도망', self.run_to_boy)
+    #   root = run_boy = Sequence('소년한데 도망', a5)
+
+    #    root = chase_or_run_boy = Selector('소년을 추적 또는 도망', chase_boy, run_boy)
+
+    #    c2 = Condition('소년이 근처에 있는가?', self.is_boy_nearby, 7)
+    #    root = chase_run_boy = Sequence('소년 추적, 도망', c2, chase_or_run_boy)
+
+    #    root = chase_run_or_flee = Selector('추적 또는 배회', chase_run_boy, wander)
+
+    #

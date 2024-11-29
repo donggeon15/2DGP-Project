@@ -1061,7 +1061,7 @@ class Kobby:
 
     def handle_collision(self, group, other):
         if group == 'kobby:monster':
-            if self.no_damage == False:
+            if self.no_damage == False and (other.action == 0 or other.action == 2):
                 self.state_machine.add_event(('HURT', 0))
                 self.hp -= 1
                 if self.face_dir == 1:
@@ -1078,10 +1078,28 @@ class Kobby:
                         game_world.clear()
                         game_framework.change_mode(title_mode)
                     self.hp = 3
+        if group == 'kobby:air':
+            self.state_machine.add_event(('HURT', 0))
+            self.hp -= 1
+            if self.face_dir == 1:
+                self.x -= 70
+                self.y += 70
+            if self.face_dir == -1:
+                self.x += 70
+                self.y += 70
+            self.no_damage = True
+            self.no_damage_time = get_time()
+            if self.hp <= 0:
+                self.heart -= 1
+                if self.heart <= 0:
+                    game_world.clear()
+                    game_framework.change_mode(title_mode)
+                self.hp = 3
         if group == 'kobby:portal':
             self.stage += 1
             self.x = 0
             self.y = 800
             server.ground1.stage += 1
             server.background1.stage += 1
-            play_mode.setting_stage2()
+            if self.stage == 2:
+                play_mode.setting_stage2()

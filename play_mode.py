@@ -25,30 +25,41 @@ def handle_events():
 
 def setting_stage1():
     global ground1_grass
-    global monster
+    global stage1_monster_1
+    global stage1_monster_2
     global portal
 
+    # 잔디
     ground1_grass = Ground(1)
     game_world.add_object(ground1_grass, 1)
 
-    monster = Monster(7)
-    game_world.add_object(monster, 1)
-    game_world.add_collision_pair('kobby:monster', None,monster)
-    game_world.add_collision_pair('air:monster', None, monster)
+    # 몬스터
+    #stage1_monster_1 = Monster(0, 500, 90, 2, 1)
+    #game_world.add_object(stage1_monster_1, 1)
+    #game_world.add_collision_pair('kobby:monster', None,stage1_monster_1)
+    #game_world.add_collision_pair('air:monster', None, stage1_monster_1)
 
+    stage1_monster_2 = Monster(7, 660, 200, 0.8, 1)
+    game_world.add_object(stage1_monster_2, 1)
+    game_world.add_collision_pair('kobby:monster', None,stage1_monster_2)
+    game_world.add_collision_pair('air:monster', None, stage1_monster_2)
+
+
+    # 포탈
     portal = Portal(2935, 190, 0)
     game_world.add_object(portal, 1)
     game_world.add_collision_pair('kobby:portal', None, portal)
 
 def setting_stage2():
-    #remove_object(portal)
-    #remove_object(monster)
-    #remove_object(ground1_grass)
+    remove_object(portal)
+    remove_object(monster)
+    remove_object(ground1_grass)
 
     global portal2
 
-    portal2 = Portal(2935, 200, 0)
+    portal2 = Portal(2935, 300, 0)
     game_world.add_object(portal2, 1)
+    game_world.add_collision_pair('kobby:portal', None, portal2)
 
     pass
 
@@ -57,15 +68,16 @@ def init():
     game_world.add_object(server.kobby, 1)
     game_world.add_collision_pair('kobby:monster', server.kobby, None)
     game_world.add_collision_pair('kobby:portal', server.kobby, None)
+    game_world.add_collision_pair('kobby:air', None, server.kobby)
 
-    server.background1 = Background(3)
+    server.background1 = Background(1)
     game_world.add_object(server.background1, 0)
-    server.kobby.stage = 3
-    server.ground1 = Ground(0, 3)
+    server.kobby.stage = 1
+    server.ground1 = Ground(0, 1)
     game_world.add_object(server.ground1, 0)
 
     # 스테이지 1 셋팅
-    setting_stage2()
+    setting_stage1()
 
 def finish():
     game_world.clear()
