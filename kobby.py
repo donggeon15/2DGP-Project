@@ -449,6 +449,7 @@ class Balloon:
 class Ability:
     @staticmethod
     def enter(kobby, e):
+        game_world.add_collision_pair('air:monster', Ability, None)
         kobby.overtime = 0
         if kobby.mode == 0:
             kobby.frame = 0
@@ -484,6 +485,7 @@ class Ability:
 
     @staticmethod
     def exit(kobby, e):
+        game_world.remove_collisions_object(Ability)
         pass
 
     @staticmethod
@@ -591,13 +593,49 @@ class Ability:
                 kobby.image4_1.clip_composite_draw(95 * int(kobby.frame), 64 + (kobby.temp * 45), 95, 45, 0, 'h', kobby.sx - 40, kobby.sy + 5, 190,90)
             elif kobby.mode == 4:
                 kobby.image5_1.clip_composite_draw(95 * int(kobby.frame), 90 + (kobby.temp * 45), 95, 45, 0, 'h', kobby.sx - 40, kobby.sy + 5, 190,90)
+        draw_rectangle(*Ability.get_bb())
 
     @staticmethod
-    def get_bb(kobby):  # 각 공격할때 이제 범위 생성하고 충돌 체크
-        pass
+    def get_bb():
+        if server.kobby.mode == 0:
+            return server.kobby.sx - 50, server.kobby.sy - 50, server.kobby.sx + 50, server.kobby.sy + 50
+        elif server.kobby.mode == 1: # 9개 frame
+            if server.kobby.face_dir > 0:
+                if server.kobby.temp == 3:
+                    return server.kobby.sx + 40, server.kobby.sy + 10, server.kobby.sx + 100, server.kobby.sy + 70
+                elif server.kobby.temp == 2:
+                    return server.kobby.sx + 60, server.kobby.sy - 10, server.kobby.sx + 120, server.kobby.sy + 50
+                elif server.kobby.temp == 1:
+                    return server.kobby.sx + 60, server.kobby.sy - 50, server.kobby.sx + 120, server.kobby.sy + 10
+                else:
+                    return server.kobby.sx + 60, server.kobby.sy - 100, server.kobby.sx + 120, server.kobby.sy - 40
+            else:
+                if server.kobby.temp == 3:
+                    return server.kobby.sx - 100, server.kobby.sy + 10, server.kobby.sx - 40, server.kobby.sy + 70
+                elif server.kobby.temp == 2:
+                    return server.kobby.sx - 120, server.kobby.sy - 10, server.kobby.sx - 60, server.kobby.sy + 50
+                elif server.kobby.temp == 1:
+                    return server.kobby.sx - 120, server.kobby.sy - 50, server.kobby.sx - 60, server.kobby.sy + 10
+                else:
+                    return server.kobby.sx - 120, server.kobby.sy - 100, server.kobby.sx - 60, server.kobby.sy - 40
+        elif server.kobby.mode == 2:
+            if server.kobby.face_dir > 0:
+                return server.kobby.sx + 20, server.kobby.sy - 40, server.kobby.sx + 90, server.kobby.sy + 50
+            else:
+                return server.kobby.sx - 90, server.kobby.sy - 40, server.kobby.sx - 20, server.kobby.sy + 50
+        elif server.kobby.mode == 3:
+            if server.kobby.face_dir > 0:
+                return server.kobby.sx + 20, server.kobby.sy - 40, server.kobby.sx + 130, server.kobby.sy + 50
+            else:
+                return server.kobby.sx - 130, server.kobby.sy - 40, server.kobby.sx - 20, server.kobby.sy + 50
+        elif server.kobby.mode == 4:
+            if server.kobby.face_dir > 0:
+                return server.kobby.sx + 20, server.kobby.sy - 40, server.kobby.sx + 130, server.kobby.sy + 50
+            else:
+                return server.kobby.sx - 130, server.kobby.sy - 40, server.kobby.sx - 20, server.kobby.sy + 50
 
     @staticmethod
-    def handle_collision(kobby): # 각 공격할때 이제 범위 생성하고 충돌 체크
+    def handle_collision(kobby, group):
         pass
 
 

@@ -9,6 +9,7 @@ import play_mode
 import server
 from air_shoot import Air_shoot
 from behavior_tree import *
+from kobby import Ability
 
 # moster Run Speed
 PIXEL_PER_METER = (25.0 / 0.2)  # 25 pixel 20 cm
@@ -35,24 +36,16 @@ GRAVITY_SPEED_PPS = (GRAVITY_SPEED_MPS * PIXEL_PER_METER)
 
 # 공격 범위
 class Attack:
-    @staticmethod
-    def enter(monster):
-        #Attack.get_bb()
-        #attack_range = Attack(.x, self.y, 50, 30)
-        #game_world.add_object(attack_range, 1)
-        #game_world.add_collision_pair('kobby:air', attack_range, None)
-        #game_world.remove_object(attack_range)
+    def __init__(self, monster, range_x= 20, range_y = 20):
+        self.x = monster.x
+        self.y = monster.y
+        self.range_x = range_x
+        self.range_y = range_y
         pass
 
-    @staticmethod
-    def exit(monster):
-        pass
-
-    @staticmethod
     def draw(self):
         draw_rectangle(*self.get_bb())
 
-    @staticmethod
     def update(self, monster):
         self.x = monster.x
         self.y = monster.y
@@ -63,11 +56,9 @@ class Attack:
             self.sx = self.x - server.ground1.window_left
             self.sy = self.y - server.ground1.window_bottom
 
-    @staticmethod
     def get_bb(self):
         return self.sx - self.range_x, self.sy - self.range_y, self.sx + self.range_x, self.sy + self.range_y
 
-    @staticmethod
     def handle_collision(self, group, other):
         pass
         # if group == 'air:monster' or group == 'kobby:air':

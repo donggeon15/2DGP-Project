@@ -39,7 +39,7 @@ def setting_stage1():
     #game_world.add_collision_pair('kobby:monster', None,stage1_monster_1)
     #game_world.add_collision_pair('air:monster', None, stage1_monster_1)
 
-    stage1_monster_2 = Monster(6, 660, 200, 1.5, 1)
+    stage1_monster_2 = Monster(1, 660, 200, 1.5, 1)
     game_world.add_object(stage1_monster_2, 1)
     game_world.add_collision_pair('kobby:monster', None,stage1_monster_2)
     game_world.add_collision_pair('air:monster', None, stage1_monster_2)
