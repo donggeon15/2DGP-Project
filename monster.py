@@ -10,6 +10,7 @@ import server
 from air_shoot import Air_shoot
 from behavior_tree import *
 from kobby import Ability
+from state_machine import StateMachine
 
 # moster Run Speed
 PIXEL_PER_METER = (25.0 / 0.2)  # 25 pixel 20 cm
@@ -35,35 +36,54 @@ GRAVITY_SPEED_PPS = (GRAVITY_SPEED_MPS * PIXEL_PER_METER)
 
 
 # 공격 범위
+class Walk:
+    @staticmethod
+    def enter(kobby, e):
+        kobby.time = get_time()
+        kobby.frame = 0
+        if kobby.face_dir == 1:
+            kobby.x -= 70
+            kobby.y += 70
+        if kobby.face_dir == -1:
+            kobby.x += 70
+            kobby.y += 70
+
+    @staticmethod
+    def exit(kobby, e):
+        pass
+
+    @staticmethod
+    def do(kobby):
+        if get_time() - kobby.time > 0.5:
+            kobby.state_machine.add_event(('TIME_OUT', 0))
+
+    @staticmethod
+    def draw(kobby):
+        if kobby.face_dir == 1:
+            kobby.hurt_image.clip_draw(34 * int(kobby.frame), 102, 34, 34, kobby.sx, kobby.sy, 68, 68)
+        elif kobby.face_dir == -1:
+            kobby.hurt_image.clip_composite_draw(34 * int(kobby.frame), 102, 34, 34, 0, 'h', kobby.sx, kobby.sy, 68, 68)
+
 class Attack:
-    def __init__(self, monster, range_x= 20, range_y = 20):
-        self.x = monster.x
-        self.y = monster.y
-        self.range_x = range_x
-        self.range_y = range_y
+    @staticmethod
+    def enter(monster, e):
+
+
+    @staticmethod
+    def exit(monster, e):
         pass
 
-    def draw(self):
-        draw_rectangle(*self.get_bb())
+    @staticmethod
+    def do(kobby):
+        if get_time() - kobby.time > 0.5:
+            kobby.state_machine.add_event(('TIME_OUT', 0))
 
-    def update(self, monster):
-        self.x = monster.x
-        self.y = monster.y
-        if server.kobby.stage == 4:
-            self.sx = self.x
-            self.sy = self.y
-        else:
-            self.sx = self.x - server.ground1.window_left
-            self.sy = self.y - server.ground1.window_bottom
-
-    def get_bb(self):
-        return self.sx - self.range_x, self.sy - self.range_y, self.sx + self.range_x, self.sy + self.range_y
-
-    def handle_collision(self, group, other):
-        pass
-        # if group == 'air:monster' or group == 'kobby:air':
-        # if self in game_world.objects[1]:
-        # game_world.remove_object(self)
+    @staticmethod
+    def draw(kobby):
+        if kobby.face_dir == 1:
+            kobby.hurt_image.clip_draw(34 * int(kobby.frame), 102, 34, 34, kobby.sx, kobby.sy, 68, 68)
+        elif kobby.face_dir == -1:
+            kobby.hurt_image.clip_composite_draw(34 * int(kobby.frame), 102, 34, 34, 0, 'h', kobby.sx, kobby.sy, 68, 68)
 
 
 class Monster:
@@ -98,10 +118,20 @@ class Monster:
         self.build_behavior_tree()
         self.time = get_time()
         self.attack_time = 0
+        self.state_machine = StateMachine(self)
+        self.state_machine.start(Walk)
+        self.state_machine.set_transitions(
+            {
+                Walk: { },
+                Attack: { },
+        )
 
 
     def update(self):
-        self.x = clamp(25, self.x, 3000 - 25)
+        if (self.stage == 4):
+            self.x = clamp(25, self.x, 800 - 25)
+        else:
+            self.x = clamp(25, self.x, 3000 - 25)
 
         if self.action == 0: # 기본 돌아다니는
             if self.number == 0 or self.number == 1 or self.number == 3:
@@ -131,6 +161,8 @@ class Monster:
             if self.number == 1:
                 self.collision_size_x = 20
                 self.frame = (self.frame + 8 * ACTION_PER_TIME * game_framework.frame_time)
+                #attack = Attack(self, 120, 20)
+                #game_world.add_collision_pair('kobby:air', attack, None)
 
                 if self.frame > 4:
                     self.action = 0
@@ -270,7 +302,191 @@ class Monster:
                     self.ground = True
                     if ((self.x >= 2281 and self.x < 2369)):
                         self.y = 200 + 135
-
+        elif self.stage == 2:
+            if ((self.x >= 0 and self.x < 780) or (self.x >= 2215 and self.x < 2700)):
+                if (self.x >= 151 and self.x < 333):
+                    if self.y > 300:
+                        self.ground = False
+                        self.y -= self.gravity * game_framework.frame_time
+                    elif self.y <= 300 and self.y > 297:
+                        self.ground = True
+                        self.y = 300
+                    elif self.y <= 297 and self.y > 200 - 55:
+                        self.ground = False
+                        self.y -= self.gravity * game_framework.frame_time
+                    elif self.y <= 200 - 55:
+                        self.y = 200 - 55
+                        self.ground = True
+                elif (self.x >= 333 and self.x < 417):
+                    if self.y > 235:
+                        self.ground = False
+                        self.y -= self.gravity * game_framework.frame_time
+                    elif self.y <= 235 and self.y > 232:
+                        self.ground = True
+                        self.y = 235
+                    elif self.y <= 232 and self.y > 200 - 55:
+                        self.ground = False
+                        self.y -= self.gravity * game_framework.frame_time
+                    elif self.y <= 200 - 55:
+                        self.y = 200 - 55
+                        self.ground = True
+                elif (self.x >= 2343 and self.x < 2520):
+                    if self.y > 325:
+                        self.ground = False
+                        self.y -= self.gravity * game_framework.frame_time
+                    elif self.y <= 325 and self.y > 322:
+                        self.ground = True
+                        self.y = 325
+                    elif self.y <= 322 and self.y > 200 - 55:
+                        self.ground = False
+                        self.y -= self.gravity * game_framework.frame_time
+                    elif self.y <= 200 - 55:
+                        self.y = 200 - 55
+                        self.ground = True
+                else:
+                    if self.y > 200 - 55:
+                        self.ground = False
+                        self.y -= self.gravity * game_framework.frame_time
+                    else:
+                        self.y = 200 - 55
+                        self.ground = True
+            elif ((self.x >= 780 and self.x < 900)):
+                if self.y > 235:
+                    self.ground = False
+                    self.y -= self.gravity * game_framework.frame_time
+                elif self.y <= 235 and self.y > 230:
+                    self.y = 235
+                    self.ground = True
+                else:
+                    if self.x < self.past_x:
+                        self.x = self.past_x + 1
+                        self.dir = 1
+                    else:
+                        self.x = self.past_x - 1
+                        self.dir = -1
+                    self.ground = True
+                    if ((self.x >= 781 and self.x < 899)):
+                        self.y = 235
+            elif ((self.x >= 900 and self.x < 1200) or (self.x >= 1740 and self.x < 1850) or (self.x >= 1970 and self.x < 2085)):
+                if self.y > 270:
+                    self.ground = False
+                    self.y -= self.gravity * game_framework.frame_time
+                elif self.y <= 270 and self.y > 265:
+                    self.y = 270
+                    self.ground = True
+                else:
+                    if self.x < self.past_x:
+                        self.x = self.past_x + 1
+                        self.dir = 1
+                    else:
+                        self.x = self.past_x - 1
+                        self.dir = -1
+                    self.ground = True
+                    if ((self.x >= 901 and self.x < 1199)):
+                        self.y = 270
+            elif ((self.x >= 1200 and self.x < 1300)):
+                if self.y > 270 - ((self.x - 1200)):
+                    self.ground = False
+                    self.y -= self.gravity * game_framework.frame_time
+                else:
+                    self.y = 270 - ((self.x - 1200))
+                    self.ground = True
+            elif ((self.x >= 1300 and self.x < 1640)):
+                if (self.x >= 1355 and self.x < 1586):
+                    if self.y > 300:
+                        self.ground = False
+                        self.y -= self.gravity * game_framework.frame_time
+                    elif self.y <= 300 and self.y > 297:
+                        self.ground = True
+                        self.y = 300
+                    elif self.y <= 297 and self.y > 170:
+                        self.ground = False
+                        self.y -= self.gravity * game_framework.frame_time
+                    elif self.y <= 170:
+                        self.y = 170
+                        self.ground = True
+                else:
+                    if self.y > 170:
+                        self.ground = False
+                        self.y -= self.gravity * game_framework.frame_time
+                    else:
+                        self.y = 170
+                        self.ground = True
+            elif ((self.x >= 1640 and self.x < 1740)):
+                if self.y > 170 + ((self.x - 1640)):
+                    self.ground = False
+                    self.y -= self.gravity * game_framework.frame_time
+                else:
+                    self.y = 170 + ((self.x - 1640))
+                    self.ground = True
+            elif ((self.x >= 1850 and self.x < 1880) or (self.x >= 1940 and self.x < 1970)):
+                if self.y > 110:
+                    self.ground = False
+                    self.y -= self.gravity * game_framework.frame_time
+                elif self.y <= 110 and self.y > 108:
+                    self.y = 110
+                    self.ground = True
+                else:
+                    if self.x < self.past_x:
+                        self.x = self.past_x + 1
+                        self.dir = 1
+                    else:
+                        self.x = self.past_x - 1
+                        self.dir = -1
+                    self.ground = False
+                    self.y -= self.gravity * game_framework.frame_time
+            elif ((self.x >= 1880 and self.x < 1940)):
+                self.ground = False
+                self.y -= self.gravity * game_framework.frame_time
+            elif ((self.x >= 2085 and self.x < 2215)):
+                if self.y > 270 - ((self.x - 2085)*1.04):
+                    self.ground = False
+                    self.y -= self.gravity * game_framework.frame_time
+                else:
+                    self.y = 270 - ((self.x - 2085)*1.04)
+                    self.ground = True
+            elif ((self.x >= 2700 and self.x < 2770)):
+                if self.y > 145 + ((self.x - 2700)):
+                    self.ground = False
+                    self.y -= self.gravity * game_framework.frame_time
+                else:
+                    self.y = 145 + ((self.x - 2700))
+                    self.ground = True
+            elif ((self.x >= 2770 and self.x < 3000)):
+                if (self.x >= 2855 and self.x < 3000):
+                    if self.y > 295:
+                        self.ground = False
+                        self.y -= self.gravity * game_framework.frame_time
+                    elif self.y <= 295 and self.y > 292:
+                        self.ground = True
+                        self.y = 295
+                    elif self.y <= 292 and self.y > 210:
+                        self.ground = False
+                        self.y -= self.gravity * game_framework.frame_time
+                    elif self.y <= 210:
+                        self.y = 210
+                        self.ground = True
+                else:
+                    if self.y > 210:
+                        self.ground = False
+                        self.y -= self.gravity * game_framework.frame_time
+                    else:
+                        self.y = 210
+                        self.ground = True
+        elif self.stage == 3:
+            if self.y > 110:
+                self.ground = False
+                self.y -= self.gravity * game_framework.frame_time
+            else:
+                self.y = 110
+                self.ground = True
+        elif self.stage == 4:
+            if self.y > 165:
+                self.ground = False
+                self.y -= self.gravity * game_framework.frame_time
+            else:
+                self.y = 165
+                self.ground = True
         # ai 작동
         self.bt.run()
 
@@ -410,6 +626,38 @@ class Monster:
                 if self.action == 0:
                     self.action = 2
                     self.frame = 0
+        if group == 'kobby:food':
+            if server.kobby.x < self.x:
+                self.past_x = self.x
+                self.x -= RUN_SPEED_PPS * 1.2 * game_framework.frame_time
+            else:
+                self.past_x = self.x
+                self.x += RUN_SPEED_PPS * 1.2 * game_framework.frame_time
+            if server.kobby.y < self.y:
+                self.y -= RUN_SPEED_PPS * 1.2 * game_framework.frame_time
+            else:
+                self.y += RUN_SPEED_PPS * 1.2 * game_framework.frame_time
+
+            if server.kobby.x <= self.x + 0.25 and server.kobby.x >= self.x - 0.25:
+                server.kobby.food = True
+                if self.number == 0 or self.number == 1:
+                    server.kobby.food_type = 0
+                    server.kobby.star_type = 0
+                elif self.number == 2:
+                    server.kobby.food_type = 1
+                    server.kobby.star_type = 1
+                elif self.number == 3:
+                    server.kobby.food_type = 2
+                    server.kobby.star_type = 2
+                elif self.number == 4 or self.number == 5:
+                    server.kobby.food_type = 3
+                    server.kobby.star_type = 3
+                elif self.number == 6 or self.number == 7:
+                    server.kobby.food_type = 4
+                    server.kobby.star_type = 4
+                game_world.remove_object(self)
+
+
 
     def set_target_location(self, x=None, y=None):
         if not x or not y:

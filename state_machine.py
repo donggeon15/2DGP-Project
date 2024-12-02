@@ -36,6 +36,9 @@ def double_left(e):
 def down_k(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_k
 
+def down_p(e):
+    return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_p
+
 def jump_end_walk(e):
     return e[0] == 'JUMP1'
 
