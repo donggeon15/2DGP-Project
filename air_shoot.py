@@ -6,7 +6,7 @@ import game_world
 import server
 
 PIXEL_PER_METER = (25.0 / 0.2) # 25pixel = 20cm
-AIRSHOOT_SPEED_KMPH = 8.0 # km/h
+AIRSHOOT_SPEED_KMPH = 8.5 # km/h
 AIRSHOOT_SPEED_MPM = (AIRSHOOT_SPEED_KMPH * 1000.0 / 60.0)
 AIRSHOOT_SPEED_MPS = (AIRSHOOT_SPEED_MPM / 60.0)
 AIRSHOOT_SPEED_PPS = (AIRSHOOT_SPEED_MPS * PIXEL_PER_METER)
@@ -96,7 +96,7 @@ class Air_shoot:
                 game_world.remove_object(self)
         if self.air == 4:
             self.frame = (self.frame + 4 * (1.0 / 0.5) * game_framework.frame_time) % 4
-            if get_time() - self.time > 5:
+            if get_time() - self.time > 7:
                 game_world.remove_object(self)
             if server.kobby.stage == 1:
                 if (self.x <= 0):
@@ -215,6 +215,12 @@ class Air_shoot:
 
     def handle_collision(self, group, other):
         if group == 'air:monster' or group == 'kobby:air':
+            if self.air == 2: #불꽃
+                server.kobby.damage_type = 1
+            elif self.air == 3: #얼음
+                server.kobby.damage_type = 3
+            else:
+                server.kobby.damage_type = 0
             if self in game_world.objects[1]:
                 game_world.remove_object(self)
         if group == 'kobby:food':

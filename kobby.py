@@ -754,10 +754,10 @@ class Hurt:
         kobby.time = get_time()
         kobby.frame = 0
         if kobby.face_dir == 1:
-            kobby.x -= 70
+            kobby.x -= 20
             kobby.y += 70
         if kobby.face_dir == -1:
-            kobby.x += 70
+            kobby.x += 20
             kobby.y += 70
 
     @staticmethod
@@ -766,15 +766,41 @@ class Hurt:
 
     @staticmethod
     def do(kobby):
-        if get_time() - kobby.time > 0.5:
-            kobby.state_machine.add_event(('TIME_OUT', 0))
-
+        if kobby.damage_type == 0:
+            if get_time() - kobby.time > 0.6:
+                kobby.state_machine.add_event(('TIME_OUT', 0))
+        elif kobby.damage_type == 3:
+            if kobby.frame < 3:
+                kobby.frame = (kobby.frame + 2 * ACTION_PER_TIME * 2 * game_framework.frame_time)
+            if get_time() - kobby.time > 1:
+                kobby.state_machine.add_event(('TIME_OUT', 0))
+        else:
+            kobby.frame = (kobby.frame + 4 * ACTION_PER_TIME * 2 * game_framework.frame_time) % 4
+            if get_time() - kobby.time > 0.6:
+                kobby.state_machine.add_event(('TIME_OUT', 0))
     @staticmethod
     def draw(kobby):
-        if kobby.face_dir == 1:
-            kobby.hurt_image.clip_draw(34 * int(kobby.frame), 102, 34, 34, kobby.sx, kobby.sy, 68, 68)
-        elif kobby.face_dir == -1:
-            kobby.hurt_image.clip_composite_draw(34 * int(kobby.frame), 102, 34, 34, 0, 'h', kobby.sx, kobby.sy, 68, 68)
+        if kobby.damage_type == 0:
+            if kobby.face_dir == 1:
+                kobby.hurt_image.clip_draw(34 * int(kobby.frame), 102, 34, 34, kobby.sx, kobby.sy, 68, 68)
+            elif kobby.face_dir == -1:
+                kobby.hurt_image.clip_composite_draw(34 * int(kobby.frame), 102, 34, 34, 0, 'h', kobby.sx, kobby.sy, 68, 68)
+        elif kobby.damage_type == 1:
+            if kobby.face_dir == 1:
+                kobby.hurt_image.clip_draw(34 * int(kobby.frame), 68, 34, 34, kobby.sx, kobby.sy, 68, 68)
+            elif kobby.face_dir == -1:
+                kobby.hurt_image.clip_composite_draw(34 * int(kobby.frame), 68, 34, 34, 0, 'h', kobby.sx, kobby.sy, 68, 68)
+        elif kobby.damage_type == 2:
+            if kobby.face_dir == 1:
+                kobby.hurt_image.clip_draw(34 * int(kobby.frame), 34, 34, 34, kobby.sx, kobby.sy, 68, 68)
+            elif kobby.face_dir == -1:
+                kobby.hurt_image.clip_composite_draw(34 * int(kobby.frame), 34, 34, 34, 0, 'h', kobby.sx, kobby.sy, 68, 68)
+        else:
+            if kobby.face_dir == 1:
+                kobby.hurt_image.clip_draw(34 * int(kobby.frame), 0, 34, 34, kobby.sx, kobby.sy, 68, 68)
+            elif kobby.face_dir == -1:
+                kobby.hurt_image.clip_composite_draw(34 * int(kobby.frame), 0, 34, 34, 0, 'h', kobby.sx, kobby.sy, 68, 68)
+
 
 class Kobby:
     first = None
@@ -788,6 +814,7 @@ class Kobby:
         self.frame = 0
         self.dir = 0
         self.frame2 = 0
+        self.damage_type = 0  # 0: 기본 , 1: 화상, 2: 찌릿, 3:동상
         self.y_dir = 0
         self.star_type = 0
         self.face_dir = 0

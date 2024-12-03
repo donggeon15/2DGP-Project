@@ -63,7 +63,14 @@ class Attack:
     def enter(monster, e):
         Attack.number = monster.number
         game_world.add_collision_pair('kobby:air', Attack, None)
-        pass
+        if monster.number == 0 or monster.number == 1 or monster.number == 3:
+            server.kobby.damage_type = 0
+        elif monster.number == 2:
+            server.kobby.damage_type = 2
+        elif monster.number == 4 or monster.number == 5:
+            server.kobby.damage_type = 3
+        elif monster.number == 6 or monster.number == 7:
+            server.kobby.damage_type = 1
 
     @staticmethod
     def exit(monster, e):
@@ -659,10 +666,21 @@ class Monster:
                 self.action = 1
                 self.frame = 0
         if group == 'kobby:monster':
-            if self.number == 0:
+            if self.number == 0: # 일반
                 if self.action == 0:
                     self.action = 2
                     self.frame = 0
+                server.kobby.damage_type = 0
+            elif self.number == 1: # 창
+                server.kobby.damage_type = 0
+            elif self.number == 2: # 법사
+                server.kobby.damage_type = 2
+            elif self.number == 3: # 검사
+                server.kobby.damage_type = 0
+            elif self.number == 4 or self.number == 5:
+                server.kobby.damage_type = 3
+            elif self.number == 6 or self.number == 7:
+                server.kobby.damage_type = 1
         if group == 'kobby:food':
             if server.kobby.x < self.x:
                 self.past_x = self.x

@@ -80,14 +80,14 @@ def setting_stage1():
     game_world.add_collision_pair('kobby:portal', None, portal)
 
 def setting_stage2():
-    #remove_object(portal)
-    #remove_object(stage1_monster_1)
-    #remove_object(stage1_monster_2)
-    #remove_object(stage1_monster_3)
-    #remove_object(stage1_monster_4)
-    #remove_object(stage1_monster_5)
-    #remove_object(stage1_monster_6)
-    #remove_object(ground1_grass)
+    remove_object(portal)
+    remove_object(stage1_monster_1)
+    remove_object(stage1_monster_2)
+    remove_object(stage1_monster_3)
+    remove_object(stage1_monster_4)
+    remove_object(stage1_monster_5)
+    remove_object(stage1_monster_6)
+    remove_object(ground1_grass)
 
     global portal2
     global stage2_monster_1
@@ -140,13 +140,13 @@ def setting_stage2():
 global portal3
 
 def setting_stage3():
-    #remove_object(portal2)
-    #remove_object(stage2_monster_1)
-    #remove_object(stage2_monster_2)
-    #remove_object(stage2_monster_3)
-    #remove_object(stage2_monster_4)
-    #remove_object(stage2_monster_5)
-    #remove_object(stage2_monster_6)
+    remove_object(portal2)
+    remove_object(stage2_monster_1)
+    remove_object(stage2_monster_2)
+    remove_object(stage2_monster_3)
+    remove_object(stage2_monster_4)
+    remove_object(stage2_monster_5)
+    remove_object(stage2_monster_6)
 
     server.ground1.catch = 0
 
@@ -212,6 +212,14 @@ def setting_stage3():
 
 def setting_boss():
     remove_object(portal3)
+    remove_object(stage3_monster_1)
+    remove_object(stage3_monster_2)
+    remove_object(stage3_monster_3)
+    remove_object(stage3_monster_4)
+    remove_object(stage3_monster_5)
+    remove_object(stage3_monster_6)
+    remove_object(stage3_monster_7)
+    remove_object(stage3_monster_8)
 
 
 def init():
@@ -221,14 +229,14 @@ def init():
     game_world.add_collision_pair('kobby:portal', server.kobby, None)
     game_world.add_collision_pair('kobby:air', None, server.kobby)
 
-    server.background1 = Background(3)
+    server.background1 = Background(1)
     game_world.add_object(server.background1, 0)
-    server.kobby.stage = 3
-    server.ground1 = Ground(0, 3)
+    server.kobby.stage = 1
+    server.ground1 = Ground(0, 1)
     game_world.add_object(server.ground1, 0)
 
     # 스테이지 1 셋팅
-    setting_stage3()
+    setting_stage1()
 
 def finish():
     game_world.clear()
