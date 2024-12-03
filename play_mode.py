@@ -34,7 +34,7 @@ def setting_stage1():
     game_world.add_object(ground1_grass, 1)
 
     # 몬스터
-    stage1_monster_1 = Monster(1, 500, 90, 2, 1)
+    stage1_monster_1 = Monster(0, 500, 90, 2, 1)
     game_world.add_object(stage1_monster_1, 1)
     game_world.add_collision_pair('kobby:monster', None,stage1_monster_1)
     game_world.add_collision_pair('air:monster', None, stage1_monster_1)
@@ -42,7 +42,7 @@ def setting_stage1():
 
 
 
-    stage1_monster_2 = Monster(3, 670, 200, 0.5, 1)
+    stage1_monster_2 = Monster(3, 700, 200, 0.5, 1)
     game_world.add_object(stage1_monster_2, 1)
     game_world.add_collision_pair('kobby:monster', None,stage1_monster_2)
     game_world.add_collision_pair('air:monster', None, stage1_monster_2)
@@ -69,6 +69,8 @@ def setting_stage2():
 
 def init():
     server.kobby = Kobby()
+    server.kobby.hp = 3  # 하트 하나당 피통
+    server.kobby.heart = 3  # 총 하트 갯수
     game_world.add_object(server.kobby, 1)
     game_world.add_collision_pair('kobby:monster', server.kobby, None)
     game_world.add_collision_pair('kobby:portal', server.kobby, None)

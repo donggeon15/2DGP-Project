@@ -664,8 +664,7 @@ class Monster:
                 self.y -= RUN_SPEED_PPS * 1.2 * game_framework.frame_time
             else:
                 self.y += RUN_SPEED_PPS * 1.2 * game_framework.frame_time
-            server.kobby.no_damage = True
-            server.kobby.no_damage_time = get_time()
+
             if server.kobby.x <= self.x + 0.5 and server.kobby.x >= self.x - 0.5:
                 server.kobby.food = True
                 if self.number == 0 or self.number == 1:
@@ -684,7 +683,6 @@ class Monster:
                     server.kobby.food_type = 4
                     server.kobby.star_type = 4
                 game_world.remove_object(self)
-                server.kobby.no_damage = False
 
 
 
@@ -839,3 +837,27 @@ class Monster:
             root = monster7 = Selector('불꽃 돼지 Ai', attack_kobby, move_repeat)
 
         self.bt = BehaviorTree(root)
+
+
+    #a1 = Action('Set target location', self.set_target_location, 1000, 1000)
+
+    #    a2 = Action('Move to', self.move_to)
+
+    #    root = move_to_target_location = Sequence('Move to target location', a1, a2)
+
+    #    a3 = Action('Set random location', self.set_random_location)
+    #    root = wander = Sequence('Wander', a3, a2)
+
+    #    c1 = Condition('좀비 공 >= 소년 공?', self.is_ball_more_boy)
+    #    a4 = Action('소년한데 접근', self.move_to_boy)
+    #    root = chase_boy = Sequence('소년을 추적', c1, a4)
+
+    #    a5 = Action('소년한데 도망', self.run_to_boy)
+    #   root = run_boy = Sequence('소년한데 도망', a5)
+
+    #    root = chase_or_run_boy = Selector('소년을 추적 또는 도망', chase_boy, run_boy)
+
+    #    c2 = Condition('소년이 근처에 있는가?', self.is_boy_nearby, 7)
+    #    root = chase_run_boy = Sequence('소년 추적, 도망', c2, chase_or_run_boy)
+
+    #    root = chase_run_or_flee = Selector('추적 또는 배회', chase_run_boy, wander)

@@ -6,6 +6,9 @@ def start_event(e):
 def time_out(e):
     return e[0] == 'TIME_OUT'
 
+def attack(e):
+    return e[0] == 'ATTACK'
+
 def hurt_event(e):
     return e[0] == 'HURT'
 

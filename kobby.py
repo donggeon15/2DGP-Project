@@ -265,7 +265,7 @@ class Squashed:
     def do(kobby):
         if kobby.food == True:
             kobby.frame = ((kobby.frame - 2) + 8 * ACTION_PER_TIME * game_framework.frame_time) + 2
-            if kobby.frame > 7:
+            if kobby.frame > 9:
                 kobby.state_machine.add_event(('TIME_OUT', 0))
                 kobby.food = False
                 if kobby.food_type == 1:
@@ -727,14 +727,14 @@ class Ability:
                 return server.kobby.sx - 90, server.kobby.sy - 40, server.kobby.sx - 20, server.kobby.sy + 50
         elif server.kobby.mode == 3:
             if server.kobby.face_dir > 0:
-                return server.kobby.sx + 20, server.kobby.sy - 40, server.kobby.sx + 130, server.kobby.sy + 50
+                return server.kobby.sx + 20, server.kobby.sy - 25, server.kobby.sx + 130, server.kobby.sy + 40
             else:
-                return server.kobby.sx - 130, server.kobby.sy - 40, server.kobby.sx - 20, server.kobby.sy + 50
+                return server.kobby.sx - 130, server.kobby.sy - 25, server.kobby.sx - 20, server.kobby.sy + 40
         elif server.kobby.mode == 4:
             if server.kobby.face_dir > 0:
-                return server.kobby.sx + 20, server.kobby.sy - 40, server.kobby.sx + 130, server.kobby.sy + 50
+                return server.kobby.sx + 20, server.kobby.sy - 25, server.kobby.sx + 130, server.kobby.sy + 40
             else:
-                return server.kobby.sx - 130, server.kobby.sy - 40, server.kobby.sx - 20, server.kobby.sy + 50
+                return server.kobby.sx - 130, server.kobby.sy - 25, server.kobby.sx - 20, server.kobby.sy + 40
 
     @staticmethod
     def handle_collision(kobby, group):
