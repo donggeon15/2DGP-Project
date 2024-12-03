@@ -179,9 +179,13 @@ class Monster:
             if self.number == 0 or self.number == 7 or self.number == 5 or self.number == 2 or self.number == 3 or self.number == 4 or self.number == 6:
                 if self.frame > 2:
                     game_world.remove_object(self)
+                    if self.stage == 3:
+                        server.ground1.catch += 1
             if self.number == 1:
                 if self.frame > 3:
                     game_world.remove_object(self)
+                    if self.stage == 3:
+                        server.ground1.catch += 1
 
         if self.action == 2: # 공격할때
             if self.number == 0:
@@ -690,6 +694,8 @@ class Monster:
                     server.kobby.star_type = 4
                 game_world.remove_collisions_object(Attack)
                 game_world.remove_object(self)
+                if self.stage == 3:
+                    server.ground1.catch += 1
                 server.kobby.suction = False
 
 

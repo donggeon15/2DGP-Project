@@ -1,7 +1,10 @@
 from pico2d import *
 
 import game_framework
+import game_world
+import play_mode
 import server
+from potal import Portal
 
 #Grass Action Speed
 TIME_PER_ACTION = 0.3
@@ -61,8 +64,11 @@ class Ground:
             self.frame = (self.frame + FRAMES_PER_ACTION * 2 * ACTION_PER_TIME * game_framework.frame_time) % 12
 
         if self.stage == 3:
-            if self.catch >= 7:
+            print (self.catch)
+            if self.catch >= 7 and self.all_catch == False:
                 self.all_catch = True
+                game_world.add_object(play_mode.portal3, 1)
+                game_world.add_collision_pair('kobby:portal', None, play_mode.portal3)
 
         self.window_left = clamp(0, int(server.kobby.x) - self.cw // 2, self.w - self.cw - 1)
         self.window_bottom = clamp(0, int(server.kobby.y) - self.ch // 2, self.h - self.ch - 1)

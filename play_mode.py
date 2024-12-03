@@ -137,6 +137,7 @@ def setting_stage2():
     game_world.add_object(portal2, 1)
     game_world.add_collision_pair('kobby:portal', None, portal2)
 
+global portal3
 
 def setting_stage3():
     #remove_object(portal2)
@@ -147,6 +148,8 @@ def setting_stage3():
     #remove_object(stage2_monster_5)
     #remove_object(stage2_monster_6)
 
+    server.ground1.catch = 0
+
     global portal3
     global stage3_monster_1
     global stage3_monster_2
@@ -155,12 +158,57 @@ def setting_stage3():
     global stage3_monster_5
     global stage3_monster_6
     global stage3_monster_7
+    global stage3_monster_8
 
+    stage3_monster_1 = Monster(0, 200, 200, 2, 3)
+    game_world.add_object(stage3_monster_1, 1)
+    game_world.add_collision_pair('kobby:monster', None, stage3_monster_1)
+    game_world.add_collision_pair('air:monster', None, stage3_monster_1)
+    game_world.add_collision_pair('kobby:food', None, stage3_monster_1)
 
-    #portal3 = Portal(1500, 150, 1)
-    #game_world.add_object(portal3, 1)
-    #game_world.add_collision_pair('kobby:portal', None, portal3)
+    stage3_monster_2 = Monster(3, 500, 200, 2, 3)
+    game_world.add_object(stage3_monster_2, 1)
+    game_world.add_collision_pair('kobby:monster', None, stage3_monster_2)
+    game_world.add_collision_pair('air:monster', None, stage3_monster_2)
+    game_world.add_collision_pair('kobby:food', None, stage3_monster_2)
 
+    stage3_monster_3 = Monster(5, 800, 200, 2, 3)
+    game_world.add_object(stage3_monster_3, 1)
+    game_world.add_collision_pair('kobby:monster', None, stage3_monster_3)
+    game_world.add_collision_pair('air:monster', None, stage3_monster_3)
+    game_world.add_collision_pair('kobby:food', None, stage3_monster_3)
+
+    stage3_monster_4 = Monster(6, 1100, 200, 2, 3)
+    game_world.add_object(stage3_monster_4, 1)
+    game_world.add_collision_pair('kobby:monster', None, stage3_monster_4)
+    game_world.add_collision_pair('air:monster', None, stage3_monster_4)
+    game_world.add_collision_pair('kobby:food', None, stage3_monster_4)
+
+    stage3_monster_5 = Monster(1, 1500, 200, 2, 3)
+    game_world.add_object(stage3_monster_5, 1)
+    game_world.add_collision_pair('kobby:monster', None, stage3_monster_5)
+    game_world.add_collision_pair('air:monster', None, stage3_monster_5)
+    game_world.add_collision_pair('kobby:food', None, stage3_monster_5)
+
+    stage3_monster_6 = Monster(4, 1900, 200, 2, 3)
+    game_world.add_object(stage3_monster_6, 1)
+    game_world.add_collision_pair('kobby:monster', None, stage3_monster_6)
+    game_world.add_collision_pair('air:monster', None, stage3_monster_6)
+    game_world.add_collision_pair('kobby:food', None, stage3_monster_6)
+
+    stage3_monster_7 = Monster(2, 2300, 200, 2, 3)
+    game_world.add_object(stage3_monster_7, 1)
+    game_world.add_collision_pair('kobby:monster', None, stage3_monster_7)
+    game_world.add_collision_pair('air:monster', None, stage3_monster_7)
+    game_world.add_collision_pair('kobby:food', None, stage3_monster_7)
+
+    stage3_monster_8 = Monster(7, 2700, 200, 2, 3)
+    game_world.add_object(stage3_monster_8, 1)
+    game_world.add_collision_pair('kobby:monster', None, stage3_monster_8)
+    game_world.add_collision_pair('air:monster', None, stage3_monster_8)
+    game_world.add_collision_pair('kobby:food', None, stage3_monster_8)
+
+    portal3 = Portal(1500, 140, 1)
 
 def setting_boss():
     remove_object(portal3)
