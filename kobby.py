@@ -265,7 +265,7 @@ class Squashed:
     @staticmethod
     def do(kobby):
         if kobby.food == True:
-            kobby.frame = ((kobby.frame - 2) + 8 * ACTION_PER_TIME * game_framework.frame_time) + 2
+            kobby.frame = ((kobby.frame - 2) + 9 * ACTION_PER_TIME * game_framework.frame_time) + 2
             if kobby.frame > 9:
                 kobby.state_machine.add_event(('TIME_OUT', 0))
                 kobby.food = False
@@ -554,7 +554,7 @@ class Ability:
     def do(kobby):
         if kobby.mode == 0:
             if kobby.food == True and get_time() - kobby.time <= 0.1:
-                kobby.frame = (kobby.frame + 3 * ACTION_PER_TIME * 2 * game_framework.frame_time)
+                kobby.frame = (kobby.frame + 4 * ACTION_PER_TIME * 2 * game_framework.frame_time)
                 if kobby.frame > 3:
                     star = Air_shoot(kobby.x, kobby.y, kobby.face_dir, 4, kobby.star_type)
                     game_world.add_object(star, 1)
@@ -684,19 +684,19 @@ class Ability:
             else:
                 if get_time() - server.kobby.time <= 1:
                     if server.kobby.face_dir > 0:
-                        return server.kobby.sx, server.kobby.sy - 40, server.kobby.sx + 90, server.kobby.sy + 40
+                        return server.kobby.sx, server.kobby.sy - 30, server.kobby.sx + 80, server.kobby.sy + 30
                     else:
-                        return server.kobby.sx - 90, server.kobby.sy - 40, server.kobby.sx, server.kobby.sy + 40
+                        return server.kobby.sx - 80, server.kobby.sy - 30, server.kobby.sx, server.kobby.sy + 30
                 elif get_time() - server.kobby.time <= 2:
                     if server.kobby.face_dir > 0:
-                        return server.kobby.sx, server.kobby.sy - 40, server.kobby.sx + 120, server.kobby.sy + 40
+                        return server.kobby.sx, server.kobby.sy - 30, server.kobby.sx + 110, server.kobby.sy + 30
                     else:
-                        return server.kobby.sx - 120, server.kobby.sy - 40, server.kobby.sx, server.kobby.sy + 40
+                        return server.kobby.sx - 110, server.kobby.sy - 30, server.kobby.sx, server.kobby.sy + 30
                 elif get_time() - server.kobby.time <= 3:
                     if server.kobby.face_dir > 0:
-                        return server.kobby.sx, server.kobby.sy - 40, server.kobby.sx + 150, server.kobby.sy + 40
+                        return server.kobby.sx, server.kobby.sy - 30, server.kobby.sx + 140, server.kobby.sy + 30
                     else:
-                        return server.kobby.sx - 150, server.kobby.sy - 40, server.kobby.sx, server.kobby.sy + 40
+                        return server.kobby.sx - 140, server.kobby.sy - 30, server.kobby.sx, server.kobby.sy + 30
                 else:
                     if server.kobby.face_dir > 0:
                         return 0, 0, 0, 0
@@ -971,10 +971,10 @@ class Kobby:
                     if self.y > 300:
                         self.ground = False
                         self.y -= self.gravity * game_framework.frame_time
-                    elif self.y <= 300 and self.y > 297:
+                    elif self.y <= 300 and self.y > 290:
                         self.ground = True
                         self.y = 300
-                    elif self.y <= 297 and self.y > 200 - 55:
+                    elif self.y <= 295 and self.y > 200 - 55:
                         self.ground = False
                         self.y -= self.gravity * game_framework.frame_time
                     elif self.y <= 200 - 55:
@@ -984,7 +984,7 @@ class Kobby:
                     if self.y > 235:
                         self.ground = False
                         self.y -= self.gravity * game_framework.frame_time
-                    elif self.y <= 235 and self.y > 232:
+                    elif self.y <= 235 and self.y > 225:
                         self.ground = True
                         self.y = 235
                     elif self.y <= 232 and self.y > 200 - 55:
@@ -997,7 +997,7 @@ class Kobby:
                     if self.y > 325:
                         self.ground = False
                         self.y -= self.gravity * game_framework.frame_time
-                    elif self.y <= 325 and self.y > 322:
+                    elif self.y <= 325 and self.y > 315:
                         self.ground = True
                         self.y = 325
                     elif self.y <= 322 and self.y > 200 - 55:
@@ -1041,7 +1041,7 @@ class Kobby:
                     else:
                         self.x = self.past_x - 1
                     self.ground = True
-                    if ((self.x >= 901 and self.x < 1199)):
+                    if ((self.x >= 901 and self.x < 1199) or (self.x >= 1741 and self.x < 1849) or (self.x >= 1971 and self.x < 2084)):
                         self.y = 270
             elif ((self.x >= 1200 and self.x < 1300)):
                 if self.y > 270 - ((self.x - 1200)):
@@ -1055,7 +1055,7 @@ class Kobby:
                     if self.y > 300:
                         self.ground = False
                         self.y -= self.gravity * game_framework.frame_time
-                    elif self.y <= 300 and self.y > 297:
+                    elif self.y <= 300 and self.y > 290:
                         self.ground = True
                         self.y = 300
                     elif self.y <= 297 and self.y > 170:
@@ -1082,7 +1082,7 @@ class Kobby:
                 if self.y > 110:
                     self.ground = False
                     self.y -= self.gravity * game_framework.frame_time
-                elif self.y <= 110 and self.y > 108:
+                elif self.y <= 110 and self.y > 100:
                     self.y = 110
                     self.ground = True
                 else:
@@ -1114,7 +1114,7 @@ class Kobby:
                     if self.y > 295:
                         self.ground = False
                         self.y -= self.gravity * game_framework.frame_time
-                    elif self.y <= 295 and self.y > 292:
+                    elif self.y <= 295 and self.y > 285:
                         self.ground = True
                         self.y = 295
                     elif self.y <= 292 and self.y > 210:

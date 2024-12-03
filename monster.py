@@ -173,14 +173,13 @@ class Monster:
                 self.frame = (self.frame + 8 * ACTION_PER_TIME * game_framework.frame_time) % 8
 
         if self.action == 1: # 죽을떄
+            game_world.remove_collisions_object(Attack)
             self.state_machine.add_event(('TIME_OUT', 0))
             self.frame = (self.frame + 2 * ACTION_DEAD_PER_TIME * game_framework.frame_time)
             if self.number == 0 or self.number == 7 or self.number == 5 or self.number == 2 or self.number == 3 or self.number == 4 or self.number == 6:
-                game_world.remove_collisions_object(Attack)
                 if self.frame > 2:
                     game_world.remove_object(self)
             if self.number == 1:
-                game_world.remove_collisions_object(Attack)
                 if self.frame > 3:
                     game_world.remove_object(self)
 
@@ -684,6 +683,7 @@ class Monster:
                 elif self.number == 6 or self.number == 7:
                     server.kobby.food_type = 4
                     server.kobby.star_type = 4
+                game_world.remove_collisions_object(Attack)
                 game_world.remove_object(self)
                 server.kobby.suction = False
 
