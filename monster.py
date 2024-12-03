@@ -29,7 +29,7 @@ TIME_PER_ACTION_DEAD = 10.0
 ACTION_DEAD_PER_TIME = 1.0 / TIME_PER_ACTION
 FRAMES_PER_ACTION_DEAD = 12.0
 
-GRAVITY_SPEED_KMPH = 9.8
+GRAVITY_SPEED_KMPH = 2
 GRAVITY_SPEED_MPM = (GRAVITY_SPEED_KMPH * 1000.0 / 60.0)
 GRAVITY_SPEED_MPS = (GRAVITY_SPEED_MPM / 60.0)
 GRAVITY_SPEED_PPS = (GRAVITY_SPEED_MPS * PIXEL_PER_METER)
@@ -242,6 +242,11 @@ class Monster:
                     self.action = 0
                     self.frame = 0
 
+        # 몬스터 낙사
+        if self.y < -50:
+            game_world.remove_collisions_object(Attack)
+            game_world.remove_object(self)
+
 
         # 중력
         if self.ground == False:
@@ -334,7 +339,7 @@ class Monster:
                     if self.y > 300:
                         self.ground = False
                         self.y -= self.gravity * game_framework.frame_time
-                    elif self.y <= 300 and self.y > 297:
+                    elif self.y <= 300 and self.y > 290:
                         self.ground = True
                         self.y = 300
                     elif self.y <= 297 and self.y > 200 - 55:
@@ -347,7 +352,7 @@ class Monster:
                     if self.y > 235:
                         self.ground = False
                         self.y -= self.gravity * game_framework.frame_time
-                    elif self.y <= 235 and self.y > 232:
+                    elif self.y <= 235 and self.y > 225:
                         self.ground = True
                         self.y = 235
                     elif self.y <= 232 and self.y > 200 - 55:
@@ -360,7 +365,7 @@ class Monster:
                     if self.y > 325:
                         self.ground = False
                         self.y -= self.gravity * game_framework.frame_time
-                    elif self.y <= 325 and self.y > 322:
+                    elif self.y <= 325 and self.y > 315:
                         self.ground = True
                         self.y = 325
                     elif self.y <= 322 and self.y > 200 - 55:
@@ -422,7 +427,7 @@ class Monster:
                     if self.y > 300:
                         self.ground = False
                         self.y -= self.gravity * game_framework.frame_time
-                    elif self.y <= 300 and self.y > 297:
+                    elif self.y <= 300 and self.y > 290:
                         self.ground = True
                         self.y = 300
                     elif self.y <= 297 and self.y > 170:
@@ -449,7 +454,7 @@ class Monster:
                 if self.y > 110:
                     self.ground = False
                     self.y -= self.gravity * game_framework.frame_time
-                elif self.y <= 110 and self.y > 108:
+                elif self.y <= 110 and self.y > 100:
                     self.y = 110
                     self.ground = True
                 else:
@@ -483,7 +488,7 @@ class Monster:
                     if self.y > 295:
                         self.ground = False
                         self.y -= self.gravity * game_framework.frame_time
-                    elif self.y <= 295 and self.y > 292:
+                    elif self.y <= 295 and self.y > 285:
                         self.ground = True
                         self.y = 295
                     elif self.y <= 292 and self.y > 210:

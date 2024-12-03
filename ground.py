@@ -45,6 +45,7 @@ class Ground:
         self.object = object
         self.frame = 0
         self.all_catch = False
+        self.catch = 0
         self.stage = stage
 
     def update(self):
@@ -58,6 +59,10 @@ class Ground:
             self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 4
         elif server.kobby.stage == 4:
             self.frame = (self.frame + FRAMES_PER_ACTION * 2 * ACTION_PER_TIME * game_framework.frame_time) % 12
+
+        if self.stage == 3:
+            if self.catch >= 7:
+                self.all_catch = True
 
         self.window_left = clamp(0, int(server.kobby.x) - self.cw // 2, self.w - self.cw - 1)
         self.window_bottom = clamp(0, int(server.kobby.y) - self.ch // 2, self.h - self.ch - 1)

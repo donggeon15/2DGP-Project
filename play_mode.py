@@ -80,16 +80,58 @@ def setting_stage1():
     game_world.add_collision_pair('kobby:portal', None, portal)
 
 def setting_stage2():
-    remove_object(portal)
-    remove_object(stage1_monster_1)
-    remove_object(stage1_monster_2)
-    remove_object(stage1_monster_3)
-    remove_object(stage1_monster_4)
-    remove_object(stage1_monster_5)
-    remove_object(stage1_monster_6)
-    remove_object(ground1_grass)
+    #remove_object(portal)
+    #remove_object(stage1_monster_1)
+    #remove_object(stage1_monster_2)
+    #remove_object(stage1_monster_3)
+    #remove_object(stage1_monster_4)
+    #remove_object(stage1_monster_5)
+    #remove_object(stage1_monster_6)
+    #remove_object(ground1_grass)
 
     global portal2
+    global stage2_monster_1
+    global stage2_monster_2
+    global stage2_monster_3
+    global stage2_monster_4
+    global stage2_monster_5
+    global stage2_monster_6
+
+    stage2_monster_1 = Monster(1, 200, 600, 0.8, 2)
+    game_world.add_object(stage2_monster_1, 1)
+    game_world.add_collision_pair('kobby:monster', None, stage2_monster_1)
+    game_world.add_collision_pair('air:monster', None, stage2_monster_1)
+    game_world.add_collision_pair('kobby:food', None, stage2_monster_1)
+
+    stage2_monster_2 = Monster(3, 600, 400, 1.5, 2)
+    game_world.add_object(stage2_monster_2, 1)
+    game_world.add_collision_pair('kobby:monster', None, stage2_monster_2)
+    game_world.add_collision_pair('air:monster', None, stage2_monster_2)
+    game_world.add_collision_pair('kobby:food', None, stage2_monster_2)
+
+    stage2_monster_3 = Monster(5, 900, 650, 0.8, 2)
+    game_world.add_object(stage2_monster_3, 1)
+    game_world.add_collision_pair('kobby:monster', None, stage2_monster_3)
+    game_world.add_collision_pair('air:monster', None, stage2_monster_3)
+    game_world.add_collision_pair('kobby:food', None, stage2_monster_3)
+
+    stage2_monster_4 = Monster(4, 1200, 650, 2.5, 2)
+    game_world.add_object(stage2_monster_4, 1)
+    game_world.add_collision_pair('kobby:monster', None, stage2_monster_4)
+    game_world.add_collision_pair('air:monster', None, stage2_monster_4)
+    game_world.add_collision_pair('kobby:food', None, stage2_monster_4)
+
+    stage2_monster_5 = Monster(2, 2100, 600, 2.5, 2)
+    game_world.add_object(stage2_monster_5, 1)
+    game_world.add_collision_pair('kobby:monster', None, stage2_monster_5)
+    game_world.add_collision_pair('air:monster', None, stage2_monster_5)
+    game_world.add_collision_pair('kobby:food', None, stage2_monster_5)
+
+    stage2_monster_6 = Monster(6, 2500, 250, 3, 2)
+    game_world.add_object(stage2_monster_6, 1)
+    game_world.add_collision_pair('kobby:monster', None, stage2_monster_6)
+    game_world.add_collision_pair('air:monster', None, stage2_monster_6)
+    game_world.add_collision_pair('kobby:food', None, stage2_monster_6)
 
     portal2 = Portal(2945, 310, 0)
     game_world.add_object(portal2, 1)
@@ -97,9 +139,23 @@ def setting_stage2():
 
 
 def setting_stage3():
-    remove_object(portal2)
+    #remove_object(portal2)
+    #remove_object(stage2_monster_1)
+    #remove_object(stage2_monster_2)
+    #remove_object(stage2_monster_3)
+    #remove_object(stage2_monster_4)
+    #remove_object(stage2_monster_5)
+    #remove_object(stage2_monster_6)
 
     global portal3
+    global stage3_monster_1
+    global stage3_monster_2
+    global stage3_monster_3
+    global stage3_monster_4
+    global stage3_monster_5
+    global stage3_monster_6
+    global stage3_monster_7
+
 
     #portal3 = Portal(1500, 150, 1)
     #game_world.add_object(portal3, 1)
@@ -117,14 +173,14 @@ def init():
     game_world.add_collision_pair('kobby:portal', server.kobby, None)
     game_world.add_collision_pair('kobby:air', None, server.kobby)
 
-    server.background1 = Background(1)
+    server.background1 = Background(3)
     game_world.add_object(server.background1, 0)
-    server.kobby.stage = 1
-    server.ground1 = Ground(0, 1)
+    server.kobby.stage = 3
+    server.ground1 = Ground(0, 3)
     game_world.add_object(server.ground1, 0)
 
     # 스테이지 1 셋팅
-    setting_stage1()
+    setting_stage3()
 
 def finish():
     game_world.clear()

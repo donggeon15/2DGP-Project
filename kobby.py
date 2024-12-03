@@ -689,14 +689,14 @@ class Ability:
                         return server.kobby.sx - 80, server.kobby.sy - 30, server.kobby.sx, server.kobby.sy + 30
                 elif get_time() - server.kobby.time <= 2:
                     if server.kobby.face_dir > 0:
-                        return server.kobby.sx, server.kobby.sy - 30, server.kobby.sx + 110, server.kobby.sy + 30
+                        return server.kobby.sx, server.kobby.sy - 40, server.kobby.sx + 110, server.kobby.sy + 40
                     else:
-                        return server.kobby.sx - 110, server.kobby.sy - 30, server.kobby.sx, server.kobby.sy + 30
+                        return server.kobby.sx - 110, server.kobby.sy - 40, server.kobby.sx, server.kobby.sy + 40
                 elif get_time() - server.kobby.time <= 3:
                     if server.kobby.face_dir > 0:
-                        return server.kobby.sx, server.kobby.sy - 30, server.kobby.sx + 140, server.kobby.sy + 30
+                        return server.kobby.sx, server.kobby.sy - 45, server.kobby.sx + 140, server.kobby.sy + 45
                     else:
-                        return server.kobby.sx - 140, server.kobby.sy - 30, server.kobby.sx, server.kobby.sy + 30
+                        return server.kobby.sx - 140, server.kobby.sy - 45, server.kobby.sx, server.kobby.sy + 45
                 else:
                     if server.kobby.face_dir > 0:
                         return 0, 0, 0, 0
@@ -1283,6 +1283,7 @@ class Kobby:
             if self.stage == 2:
                 play_mode.setting_stage2()
             if self.stage == 3:
+                server.ground1.catch = 0
                 play_mode.setting_stage3()
             if self.stage == 4:
                 play_mode.setting_boss()
