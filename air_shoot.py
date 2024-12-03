@@ -221,16 +221,16 @@ class Air_shoot:
             if group == 'kobby:food':
                 if server.kobby.x < self.x:
                     self.past_x = self.x
-                    self.x -= AIRSHOOT_SPEED_PPS * 1.2 * game_framework.frame_time
+                    self.x -= AIRSHOOT_SPEED_PPS * 1.4 * game_framework.frame_time
                 else:
                     self.past_x = self.x
-                    self.x += AIRSHOOT_SPEED_PPS * 1.2 * game_framework.frame_time
+                    self.x += AIRSHOOT_SPEED_PPS * 1.4 * game_framework.frame_time
                 if server.kobby.y < self.y:
-                    self.y -= AIRSHOOT_SPEED_PPS * 1.2 * game_framework.frame_time
+                    self.y -= AIRSHOOT_SPEED_PPS * 1.4 * game_framework.frame_time
                 else:
-                    self.y += AIRSHOOT_SPEED_PPS * 1.2 * game_framework.frame_time
+                    self.y += AIRSHOOT_SPEED_PPS * 1.4 * game_framework.frame_time
 
-                if server.kobby.x <= self.x + 0.25 and server.kobby.x >= self.x - 0.25:
+                if server.kobby.x <= self.x + 3 and server.kobby.x >= self.x - 3:
                     server.kobby.food = True
                     if self.type == 0:
                         server.kobby.food_type = 0

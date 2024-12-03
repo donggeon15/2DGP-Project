@@ -9,6 +9,7 @@ import play_mode
 import server
 import title_mode
 from air_shoot import Air_shoot
+from game_framework import frame_time
 from state_machine import *
 
 #kobby pixel
@@ -727,14 +728,14 @@ class Ability:
                 return server.kobby.sx - 90, server.kobby.sy - 40, server.kobby.sx - 20, server.kobby.sy + 50
         elif server.kobby.mode == 3:
             if server.kobby.face_dir > 0:
-                return server.kobby.sx + 20, server.kobby.sy - 25, server.kobby.sx + 130, server.kobby.sy + 40
+                return server.kobby.sx + 20, server.kobby.sy - 25, server.kobby.sx + 110, server.kobby.sy + 40
             else:
-                return server.kobby.sx - 130, server.kobby.sy - 25, server.kobby.sx - 20, server.kobby.sy + 40
+                return server.kobby.sx - 110, server.kobby.sy - 25, server.kobby.sx - 20, server.kobby.sy + 40
         elif server.kobby.mode == 4:
             if server.kobby.face_dir > 0:
-                return server.kobby.sx + 20, server.kobby.sy - 25, server.kobby.sx + 130, server.kobby.sy + 40
+                return server.kobby.sx + 20, server.kobby.sy - 25, server.kobby.sx + 110, server.kobby.sy + 40
             else:
-                return server.kobby.sx - 130, server.kobby.sy - 25, server.kobby.sx - 20, server.kobby.sy + 40
+                return server.kobby.sx - 110, server.kobby.sy - 25, server.kobby.sx - 20, server.kobby.sy + 40
 
     @staticmethod
     def handle_collision(kobby, group):
@@ -779,7 +780,7 @@ class Kobby:
     first = None
     def __init__(self):
         self.x = 0
-        self.y = 800
+        self.y = 100
         self.past_x = 0
         self.gravity = 1
         self.food = False
@@ -791,6 +792,8 @@ class Kobby:
         self.star_type = 0
         self.face_dir = 0
         self.collision_size = 20
+        self.time = 0
+        self.time2 = 0
         self.d_time = 0
         self.w_time = 0
         self.a_time = 0
@@ -799,7 +802,8 @@ class Kobby:
         self.suction = False
         self.no_damage = False
         self.no_damage_time = 0
-        self.flink_time = 0
+        self.flink = False
+        self.flink_time = 0.0
         self.stage = 1
         self.hp = 3    # 하트 하나당 피통
         self.heart = 3 # 총 하트 갯수
@@ -865,14 +869,12 @@ class Kobby:
 
         # 무적시 깜빡 깜빡
         if self.no_damage == True:
-            if self.frame > -100:
-                self.frame -= 200
-            if get_time() - self.flink_time > 0.0025:
-                self.frame += 200
+            self.flink = True
+            if get_time() - self.flink_time > game_framework.frame_time:
+                self.flink = False
                 self.flink_time = get_time()
         else:
-            if self.frame < -100:
-                self.frame += 200
+            self.flink = False
 
         # 중력
         if self.ground == False:
@@ -1199,7 +1201,9 @@ class Kobby:
 
 
     def draw(self):
-        self.state_machine.draw()
+        if self.flink == False:
+            self.state_machine.draw()
+
 
         if self.hp == 3:
             self.hp_image1.draw(100, 550, 162, 56)
@@ -1278,3 +1282,7 @@ class Kobby:
             server.background1.stage += 1
             if self.stage == 2:
                 play_mode.setting_stage2()
+            if self.stage == 3:
+                play_mode.setting_stage3()
+            if self.stage == 4:
+                play_mode.setting_boss()

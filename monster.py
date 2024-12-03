@@ -176,13 +176,11 @@ class Monster:
             self.state_machine.add_event(('TIME_OUT', 0))
             self.frame = (self.frame + 2 * ACTION_DEAD_PER_TIME * game_framework.frame_time)
             if self.number == 0 or self.number == 7 or self.number == 5 or self.number == 2 or self.number == 3 or self.number == 4 or self.number == 6:
-                if Attack in game_world.objects[1]:
-                    game_world.remove_collisions_object(Attack)
+                game_world.remove_collisions_object(Attack)
                 if self.frame > 2:
                     game_world.remove_object(self)
             if self.number == 1:
-                if Attack in game_world.objects[1]:
-                    game_world.remove_collisions_object(Attack)
+                game_world.remove_collisions_object(Attack)
                 if self.frame > 3:
                     game_world.remove_object(self)
 
@@ -660,16 +658,16 @@ class Monster:
         if group == 'kobby:food':
             if server.kobby.x < self.x:
                 self.past_x = self.x
-                self.x -= RUN_SPEED_PPS * 1.2 * game_framework.frame_time
+                self.x -= RUN_SPEED_PPS * 1.4 * game_framework.frame_time
             else:
                 self.past_x = self.x
-                self.x += RUN_SPEED_PPS * 1.2 * game_framework.frame_time
+                self.x += RUN_SPEED_PPS * 1.4 * game_framework.frame_time
             if server.kobby.y < self.y:
-                self.y -= RUN_SPEED_PPS * 1.2 * game_framework.frame_time
+                self.y -= RUN_SPEED_PPS * 1.4 * game_framework.frame_time
             else:
-                self.y += RUN_SPEED_PPS * 1.2 * game_framework.frame_time
+                self.y += RUN_SPEED_PPS * 1.4 * game_framework.frame_time
             server.kobby.suction = True
-            if server.kobby.x <= self.x + 0.5 and server.kobby.x >= self.x - 0.5:
+            if server.kobby.x <= self.x + 3 and server.kobby.x >= self.x - 3:
                 server.kobby.food = True
                 if self.number == 0 or self.number == 1:
                     server.kobby.food_type = 0
@@ -747,9 +745,9 @@ class Monster:
     def move_to_LR(self):
         self.past_x = self.x
         if self.number == 4:
-            self.x += self.dir * RUN_SPEED_PPS * 2 * game_framework.frame_time
+            self.x += self.dir * RUN_SPEED_PPS/2 * 2 * game_framework.frame_time
         else:
-            self.x += self.dir * RUN_SPEED_PPS * game_framework.frame_time
+            self.x += self.dir * RUN_SPEED_PPS/2 * game_framework.frame_time
         if get_time() - self.time > self.move_time:
             self.dir = -self.dir
             self.time = get_time()
@@ -773,9 +771,9 @@ class Monster:
 
         self.past_x = self.x
         if self.number == 1:
-            self.x += self.dir * 0.2 * RUN_SPEED_PPS * 2 * game_framework.frame_time
+            self.x += self.dir * 0.2 * RUN_SPEED_PPS/6 * 2 * game_framework.frame_time
         if self.number == 3:
-            self.x += self.dir * 0.4 * RUN_SPEED_PPS * 2 * game_framework.frame_time
+            self.x += self.dir * 0.4 * RUN_SPEED_PPS/6 * 2 * game_framework.frame_time
 
         if self.action == 0:
             self.action = 2

@@ -23,6 +23,8 @@ class Portal:
         self.sy = self.y - server.ground1.window_bottom
         if self.num == 0:
             return self.sx - 25, self.sy - 35, self.sx + 25, self.sy + 30
+        else:
+            return self.sx - 35, self.sy - 35, self.sx + 35, self.sy + 30
 
     def handle_collision(self, group, other):
         pass
