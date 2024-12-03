@@ -12,19 +12,19 @@ from behavior_tree import *
 from kobby import Ability
 from state_machine import StateMachine, time_out, attack
 
-# moster Run Speed
+# boss Run Speed
 PIXEL_PER_METER = (25.0 / 0.2)  # 25 pixel 20 cm
 RUN_SPEED_KMPH = 5.0  # Km / Hour
 RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
 RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
 RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
 
-# moster Action Speed
+# boss Action Speed
 TIME_PER_ACTION = 0.5
 ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
 FRAMES_PER_ACTION = 10.0
 
-# moster Action Dead
+# boss Action Dead
 TIME_PER_ACTION_DEAD = 10.0
 ACTION_DEAD_PER_TIME = 1.0 / TIME_PER_ACTION
 FRAMES_PER_ACTION_DEAD = 12.0
@@ -112,7 +112,7 @@ class Attack:
     def handle_collision(monster, group):
         pass
 
-class Monster:
+class Boss:
     images = None
     attack_range = None
 
@@ -122,28 +122,14 @@ class Monster:
         self.y = y
         self.ground = False
         self.gravity = 1
-        self.number = d #1 기본 몬스터 / 2.기본 몬스터2 / 3. 법사 몬스터 / 4. 검사 몬스터
-        # 5. 얼음몬스터1 / 6. 얼음몬스터2 / 7. 불꽃 몬스터1 / 8. 불꽃 몬스터2
-        if Monster.images is None:
-            self.nomal_monster_image = load_image('nomal_monster.png') # 일반 몬스터
-            self.nomal_monster_image2 = load_image('nomal_monster_2.png')
-            self.magic_monster_image = load_image('magic_monster.png')
-            self.sword_monster_image = load_image('sword_monster.png')
-            self.ice_monster_image = load_image('ice_monster_1.png')
-            self.ice_monster_image2 = load_image('ice_monster_2.png') # 눈사람
-            self.fire_monster_image = load_image('fire_monster_1.png')
-            self.fire_monster_image2 = load_image('fire_monster_2.png') #불꽃 돼지
         self.size = 200
         self.stage = stage
         self.action = 0 # 0: 걷기 1: 죽음 2: 공격
-        self.move_time = move_time
         self.collision_size_x = 20
         self.collision_size_y = 20
-        self.frame = random.randint(0, 9)
+        self.frame = 0
         self.dir = 1
         self.build_behavior_tree()
-        self.time = get_time()
-        self.attack_time = 0
         self.state_machine = StateMachine(self)
         self.state_machine.start(Walk)
         self.state_machine.set_transitions(
@@ -162,85 +148,6 @@ class Monster:
         else:
             self.x = clamp(25, self.x, 3000 - 25)
 
-        if self.action == 0: # 기본 돌아다니는
-            if self.number == 0 or self.number == 1 or self.number == 3:
-                self.frame = (self.frame + 5 * ACTION_PER_TIME * game_framework.frame_time) % 5
-            if self.number == 2 or self.number == 4 or self.number == 6:
-                self.frame = (self.frame + 4 * ACTION_PER_TIME * game_framework.frame_time) % 4
-            if self.number == 5:
-                self.frame = (self.frame + 3 * ACTION_PER_TIME * game_framework.frame_time) % 3
-            if self.number == 7:
-                self.frame = (self.frame + 8 * ACTION_PER_TIME * game_framework.frame_time) % 8
-
-        if self.action == 1: # 죽을떄
-            self.state_machine.add_event(('TIME_OUT', 0))
-            self.frame = (self.frame + 2 * ACTION_DEAD_PER_TIME * game_framework.frame_time)
-            if self.number == 0 or self.number == 7 or self.number == 5 or self.number == 2 or self.number == 3 or self.number == 4 or self.number == 6:
-                if self.frame > 2:
-                    game_world.remove_object(self)
-            if self.number == 1:
-                if self.frame > 3:
-                    game_world.remove_object(self)
-
-        if self.action == 2: # 공격할때
-            if self.number == 0:
-                self.frame = (self.frame + 8 * ACTION_PER_TIME * game_framework.frame_time)
-                if self.frame > 4:
-                    self.action = 0
-                    self.frame = 0
-            if self.number == 1:
-                self.state_machine.add_event(('ATTACK', 0))
-                self.collision_size_x = 20
-                self.frame = (self.frame + 8 * ACTION_PER_TIME * game_framework.frame_time)
-                if self.frame > 4:
-                    self.action = 0
-                    self.frame = 0
-                    self.state_machine.add_event(('TIME_OUT', 0))
-            if self.number == 2:
-                self.state_machine.add_event(('ATTACK', 0))
-                self.frame = ((self.frame - 3) + 8 * ACTION_PER_TIME * game_framework.frame_time) % 4 + 3
-                if get_time() - self.attack_time > 2.5:
-                    self.action = 0
-                    self.frame = 0
-                    self.state_machine.add_event(('TIME_OUT', 0))
-            if self.number == 3:
-                self.state_machine.add_event(('ATTACK', 0))
-                self.frame = (self.frame + 8 * ACTION_PER_TIME * 2 * game_framework.frame_time)
-                if self.frame > 8:
-                    self.action = 0
-                    self.frame = 0
-                    self.state_machine.add_event(('TIME_OUT', 0))
-            if self.number == 4:
-                self.state_machine.add_event(('ATTACK', 0))
-                self.frame = ((self.frame - 1) + 8 * ACTION_PER_TIME * game_framework.frame_time) % 7 + 1
-                if get_time() - self.attack_time > 0.05:
-                    self.action = 0
-                    self.frame = 0
-                    self.collision_size_x = 20
-                    self.collision_size_y = 20
-                    self.state_machine.add_event(('TIME_OUT', 0))
-            if self.number == 5:
-                self.frame = (self.frame + 8 * ACTION_PER_TIME/4 * game_framework.frame_time)
-                if self.frame > 3:
-                    ice = Air_shoot(self.x, self.y, self.dir, 3)
-                    game_world.add_object(ice, 1)
-                    game_world.add_collision_pair('kobby:air', ice, None)
-                    self.action = 0
-                    self.frame = 0
-            if self.number == 6:
-                self.frame = (self.frame + 8 * ACTION_PER_TIME * 2 * game_framework.frame_time) % 4
-                if get_time() - self.attack_time > 0.05:
-                    self.action = 0
-                    self.frame = 0
-            if self.number == 7:
-                self.frame = (self.frame + 8 * ACTION_PER_TIME/4 * game_framework.frame_time)
-                if self.frame > 3:
-                    fire = Air_shoot(self.x, self.y, self.dir, 2)
-                    game_world.add_object(fire, 1)
-                    game_world.add_collision_pair('kobby:air', fire, None)
-                    self.action = 0
-                    self.frame = 0
-
 
         # 중력
         if self.ground == False:
@@ -252,8 +159,6 @@ class Monster:
         else:
             self.gravity = 1
 
-        if self.number == 6:
-            self.gravity = 0
 
         # 스테이지 1 몬스터
         if self.stage == 1:
@@ -519,116 +424,6 @@ class Monster:
     def draw(self):
         self.state_machine.draw()
 
-        if server.ground1.stage == 4:
-            sx = self.x
-            sy = self.y
-        else:
-            sx = self.x - server.ground1.window_left
-            sy = self.y - server.ground1.window_bottom
-        if self.dir < 0:
-            if self.action == 0:  # 기본
-                if self.number == 0:
-                    self.nomal_monster_image.clip_composite_draw(37 * int(self.frame), 105, 37, 35, 0, 'h', sx, sy + 3, 55, 52)
-                if self.number == 1:
-                    self.nomal_monster_image2.clip_composite_draw(35 * int(self.frame), 66, 35, 40, 0, 'h', sx, sy + 10, 70, 80)
-                if self.number == 2:
-                    self.magic_monster_image.clip_composite_draw(30 * int(self.frame), 75, 30, 30, 0, 'h', sx, sy + 3, 60, 60)
-                if self.number == 3:
-                    self.sword_monster_image.clip_composite_draw(30 * int(self.frame), 64, 30, 30, 0, 'h', sx, sy + 5, 60, 60)
-                if self.number == 4:
-                    self.ice_monster_image.clip_draw(32 * int(self.frame), 62, 32, 30, sx, sy + 5, 64, 60)
-                if self.number == 5:
-                    self.ice_monster_image2.clip_composite_draw(32 * int(self.frame), 34, 32, 34, 0, 'h', sx, sy + 10, 64, 68)
-                if self.number == 6:
-                    self.fire_monster_image.clip_composite_draw(28 * int(self.frame), 52, 28, 26, 0, 'h', sx, sy, 56, 52)
-                if self.number == 7:
-                    self.fire_monster_image2.clip_draw(28 * int(self.frame), 56, 28, 28, sx, sy + 5, 56, 56)
-            if self.action == 1:  # 죽을때
-                if self.number == 0:
-                    self.nomal_monster_image.clip_composite_draw(37 * int(self.frame), 70, 37, 35, 0, 'h', sx, sy, 55, 52)
-                if self.number == 1:
-                    self.nomal_monster_image2.clip_composite_draw(36 * int(self.frame), 30, 36, 36, 0, 'h', sx, sy + 10, 72, 72)
-                if self.number == 2:
-                    self.magic_monster_image.clip_composite_draw(0 * int(self.frame), 45, 30, 30, 0, 'h', sx, sy + 3, 60, 60)
-                if self.number == 3:
-                    self.sword_monster_image.clip_composite_draw(30 * int(self.frame), 34, 30, 30, 0, 'h', sx, sy + 5, 60, 60)
-                if self.number == 4:
-                    self.ice_monster_image.clip_draw(32 * int(self.frame), 32, 32, 30, sx, sy + 5, 64, 60)
-                if self.number == 5:
-                    self.ice_monster_image2.clip_composite_draw(0 * int(self.frame), 0, 32, 34, 0, 'h', sx, sy + 10, 64, 68)
-                if self.number == 6:
-                    self.fire_monster_image.clip_composite_draw(28 * int(self.frame), 26, 28, 26, 0, 'h', sx, sy, 56, 52)
-                if self.number == 7:
-                    self.fire_monster_image2.clip_draw(28 * int(self.frame), 28, 28, 28, sx, sy + 5, 56, 56)
-            if self.action == 2:  # 공격
-                if self.number == 0:
-                    self.nomal_monster_image.clip_composite_draw(37 * int(self.frame), 0, 37, 70, 0, 'h', sx, sy, 50, 105)
-                if self.number == 1:
-                    self.nomal_monster_image2.clip_composite_draw(90 * int(self.frame), 0, 90, 30, 0, 'h', sx - 40, sy, 180, 60)
-                if self.number == 2:
-                    self.magic_monster_image.clip_composite_draw(70 * int(self.frame), 0, 70, 45, 0, 'h', sx - 30, sy + 3, 140, 90)
-                if self.number == 3:
-                    self.sword_monster_image.clip_composite_draw(65 * int(self.frame), 0, 65, 34, 0, 'h', sx - 20, sy + 5, 130, 68)
-                if self.number == 4:
-                    self.ice_monster_image.clip_draw(64 * int(self.frame), 0, 64, 32, sx - 30, sy + 5, 128, 64)
-                if self.number == 5:
-                    self.ice_monster_image2.clip_composite_draw(32 * int(self.frame) + 1, 0, 32, 34, 0, 'h', sx, sy + 10, 64, 68)
-                if self.number == 6:
-                    self.fire_monster_image.clip_composite_draw(28 * int(self.frame), 0, 28, 26, 0, 'h', sx, sy, 56, 52)
-                if self.number == 7:
-                    self.fire_monster_image2.clip_draw(28 * int(self.frame), 0, 28, 28, sx, sy + 5, 56, 56)
-        else:
-            if self.action == 0:
-                if self.number == 0:
-                    self.nomal_monster_image.clip_draw(37 * int(self.frame), 105, 37, 35, sx, sy + 3, 55, 52)
-                if self.number == 1:
-                    self.nomal_monster_image2.clip_draw(35 * int(self.frame), 66, 35, 40, sx, sy + 10, 70, 80)
-                if self.number == 2:
-                    self.magic_monster_image.clip_draw(30 * int(self.frame), 75, 30, 30, sx, sy + 3, 60, 60)
-                if self.number == 3:
-                    self.sword_monster_image.clip_draw(30 * int(self.frame), 64, 30, 30, sx, sy + 5, 60, 60)
-                if self.number == 4:
-                    self.ice_monster_image.clip_composite_draw(32 * int(self.frame), 62, 32, 30, 0, 'h', sx, sy + 5, 64, 60)
-                if self.number == 5:
-                    self.ice_monster_image2.clip_draw(32 * int(self.frame), 34, 32, 34, sx, sy + 10, 64, 68)
-                if self.number == 6:
-                    self.fire_monster_image.clip_draw(28 * int(self.frame), 52, 28, 26, sx, sy, 56, 52)
-                if self.number == 7:
-                    self.fire_monster_image2.clip_composite_draw(28 * int(self.frame), 56, 28, 28, 0, 'h', sx, sy + 5, 56, 56)
-            if self.action == 1:
-                if self.number == 0:
-                    self.nomal_monster_image.clip_draw(37 * int(self.frame), 70, 37, 35, sx, sy, 55, 52)
-                if self.number == 1:
-                    self.nomal_monster_image2.clip_draw(36 * int(self.frame), 30, 36, 36, sx, sy + 10, 72, 72)
-                if self.number == 2:
-                    self.magic_monster_image.clip_draw(0 * int(self.frame), 45, 30, 30, sx, sy + 3, 60, 60)
-                if self.number == 3:
-                    self.sword_monster_image.clip_draw(30 * int(self.frame), 34, 30, 30, sx, sy + 5, 60, 60)
-                if self.number == 4:
-                    self.ice_monster_image.clip_composite_draw(32 * int(self.frame), 32, 32, 30, 0, 'h', sx, sy + 5, 64, 60)
-                if self.number == 5:
-                    self.ice_monster_image2.clip_draw(0 * int(self.frame), 0, 32, 34, sx, sy + 10, 64, 68)
-                if self.number == 6:
-                    self.fire_monster_image.clip_draw(28 * int(self.frame), 26, 28, 26, sx, sy, 56, 52)
-                if self.number == 7:
-                    self.fire_monster_image2.clip_composite_draw(28 * int(self.frame), 28, 28, 28, 0, 'h', sx, sy + 5, 56, 56)
-            if self.action == 2:
-                if self.number == 0:
-                    self.nomal_monster_image.clip_draw(37 * int(self.frame), 0, 37, 70, sx, sy, 50, 105)
-                if self.number == 1:
-                    self.nomal_monster_image2.clip_draw(90 * int(self.frame), 0, 90, 30, sx + 40, sy, 180, 60)
-                if self.number == 2:
-                    self.magic_monster_image.clip_draw(70 * int(self.frame), 0, 70, 45, sx + 30, sy + 3, 140, 90)
-                if self.number == 3:
-                    self.sword_monster_image.clip_draw(65 * int(self.frame), 0, 65, 34, sx + 20, sy + 5, 130, 68)
-                if self.number == 4:
-                    self.ice_monster_image.clip_composite_draw(64 * int(self.frame), 0, 64, 32, 0, 'h', sx + 30, sy + 5, 128, 64)
-                if self.number == 5:
-                    self.ice_monster_image2.clip_draw(32 * int(self.frame) + 1, 0, 32, 34, sx, sy + 10, 64, 68)
-                if self.number == 6:
-                    self.fire_monster_image.clip_draw(28 * int(self.frame), 0, 28, 26, sx, sy, 56, 52)
-                if self.number == 7:
-                    self.fire_monster_image2.clip_composite_draw(28 * int(self.frame), 0, 28, 28, 0, 'h', sx, sy + 5, 56, 56)
         draw_rectangle(*self.get_bb())
 
     def handle_event(self, event):
@@ -644,45 +439,8 @@ class Monster:
 
 
     def handle_collision(self, group, other):
-        if group == 'air:monster':
-            if self.action == 0 or self.action == 2:
-                self.action = 1
-                self.frame = 0
-        if group == 'kobby:monster':
-            if self.number == 0:
-                if self.action == 0:
-                    self.action = 2
-                    self.frame = 0
-        if group == 'kobby:food':
-            if server.kobby.x < self.x:
-                self.past_x = self.x
-                self.x -= RUN_SPEED_PPS * 1.2 * game_framework.frame_time
-            else:
-                self.past_x = self.x
-                self.x += RUN_SPEED_PPS * 1.2 * game_framework.frame_time
-            if server.kobby.y < self.y:
-                self.y -= RUN_SPEED_PPS * 1.2 * game_framework.frame_time
-            else:
-                self.y += RUN_SPEED_PPS * 1.2 * game_framework.frame_time
+        pass
 
-            if server.kobby.x <= self.x + 0.5 and server.kobby.x >= self.x - 0.5:
-                server.kobby.food = True
-                if self.number == 0 or self.number == 1:
-                    server.kobby.food_type = 0
-                    server.kobby.star_type = 0
-                elif self.number == 2:
-                    server.kobby.food_type = 1
-                    server.kobby.star_type = 1
-                elif self.number == 3:
-                    server.kobby.food_type = 2
-                    server.kobby.star_type = 2
-                elif self.number == 4 or self.number == 5:
-                    server.kobby.food_type = 3
-                    server.kobby.star_type = 3
-                elif self.number == 6 or self.number == 7:
-                    server.kobby.food_type = 4
-                    server.kobby.star_type = 4
-                game_world.remove_object(self)
 
 
 
@@ -803,40 +561,9 @@ class Monster:
         c5 = Condition('커비 근처에 있는가?', self.is_kobby_nearby, 1.5)
         a5 = Action('커비 향해 이동 공격', self.attack_to_move_kobby)
 
-        if self.number == 0:
-            root = move_repeat = Sequence('move repeat', a1)
-            root = chase_kobby = Sequence('커비를 추적', c2, a2)
-            root = monster0 = Selector("일반 Ai", chase_kobby, move_repeat)
-        if self.number == 1:
-            root = move_repeat = Sequence('move repeat', a1)
-            root = attack_move_kobby = Sequence('커비를 이동 공격', c3, a5)
-            root = monster1 = Selector('창 Ai', attack_move_kobby, move_repeat)
-        if self.number == 2:
-            root = move_repeat = Sequence('move repeat', a1)
-            root = change_attack = Sequence('커비를 공격', c4, a4, a1)
-            root = monster2 = Selector('마법사 Ai', change_attack, move_repeat)
-        if self.number == 3:
-            root = move_repeat = Sequence('move repeat', a1)
-            root = attack_move_kobby = Sequence('커비를 이동 공격', c5, a5)
-            root = monster1 = Selector('검 Ai', attack_move_kobby, move_repeat)
-        if self.number == 4:
-            root = move_repeat = Sequence('move repeat', a1)
-            root = change_attack = Sequence('커비를 공격', c1, a4)
-            root = monster2 = Selector('팽귄 Ai', change_attack, move_repeat)
-        if self.number == 5:
-            root = move_repeat = Sequence('move repeat', a1)
-            root = attack_kobby = Sequence('커비를 공격', c3, a3)
-            root = monster5 = Selector('눈사람 Ai', attack_kobby, move_repeat)
-        if self.number == 6:
-            root = move_repeat = Sequence('move repeat', a1)
-            root = chase_kobby = Sequence('커비를 추적', c2, a2)
-            root = monster0 = Selector("불꽃 Ai", chase_kobby, move_repeat)
-        if self.number == 7:
-            root = move_repeat = Sequence('move repeat', a1)
-            root = attack_kobby = Sequence('커비를 공격', c3, a3)
-            root = monster7 = Selector('불꽃 돼지 Ai', attack_kobby, move_repeat)
 
-        self.bt = BehaviorTree(root)
+
+        #self.bt = BehaviorTree(root)
 
 
     #a1 = Action('Set target location', self.set_target_location, 1000, 1000)

@@ -176,17 +176,17 @@ class Walk:
         elif kobby.face_dir == -1:
             if kobby.mode == 0:
                 if kobby.food == True:
-                    kobby.image1_2.clip_composite_draw(26 * int(kobby.frame), 84, 26, 26, 0, 'h', kobby.sx, kobby.sy, 52, 52)
+                    kobby.image1_2.clip_composite_draw(26 * int(kobby.frame), 84, 26, 26, 0, 'h', kobby.sx, kobby.sy,52, 52)
                 else:
-                    kobby.image.clip_composite_draw(25 * int(kobby.frame), 50, 25, 25, 0, 'h', kobby.sx, kobby.sy, 50, 50)
+                    kobby.image.clip_composite_draw(25 * int(kobby.frame), 50, 25, 25, 0, 'h', kobby.sx, kobby.sy, 50,50)
             elif kobby.mode == 1:
-                kobby.image2.clip_composite_draw(25 * int(kobby.frame), 60, 25, 25, 0, 'h', kobby.sx + 2, kobby.sy + 2, 50, 50)
+                kobby.image2.clip_composite_draw(25 * int(kobby.frame), 60, 25, 25, 0, 'h', kobby.sx + 2, kobby.sy + 2,50, 50)
             elif kobby.mode == 2:
-                kobby.image3.clip_composite_draw(32 * int(kobby.frame), 80, 32, 40, 0, 'h', kobby.sx + 7, kobby.sy + 17, 64, 80)
+                kobby.image3.clip_composite_draw(32 * int(kobby.frame), 80, 32, 40, 0, 'h', kobby.sx + 7, kobby.sy + 17,64, 80)
             elif kobby.mode == 3:
-                kobby.image4.clip_composite_draw(25 * int(kobby.frame), 56, 25, 28, 0, 'h', kobby.sx, kobby.sy + 5, 50, 56)
+                kobby.image4.clip_composite_draw(25 * int(kobby.frame), 56, 25, 28, 0, 'h', kobby.sx, kobby.sy + 5, 50,56)
             elif kobby.mode == 4:
-                kobby.image5.clip_composite_draw(25 * int(kobby.frame), 72, 25, 40, 0, 'h', kobby.sx, kobby.sy + 15, 50, 80)
+                kobby.image5.clip_composite_draw(25 * int(kobby.frame), 72, 25, 40, 0, 'h', kobby.sx, kobby.sy + 15, 50,80)
 
 class Run:
     @staticmethod
@@ -330,7 +330,6 @@ class Squashed:
                 kobby.image4.clip_composite_draw(25 * int(kobby.frame), 84, 25, 28, 0, 'h', kobby.sx, kobby.sy + 5, 50, 56)
             elif kobby.mode == 4:
                 kobby.image5.clip_composite_draw(25 * int(kobby.frame), 112, 25, 40, 0, 'h', kobby.sx, kobby.sy + 15, 50, 80)
-        pass
 
 class Jump:
     @staticmethod
@@ -546,6 +545,7 @@ class Ability:
 
     @staticmethod
     def exit(kobby, e):
+        kobby.suction = False
         game_world.remove_collisions_object(Ability)
         pass
 
@@ -796,8 +796,10 @@ class Kobby:
         self.a_time = 0
         self.ice_time = False
         self.temp = 0
+        self.suction = False
         self.no_damage = False
         self.no_damage_time = 0
+        self.flink_time = 0
         self.stage = 1
         self.hp = 3    # 하트 하나당 피통
         self.heart = 3 # 총 하트 갯수
@@ -860,6 +862,17 @@ class Kobby:
         # 3초 무적
         if get_time() - self.no_damage_time > 3:
             self.no_damage = False
+
+        # 무적시 깜빡 깜빡
+        if self.no_damage == True:
+            if self.frame > -100:
+                self.frame -= 200
+            if get_time() - self.flink_time > 0.0025:
+                self.frame += 200
+                self.flink_time = get_time()
+        else:
+            if self.frame < -100:
+                self.frame += 200
 
         # 중력
         if self.ground == False:
@@ -1220,11 +1233,12 @@ class Kobby:
 
     def handle_collision(self, group, other):
         if group == 'kobby:monster':
-            if self.no_damage == False and (other.action == 0 or other.action == 2):
+            if self.no_damage == False and (other.action == 0 or other.action == 2) and self.suction == False:
                 self.state_machine.add_event(('HURT', 0))
                 self.hp -= 1
                 self.no_damage = True
                 self.no_damage_time = get_time()
+                self.flink_time = get_time()
                 if self.mode != 0 or self.food == True:
                     star = Air_shoot(self.x, self.y, random.choice([-1,1]), 4, self.star_type)
                     game_world.add_object(star, 1)
@@ -1238,11 +1252,12 @@ class Kobby:
                         game_framework.change_mode(title_mode)
                     self.hp = 3
         if group == 'kobby:air':
-            if self.no_damage == False:
+            if self.no_damage == False and self.suction == False:
                 self.state_machine.add_event(('HURT', 0))
                 self.hp -= 1
                 self.no_damage = True
                 self.no_damage_time = get_time()
+                self.flink_time = get_time()
                 if self.mode != 0 or self.food == True:
                     star = Air_shoot(self.x, self.y, random.choice([-1,1]), 4, self.star_type)
                     game_world.add_object(star, 1)
