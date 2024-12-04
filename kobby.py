@@ -119,6 +119,7 @@ class Idle:
 class Walk:
     @staticmethod
     def enter(kobby, e):
+        kobby.walk_sound.play(1)
         if right_down(e):
             kobby.face_dir = 1
         elif left_down(e):
@@ -192,6 +193,7 @@ class Walk:
 class Run:
     @staticmethod
     def enter(kobby, e):
+        kobby.run_sound.play(1)
         if double_right(e):
             kobby.face_dir = 1
         elif double_left(e):
@@ -246,6 +248,7 @@ class Squashed:
     @staticmethod
     def enter(kobby, e):
         if kobby.food == True:
+            kobby.change_sound.play(1)
             pass
         else:
             if right_down(e) or right_up(e) or kobby.face_dir == 1:
@@ -254,10 +257,12 @@ class Squashed:
                 kobby.face_dir = -1
             kobby.frame = 0
             kobby.action = 1
+            kobby.collision_size = 0
             kobby.time = get_time()
 
     @staticmethod
     def exit(kobby, e):
+        kobby.collision_size = 20
         if left_up(e) or right_up(e):
             down_up(e)
         pass
@@ -338,6 +343,7 @@ class Jump:
         kobby.jump_frame = 0
         kobby.now_state = e
         if down_k(e):
+            kobby.jump_sound.play(1)
             kobby.frame = 0
             kobby.y += 1
         if right_down(e):
@@ -417,15 +423,18 @@ class Balloon:
     @staticmethod
     def enter(kobby, e):
         if double_up(e):
+            kobby.balloon_sound.play(1)
             kobby.temp = 1
         if kobby.action == 4:
             if up_down(e):
                 kobby.y_dir = 1
+                kobby.balloon_sound.play(1)
             if down_down(e):
                 kobby.y_dir = -1
             if up_up(e) or down_up(e):
                 kobby.y_dir = 0
             if down_j(e):
+                kobby.air_sound.play(1)
                 kobby.temp = 0
                 kobby.frame = 0
 
@@ -513,18 +522,23 @@ class Ability:
             kobby.temp = 0
             if kobby.food == True:
                 kobby.time = 100.0
+                kobby.star_sound.play(1)
             else:
+                #kobby.suction_sound.play(1)
                 kobby.time = get_time()
                 if up_j(e):
                     kobby.state_machine.add_event(('TIME_OUT', 0))
         elif kobby.mode == 1:
+            kobby.magic_sound.play(1)
             kobby.temp = 3
             kobby.frame = 2
         elif kobby.mode == 2:
             if kobby.ground == True:
+                kobby.sword_sound.play(1)
                 kobby.temp = 3
                 kobby.frame = 0
             else:
+                kobby.sword2_sound.play(1)
                 kobby.temp = 4
                 kobby.frame = 0
         elif kobby.mode == 3:
@@ -564,6 +578,7 @@ class Ability:
                     kobby.food = False
             else:
                 if get_time() - kobby.time <= 3:
+                    kobby.suction_sound.play(1)
                     if kobby.frame < 7:
                         kobby.frame = (kobby.frame + 5 * ACTION_PER_TIME * game_framework.frame_time)
                     if kobby.frame >= 6:
@@ -587,7 +602,7 @@ class Ability:
                 kobby.state_machine.add_event(('TIME_OUT', 0))
         if kobby.mode == 2: # 검사 모드
             if kobby.temp == 4:
-                if kobby.frame < 6:
+                if kobby.frame < 5:
                     kobby.frame = (kobby.frame + 10 * ACTION_PER_TIME * game_framework.frame_time)
                 if kobby.frame >= 5 and kobby.ground == True:
                     air = Air_shoot(kobby.x, kobby.y, kobby.face_dir, 1)
@@ -604,6 +619,7 @@ class Ability:
                     kobby.state_machine.add_event(('TIME_OUT', 0))
         if kobby.mode == 3: # 얼음 모드
             if kobby.ice_time == True:
+                kobby.ice_sound.play(1)
                 kobby.frame = (kobby.frame + 12 * ACTION_PER_TIME * game_framework.frame_time)
                 if kobby.frame > 9:
                     kobby.temp -= 1
@@ -617,6 +633,7 @@ class Ability:
                     kobby.state_machine.add_event(('TIME_OUT', 0))
         if kobby.mode == 4: # 불꽃 모드
             if kobby.ice_time == True:
+                kobby.fire_sound.play(1)
                 kobby.frame = (kobby.frame + 12 * ACTION_PER_TIME * game_framework.frame_time)
                 if kobby.frame > 9:
                     kobby.temp -= 1
@@ -746,13 +763,19 @@ class Ability:
                 server.kobby.temp = 1
                 server.kobby.frame = 0
 
-
-
 class Hurt:
     @staticmethod
     def enter(kobby, e):
         kobby.time = get_time()
         kobby.frame = 0
+        if kobby.damage_type == 0:
+            kobby.hit_sound_2.play(1)
+        elif kobby.damage_type == 2:
+            kobby.hit_sound_3.play(1)
+        elif kobby.damage_type == 3:
+            kobby.hit_sound_4.play(1)
+        else:
+            kobby.hit_sound_1.play(1)
         if kobby.face_dir == 1:
             kobby.x -= 20
             kobby.y += 70
@@ -804,6 +827,7 @@ class Hurt:
 
 class Kobby:
     first = None
+    sound = None
     def __init__(self):
         self.x = 0
         self.y = 100
@@ -837,6 +861,41 @@ class Kobby:
         self.action = 0 # 0: 기본 상태 1: 찌그러진 2: 걷기 3: 뛰기 4: 풍선
         self.ground = False
         self.mode = 0 #mode 0: 기본 1: 마법사 2: 검사 3: 얼음 4: 불꽃
+        if Kobby.sound == None:
+            self.suction_sound = load_wav('suction.wav')
+            self.jump_sound = load_wav('jump.wav')
+            self.air_sound = load_wav('air.wav')
+            self.star_sound = load_wav('star.wav')
+            self.hit_sound_1 = load_wav('hit2.wav')
+            self.hit_sound_2 = load_wav('hit3.wav')
+            self.hit_sound_3 = load_wav('hit4.wav')
+            self.hit_sound_4 = load_wav('hit5.wav')
+            self.ice_sound = load_wav('hit5.wav')
+            self.balloon_sound = load_wav('balloon1.wav')
+            self.run_sound = load_wav('run.wav')
+            self.magic_sound= load_wav('magic.wav')
+            self.sword_sound = load_wav('sword.wav')
+            self.sword2_sound = load_wav('sword2.wav')
+            self.fire_sound = load_wav('hit2.wav')
+            self.walk_sound = load_wav('walk.wav')
+            self.change_sound = load_wav('change.wav')
+            self.suction_sound.set_volume(20)
+            self.jump_sound.set_volume(20)
+            self.air_sound.set_volume(20)
+            self.star_sound.set_volume(20)
+            self.hit_sound_1.set_volume(20)
+            self.hit_sound_2.set_volume(20)
+            self.hit_sound_3.set_volume(60)
+            self.hit_sound_4.set_volume(20)
+            self.ice_sound.set_volume(5)
+            self.balloon_sound.set_volume(60)
+            self.run_sound.set_volume(40)
+            self.magic_sound.set_volume(20)
+            self.sword_sound.set_volume(20)
+            self.sword2_sound.set_volume(20)
+            self.fire_sound.set_volume(5)
+            self.walk_sound.set_volume(10)
+            self.change_sound.set_volume(25)
         if Kobby.first == None:
             self.image=load_image('nomal_kobby_sheet.png')
             self.image1_1=load_image('nomal_kobby_sheet2.png')
@@ -908,10 +967,17 @@ class Kobby:
             if self.action == 4:
                 self.gravity = 98
             else:
+                if self.state_machine.cur_state == Ability:
+                    if self.mode == 2:
+                        self.gravity = 400
+                    else:
+                        self.gravity  = 150
                 if self.gravity <= 1200:
                     self.gravity += (1 * GRAVITY_SPEED_PPS * 7 * game_framework.frame_time)
         else:
             self.gravity = 1
+
+
 
         # 낙사
         if self.y <= -50:
@@ -1257,10 +1323,7 @@ class Kobby:
             game_world.add_collision_pair('air:monster', air, None)
 
     def get_bb(self):
-        if self.face_dir == 1:
-            return self.sx - 20, self.sy - 20, self.sx + self.collision_size, self.sy + 20
-        if self.face_dir == -1:
-            return self.sx - self.collision_size, self.sy - 20, self.sx + 20, self.sy + 20
+        return self.sx - 20, self.sy - 20, self.sx + 20, self.sy + self.collision_size
 
     def handle_collision(self, group, other):
         if group == 'kobby:monster':
@@ -1305,6 +1368,8 @@ class Kobby:
             self.stage += 1
             self.x = 0
             self.y = 800
+            self.no_damage = True
+            self.no_damage_time = get_time()
             server.ground1.stage += 1
             server.background1.stage += 1
             if self.stage == 2:

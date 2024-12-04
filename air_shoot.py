@@ -1,4 +1,4 @@
-from pico2d import load_image, draw_rectangle, get_time
+from pico2d import load_image, draw_rectangle, get_time, load_wav
 from pygame.examples.cursors import image
 
 import game_framework
@@ -18,6 +18,7 @@ class Air_shoot:
     image3 = None
     image4 = None
     image5 = None
+    sound = None
 
     def __init__(self, x=400, y=300, velocity = 1, air = 0, type = 0):
         if Air_shoot.image == None:
@@ -30,6 +31,9 @@ class Air_shoot:
             Air_shoot.image4 = load_image('ice_shoot.png')
         if Air_shoot.image5 == None:
             Air_shoot.image5 = load_image('star_shoot.png')
+        if Air_shoot.sound == None:
+            self.star_sound = load_wav('movestar.wav')
+            self.star_sound.set_volume(1)
         self.x, self.y, self.velocity, self.air = x, y, velocity, air
         self.past_x = x
         self.sx = self.x - server.ground1.window_left
@@ -95,6 +99,7 @@ class Air_shoot:
             if self.frame >= 6:
                 game_world.remove_object(self)
         if self.air == 4:
+            self.star_sound.play(1)
             self.frame = (self.frame + 4 * (1.0 / 0.5) * game_framework.frame_time) % 4
             if get_time() - self.time > 7:
                 game_world.remove_object(self)

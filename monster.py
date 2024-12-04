@@ -62,6 +62,13 @@ class Attack:
     @staticmethod
     def enter(monster, e):
         Attack.number = monster.number
+        if server.ground1.stage == 4:
+            Attack.sx = monster.x
+            Attack.sy = monster.y
+        else:
+            Attack.sx = monster.x - server.ground1.window_left
+            Attack.sy = monster.y - server.ground1.window_bottom
+
         game_world.add_collision_pair('kobby:air', Attack, None)
         if monster.number == 0 or monster.number == 1 or monster.number == 3:
             server.kobby.damage_type = 0
@@ -96,9 +103,9 @@ class Attack:
     def get_bb():
         if Attack.number == 1:
             if Attack.dir > 0:
-                return Attack.sx + 30, Attack.sy - 20, Attack.sx + 120, Attack.sy + 10
+                return Attack.sx + 30, Attack.sy - 20, Attack.sx + 110, Attack.sy + 10
             else:
-                return Attack.sx - 120, Attack.sy - 20, Attack.sx - 30, Attack.sy + 10
+                return Attack.sx - 110, Attack.sy - 20, Attack.sx - 30, Attack.sy + 10
         if Attack.number == 2:
             if Attack.dir > 0:
                 return Attack.sx + 40, Attack.sy - 30, Attack.sx + 90, Attack.sy + 30
@@ -122,10 +129,14 @@ class Attack:
 class Monster:
     images = None
     attack_range = None
+    sound = None
 
     def __init__(self, d = 0, x = 0, y = 90, move_time = 2, stage = 1):
         self.x = x
         self.past_x = x
+        if Monster.sound is None:
+            self.hit_sound = load_wav('hit.wav')
+            self.hit_sound.set_volume(20)
         self.y = y
         self.ground = False
         self.gravity = 1
@@ -662,6 +673,7 @@ class Monster:
 
     def handle_collision(self, group, other):
         if group == 'air:monster':
+            self.hit_sound.play(1)
             if self.action == 0 or self.action == 2:
                 self.action = 1
                 self.frame = 0
@@ -736,7 +748,7 @@ class Monster:
             self.dir = 1
         distance = RUN_SPEED_PPS * game_framework.frame_time
         self.past_x = self.x
-        self.x += distance * math.cos(self.dir2)
+        self.x += distance * math.cos(self.dir2)/2
         if self.number == 6:
             self.y += distance * math.sin(self.dir2)
 

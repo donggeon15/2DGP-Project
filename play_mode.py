@@ -33,6 +33,7 @@ def setting_stage1():
     global stage1_monster_6
     global portal
 
+    server.ground1.bgm1.repeat_play()
     # 잔디
     ground1_grass = Ground(1)
     game_world.add_object(ground1_grass, 1)
@@ -97,6 +98,9 @@ def setting_stage2():
     global stage2_monster_5
     global stage2_monster_6
 
+    server.ground1.bgm1.stop()
+    server.ground1.bgm2.repeat_play()
+
     stage2_monster_1 = Monster(1, 200, 600, 0.8, 2)
     game_world.add_object(stage2_monster_1, 1)
     game_world.add_collision_pair('kobby:monster', None, stage2_monster_1)
@@ -149,6 +153,9 @@ def setting_stage3():
     remove_object(stage2_monster_6)
 
     server.ground1.catch = 0
+
+    server.ground1.bgm2.stop()
+    server.ground1.bgm3.repeat_play()
 
     global portal3
     global stage3_monster_1
@@ -221,6 +228,8 @@ def setting_boss():
     remove_object(stage3_monster_7)
     remove_object(stage3_monster_8)
 
+    server.ground1.bgm3.stop()
+    server.ground1.bgm4.repeat_play()
 
 def init():
     server.kobby = Kobby()
