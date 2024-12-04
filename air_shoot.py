@@ -33,7 +33,11 @@ class Air_shoot:
             Air_shoot.image5 = load_image('star_shoot.png')
         if Air_shoot.sound == None:
             self.star_sound = load_wav('movestar.wav')
-            self.star_sound.set_volume(1)
+            self.star_sound.set_volume(30)
+            self.fire_sound = load_wav('fire_shoot.wav')
+            self.fire_sound.set_volume(20)
+            self.ice_sound = load_wav('ice_shoot.wav')
+            self.ice_sound.set_volume(20)
         self.x, self.y, self.velocity, self.air = x, y, velocity, air
         self.past_x = x
         self.sx = self.x - server.ground1.window_left
@@ -41,7 +45,15 @@ class Air_shoot:
         self.frame = 0
         self.frame2 = 0
         self.type = type
+        self.sound_time = get_time()
         self.time = get_time()
+        if self.air == 4:
+            self.star_sound.play(1)
+        if self.air == 3:
+            self.ice_sound.play(1)
+        if self.air == 2:
+            self.fire_sound.play(1)
+
 
     def draw(self):
         draw_rectangle(*self.get_bb())
@@ -99,7 +111,9 @@ class Air_shoot:
             if self.frame >= 6:
                 game_world.remove_object(self)
         if self.air == 4:
-            self.star_sound.play(1)
+            if get_time() - self.sound_time > 1:
+                self.star_sound.play(1)
+                self.sound_time = get_time()
             self.frame = (self.frame + 4 * (1.0 / 0.5) * game_framework.frame_time) % 4
             if get_time() - self.time > 7:
                 game_world.remove_object(self)

@@ -136,7 +136,17 @@ class Monster:
         self.past_x = x
         if Monster.sound is None:
             self.hit_sound = load_wav('hit.wav')
-            self.hit_sound.set_volume(20)
+            self.hit_sound.set_volume(30)
+            self.magic_sound = load_wav('magicmonster.wav')
+            self.magic_sound.set_volume(20)
+            self.monster_hit = load_wav('monster_hit.wav')
+            self.monster_hit.set_volume(20)
+            self.sword = load_wav('sword.wav')
+            self.sword.set_volume(20)
+            self.ice = load_wav('ice.wav')
+            self.ice.set_volume(15)
+            self.fire = load_wav('fire.wav')
+            self.fire.set_volume(5)
         self.y = y
         self.ground = False
         self.gravity = 1
@@ -162,6 +172,7 @@ class Monster:
         self.build_behavior_tree()
         self.time = get_time()
         self.attack_time = 0
+        self.sound_time = 0
         self.state_machine = StateMachine(self)
         self.state_machine.start(Walk)
         self.state_machine.set_transitions(
@@ -209,6 +220,7 @@ class Monster:
             if self.number == 0:
                 self.frame = (self.frame + 8 * ACTION_PER_TIME * game_framework.frame_time)
                 if self.frame > 4:
+                    self.monster_hit.play(1)
                     self.action = 0
                     self.frame = 0
             if self.number == 1:
@@ -216,11 +228,15 @@ class Monster:
                 self.collision_size_x = 20
                 self.frame = (self.frame + 8 * ACTION_PER_TIME * game_framework.frame_time)
                 if self.frame > 4:
+                    self.monster_hit.play(1)
                     self.action = 0
                     self.frame = 0
                     self.state_machine.add_event(('TIME_OUT', 0))
             if self.number == 2:
                 self.state_machine.add_event(('ATTACK', 0))
+                if get_time() - self.sound_time > 0.5:
+                    self.magic_sound.play(1)
+                    self.sound_time= get_time()
                 self.frame = ((self.frame - 3) + 8 * ACTION_PER_TIME * game_framework.frame_time) % 4 + 3
                 if get_time() - self.attack_time > 2.5:
                     self.action = 0
@@ -230,12 +246,16 @@ class Monster:
                 self.state_machine.add_event(('ATTACK', 0))
                 self.frame = (self.frame + 8 * ACTION_PER_TIME * 2 * game_framework.frame_time)
                 if self.frame > 8:
+                    self.sword.play(1)
                     self.action = 0
                     self.frame = 0
                     self.state_machine.add_event(('TIME_OUT', 0))
             if self.number == 4:
                 self.state_machine.add_event(('ATTACK', 0))
                 self.frame = ((self.frame - 1) + 8 * ACTION_PER_TIME * game_framework.frame_time) % 7 + 1
+                if get_time() - self.sound_time > 1:
+                    self.ice.play(1)
+                    self.sound_time= get_time()
                 if get_time() - self.attack_time > 0.05:
                     self.action = 0
                     self.frame = 0
@@ -253,6 +273,7 @@ class Monster:
             if self.number == 6:
                 self.frame = (self.frame + 8 * ACTION_PER_TIME * 2 * game_framework.frame_time) % 4
                 if get_time() - self.attack_time > 0.05:
+                    self.fire.play(1)
                     self.action = 0
                     self.frame = 0
             if self.number == 7:
@@ -776,6 +797,7 @@ class Monster:
         if self.number == 6 and self.action == 0:
             self.action = 2
             self.attack_time = get_time()
+            self.sound_time = get_time()
         self.move_slightly_to(server.kobby.x, server.kobby.y)
         if self.distance_less_than(server.kobby.x, server.kobby.y, self.x, self.y, r):
             return BehaviorTree.SUCCESS
@@ -825,6 +847,7 @@ class Monster:
         if self.action == 0:
             self.action = 2
         self.attack_time = get_time()
+        self.sound_time = get_time()
         return BehaviorTree.SUCCESS
 
     def build_behavior_tree(self):

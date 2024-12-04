@@ -119,7 +119,7 @@ class Idle:
 class Walk:
     @staticmethod
     def enter(kobby, e):
-        kobby.walk_sound.play(1)
+        kobby.walking_sound.play(1)
         if right_down(e):
             kobby.face_dir = 1
         elif left_down(e):
@@ -524,7 +524,8 @@ class Ability:
                 kobby.time = 100.0
                 kobby.star_sound.play(1)
             else:
-                #kobby.suction_sound.play(1)
+                server.kobby.suction_sound.play(1)
+                kobby.suction_sound.set_volume(20)
                 kobby.time = get_time()
                 if up_j(e):
                     kobby.state_machine.add_event(('TIME_OUT', 0))
@@ -561,6 +562,7 @@ class Ability:
     @staticmethod
     def exit(kobby, e):
         kobby.suction = False
+        kobby.suction_sound.set_volume(0)
         game_world.remove_collisions_object(Ability)
         pass
 
@@ -578,11 +580,11 @@ class Ability:
                     kobby.food = False
             else:
                 if get_time() - kobby.time <= 3:
-                    kobby.suction_sound.play(1)
                     if kobby.frame < 7:
                         kobby.frame = (kobby.frame + 5 * ACTION_PER_TIME * game_framework.frame_time)
                     if kobby.frame >= 6:
                         kobby.frame = ((kobby.frame - 6) + 3 * ACTION_PER_TIME * game_framework.frame_time) % 2 + 6
+                        server.kobby.suction2_sound.play(1)
                 elif get_time() - kobby.time > 3:
                     if kobby.overtime == 0:
                         kobby.overtime = 1
@@ -634,6 +636,7 @@ class Ability:
         if kobby.mode == 4: # 불꽃 모드
             if kobby.ice_time == True:
                 kobby.fire_sound.play(1)
+                kobby.fire2_sound.play(1)
                 kobby.frame = (kobby.frame + 12 * ACTION_PER_TIME * game_framework.frame_time)
                 if kobby.frame > 9:
                     kobby.temp -= 1
@@ -863,6 +866,7 @@ class Kobby:
         self.mode = 0 #mode 0: 기본 1: 마법사 2: 검사 3: 얼음 4: 불꽃
         if Kobby.sound == None:
             self.suction_sound = load_wav('suction.wav')
+            self.suction2_sound = load_wav('suction2.wav')
             self.jump_sound = load_wav('jump.wav')
             self.air_sound = load_wav('air.wav')
             self.star_sound = load_wav('star.wav')
@@ -870,22 +874,25 @@ class Kobby:
             self.hit_sound_2 = load_wav('hit3.wav')
             self.hit_sound_3 = load_wav('hit4.wav')
             self.hit_sound_4 = load_wav('hit5.wav')
-            self.ice_sound = load_wav('hit5.wav')
+            self.ice_sound = load_wav('ice.wav')
             self.balloon_sound = load_wav('balloon1.wav')
             self.run_sound = load_wav('run.wav')
             self.magic_sound= load_wav('magic.wav')
             self.sword_sound = load_wav('sword.wav')
             self.sword2_sound = load_wav('sword2.wav')
-            self.fire_sound = load_wav('hit2.wav')
+            self.fire_sound = load_wav('fire2.wav')
+            self.fire2_sound = load_wav('fire.wav')
             self.walk_sound = load_wav('walk.wav')
             self.change_sound = load_wav('change.wav')
+            self.walking_sound = load_wav('walking.wav')
             self.suction_sound.set_volume(20)
+            self.suction2_sound.set_volume(5)
             self.jump_sound.set_volume(20)
             self.air_sound.set_volume(20)
             self.star_sound.set_volume(20)
             self.hit_sound_1.set_volume(20)
             self.hit_sound_2.set_volume(20)
-            self.hit_sound_3.set_volume(60)
+            self.hit_sound_3.set_volume(30)
             self.hit_sound_4.set_volume(20)
             self.ice_sound.set_volume(5)
             self.balloon_sound.set_volume(60)
@@ -894,8 +901,10 @@ class Kobby:
             self.sword_sound.set_volume(20)
             self.sword2_sound.set_volume(20)
             self.fire_sound.set_volume(5)
+            self.fire2_sound.set_volume(5)
             self.walk_sound.set_volume(10)
             self.change_sound.set_volume(25)
+            self.walking_sound.set_volume(30)
         if Kobby.first == None:
             self.image=load_image('nomal_kobby_sheet.png')
             self.image1_1=load_image('nomal_kobby_sheet2.png')
