@@ -4,6 +4,7 @@ from pico2d import load_image
 from pico2d import *
 
 import game_framework
+import game_over
 import game_world
 import play_mode
 import server
@@ -521,7 +522,7 @@ class Ability:
             kobby.frame = 0
             kobby.temp = 0
             if kobby.food == True:
-                kobby.time = 100.0
+                kobby.time = 9999999999999999
                 kobby.star_sound.play(1)
             else:
                 server.kobby.suction_sound.play(1)
@@ -997,7 +998,7 @@ class Kobby:
                 self.heart -= 1
                 if self.heart <= 0:
                     game_world.clear()
-                    game_framework.change_mode(title_mode)
+                    game_framework.change_mode(game_over)
                 self.hp = 3
 
         #중력 + 벽 충돌
@@ -1260,6 +1261,9 @@ class Kobby:
             self.dir += 1
             self.a_time = get_time()
         if event.type == SDL_KEYUP and event.key == SDLK_w:
+            self.state_machine.add_event(
+                ('INPUT', event)
+            )
             self.w_time = get_time()
 
         if event.type == SDL_KEYDOWN and event.key == SDLK_1: # 임시로 변신 키
@@ -1353,7 +1357,7 @@ class Kobby:
                     self.heart -= 1
                     if self.heart <= 0:
                         game_world.clear()
-                        game_framework.change_mode(title_mode)
+                        game_framework.change_mode(game_over)
                     self.hp = 3
         if group == 'kobby:air':
             if self.no_damage == False and self.suction == False:
@@ -1372,7 +1376,7 @@ class Kobby:
                     self.heart -= 1
                     if self.heart <= 0:
                         game_world.clear()
-                        game_framework.change_mode(title_mode)
+                        game_framework.change_mode(game_over)
                     self.hp = 3
         if group == 'kobby:portal':
             self.stage += 1
@@ -1412,5 +1416,5 @@ class Kobby:
                     self.heart -= 1
                     if self.heart <= 0:
                         game_world.clear()
-                        game_framework.change_mode(title_mode)
+                        game_framework.change_mode(game_over)
                     self.hp = 3

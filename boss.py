@@ -1,6 +1,7 @@
 import random
 import math
 
+import game_clear
 import game_framework
 import game_world
 
@@ -126,6 +127,8 @@ class Boss:
         self.dir = -1
         self.hp = 30
         self.sound_time = 0
+        self.hurt = False
+        self.hurt_time = 0
         self.no_damage = False
         self.no_damage_time = 0
         if Boss.images is None:
@@ -133,8 +136,8 @@ class Boss:
             self.boss_sound1 = load_wav('boss_sound1.wav')
             self.boss_sound1.set_volume(40)
             self.boss_sound2 = load_wav('suction2.wav')
-            self.boss_sound2.set_volume(10)
-            self.hit_sound = load_wav('hit.wav')
+            self.boss_sound2.set_volume(5)
+            self.hit_sound = load_wav('boss_hit.wav')
             self.hit_sound.set_volume(30)
             self.image_hp_30 = load_image('./boss hp/boss_hp.png')
             self.image_hp_29 = load_image('./boss hp/boss_hp_29.png')
@@ -214,8 +217,10 @@ class Boss:
             self.y = 200
             self.ground = True
 
+        if get_time() - self.hurt_time > 0.2:
+            self.hurt = False
 
-        if get_time() - self.no_damage_time > 0.75:
+        if get_time() - self.no_damage_time > 0.5:
             self.no_damage = False
 
         if self.hp <= 0:
@@ -227,42 +232,52 @@ class Boss:
             game_world.remove_collisions_object(self)
             if self.frame < 3:
                 self.frame = (self.frame + 2 * ACTION_PER_TIME * game_framework.frame_time)
+            game_world.clear()
+            game_framework.change_mode(game_clear)
         else:
             self.bt.run()
 
 
     def draw(self):
         self.state_machine.draw()
-        if self.action == 0:
+        if self.hurt == False:
+            if self.action == 0:
+                if self.dir > 0:
+                    self.image.clip_composite_draw(64 * int(self.frame), 396, 64, 64, 0, 'h', self.x, self.y, 128, 128)
+                else:
+                    self.image.clip_draw(64 * int(self.frame), 396, 64, 64, self.x, self.y, 128, 128)
+            elif self.action == 1:
+                if self.dir > 0:
+                    self.image.clip_composite_draw(64 * int(self.frame), 332, 64, 64, 0, 'h', self.x, self.y, 128, 128)
+                else:
+                    self.image.clip_draw(64 * int(self.frame), 332, 64, 64, self.x, self.y, 128, 128)
+            elif self.action == 2:
+                if self.dir > 0:
+                    self.image.clip_composite_draw(70 * int(self.frame), 262, 70, 70, 0, 'h', self.x, self.y, 140, 140)
+                else:
+                    self.image.clip_draw(70 * int(self.frame), 262, 70, 70, self.x, self.y, 140, 140)
+            elif self.action == 3:
+                if self.dir > 0:
+                    self.image.clip_composite_draw(90 * int(self.frame), 166, 90, 96, 0, 'h', self.x, self.y + 30, 180,
+                                                   192)
+                else:
+                    self.image.clip_draw(90 * int(self.frame), 166, 90, 96, self.x, self.y + 30, 180, 192)
+            elif self.action == 4:
+                if self.dir > 0:
+                    self.image.clip_composite_draw(90 * int(self.frame), 70, 90, 96, 0, 'h', self.x, self.y + 30, 180,
+                                                   192)
+                else:
+                    self.image.clip_draw(90 * int(self.frame), 70, 90, 96, self.x, self.y + 30, 180, 192)
+            elif self.action == 5:
+                if self.dir > 0:
+                    self.image.clip_composite_draw(70 * int(self.frame), 0, 70, 70, 0, 'h', self.x, self.y, 140, 140)
+                else:
+                    self.image.clip_draw(70 * int(self.frame), 0, 70, 70, self.x, self.y, 140, 140)
+        else:
             if self.dir > 0:
-                self.image.clip_composite_draw(64 * int(self.frame), 396, 64, 64, 0, 'h', self.x, self.y, 128, 128)
+                self.image.clip_composite_draw(0, 0, 70, 70, 0, 'h', self.x, self.y, 140, 140)
             else:
-                self.image.clip_draw(64 * int(self.frame), 396, 64, 64, self.x, self.y, 128, 128)
-        elif self.action == 1:
-            if self.dir > 0:
-                self.image.clip_composite_draw(64 * int(self.frame), 332, 64, 64, 0, 'h', self.x, self.y, 128, 128)
-            else:
-                self.image.clip_draw(64 * int(self.frame), 332, 64, 64, self.x, self.y, 128, 128)
-        elif self.action == 2:
-            if self.dir > 0:
-                self.image.clip_composite_draw(70 * int(self.frame), 262, 70, 70, 0, 'h', self.x, self.y, 140, 140)
-            else:
-                self.image.clip_draw(70 * int(self.frame), 262, 70, 70, self.x, self.y, 140, 140)
-        elif self.action == 3:
-            if self.dir > 0:
-                self.image.clip_composite_draw(90 * int(self.frame), 166, 90, 96, 0, 'h', self.x, self.y + 30, 180, 192)
-            else:
-                self.image.clip_draw(90 * int(self.frame), 166, 90, 96, self.x, self.y + 30, 180, 192)
-        elif self.action == 4:
-            if self.dir > 0:
-                self.image.clip_composite_draw(90 * int(self.frame), 70, 90, 96, 0, 'h', self.x, self.y + 30, 180, 192)
-            else:
-                self.image.clip_draw(90 * int(self.frame), 70, 90, 96, self.x, self.y + 30, 180, 192)
-        elif self.action == 5:
-            if self.dir > 0:
-                self.image.clip_composite_draw(70 * int(self.frame), 0, 70, 70, 0, 'h', self.x, self.y, 140, 140)
-            else:
-                self.image.clip_draw(70 * int(self.frame), 0, 70, 70, self.x, self.y, 140, 140)
+                self.image.clip_draw(0, 0, 70, 70, self.x, self.y, 140, 140)
 
         self.image_boss.draw(730, 60, 200, 70)
 
@@ -343,6 +358,8 @@ class Boss:
             if self.no_damage == False:
                 self.hit_sound.play(1)
                 self.hp -= 1
+                self.hurt = True
+                self.hurt_time = get_time()
                 self.no_damage = True
                 self.no_damage_time = get_time()
 
