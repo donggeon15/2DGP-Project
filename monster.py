@@ -138,7 +138,7 @@ class Monster:
             self.hit_sound = load_wav('hit.wav')
             self.hit_sound.set_volume(30)
             self.magic_sound = load_wav('magicmonster.wav')
-            self.magic_sound.set_volume(20)
+            self.magic_sound.set_volume(30)
             self.monster_hit = load_wav('monster_hit.wav')
             self.monster_hit.set_volume(20)
             self.sword = load_wav('sword.wav')
@@ -146,7 +146,7 @@ class Monster:
             self.ice = load_wav('ice.wav')
             self.ice.set_volume(15)
             self.fire = load_wav('fire.wav')
-            self.fire.set_volume(5)
+            self.fire.set_volume(15)
         self.y = y
         self.ground = False
         self.gravity = 1
@@ -172,7 +172,7 @@ class Monster:
         self.build_behavior_tree()
         self.time = get_time()
         self.attack_time = 0
-        self.sound_time = 0
+        self.sound_time = get_time()
         self.state_machine = StateMachine(self)
         self.state_machine.start(Walk)
         self.state_machine.set_transitions(
@@ -234,10 +234,10 @@ class Monster:
                     self.state_machine.add_event(('TIME_OUT', 0))
             if self.number == 2:
                 self.state_machine.add_event(('ATTACK', 0))
+                self.frame = ((self.frame - 3) + 8 * ACTION_PER_TIME * game_framework.frame_time) % 4 + 3
                 if get_time() - self.sound_time > 0.5:
                     self.magic_sound.play(1)
-                    self.sound_time= get_time()
-                self.frame = ((self.frame - 3) + 8 * ACTION_PER_TIME * game_framework.frame_time) % 4 + 3
+                    self.sound_time = get_time()
                 if get_time() - self.attack_time > 2.5:
                     self.action = 0
                     self.frame = 0
@@ -253,7 +253,7 @@ class Monster:
             if self.number == 4:
                 self.state_machine.add_event(('ATTACK', 0))
                 self.frame = ((self.frame - 1) + 8 * ACTION_PER_TIME * game_framework.frame_time) % 7 + 1
-                if get_time() - self.sound_time > 1:
+                if get_time() - self.sound_time > 0.7:
                     self.ice.play(1)
                     self.sound_time= get_time()
                 if get_time() - self.attack_time > 0.05:
@@ -797,7 +797,6 @@ class Monster:
         if self.number == 6 and self.action == 0:
             self.action = 2
             self.attack_time = get_time()
-            self.sound_time = get_time()
         self.move_slightly_to(server.kobby.x, server.kobby.y)
         if self.distance_less_than(server.kobby.x, server.kobby.y, self.x, self.y, r):
             return BehaviorTree.SUCCESS
@@ -847,7 +846,6 @@ class Monster:
         if self.action == 0:
             self.action = 2
         self.attack_time = get_time()
-        self.sound_time = get_time()
         return BehaviorTree.SUCCESS
 
     def build_behavior_tree(self):

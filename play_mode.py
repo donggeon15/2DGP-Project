@@ -5,6 +5,7 @@ import game_world
 import monster
 import server
 from background import Background
+from boss import Boss
 from game_world import remove_object
 from ground import Ground
 from kobby import Kobby
@@ -218,18 +219,23 @@ def setting_stage3():
     portal3 = Portal(1500, 140, 1)
 
 def setting_boss():
-    remove_object(portal3)
-    remove_object(stage3_monster_1)
-    remove_object(stage3_monster_2)
-    remove_object(stage3_monster_3)
-    remove_object(stage3_monster_4)
-    remove_object(stage3_monster_5)
-    remove_object(stage3_monster_6)
-    remove_object(stage3_monster_7)
-    remove_object(stage3_monster_8)
+    #remove_object(portal3)
+    #remove_object(stage3_monster_1)
+    #remove_object(stage3_monster_2)
+    #remove_object(stage3_monster_3)
+    #remove_object(stage3_monster_4)
+    #remove_object(stage3_monster_5)
+    #remove_object(stage3_monster_6)
+    #remove_object(stage3_monster_7)
+    #remove_object(stage3_monster_8)
 
     server.ground1.bgm3.stop()
     server.ground1.bgm4.repeat_play()
+
+    global boss
+    boss = Boss(700)
+    game_world.add_object(boss, 1)
+    game_world.add_collision_pair('kobby:boss_damage', None, boss)
 
 def init():
     server.kobby = Kobby()
@@ -237,15 +243,18 @@ def init():
     game_world.add_collision_pair('kobby:monster', server.kobby, None)
     game_world.add_collision_pair('kobby:portal', server.kobby, None)
     game_world.add_collision_pair('kobby:air', None, server.kobby)
+    game_world.add_collision_pair('kobby:boss', server.kobby, None)
+    game_world.add_collision_pair('kobby:boss_damage', server.kobby, None)
 
-    server.background1 = Background(1)
+    server.background1 = Background(4)
     game_world.add_object(server.background1, 0)
-    server.kobby.stage = 1
-    server.ground1 = Ground(0, 1)
+    server.kobby.stage = 4
+    server.ground1 = Ground(0, 4)
     game_world.add_object(server.ground1, 0)
 
     # 스테이지 1 셋팅
-    setting_stage1()
+    #setting_stage1()
+    setting_boss()
 
 def finish():
     game_world.clear()

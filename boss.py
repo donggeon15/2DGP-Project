@@ -1,5 +1,6 @@
 import random
 import math
+
 import game_framework
 import game_world
 
@@ -29,7 +30,7 @@ TIME_PER_ACTION_DEAD = 10.0
 ACTION_DEAD_PER_TIME = 1.0 / TIME_PER_ACTION
 FRAMES_PER_ACTION_DEAD = 12.0
 
-GRAVITY_SPEED_KMPH = 2.0
+GRAVITY_SPEED_KMPH = 4
 GRAVITY_SPEED_MPM = (GRAVITY_SPEED_KMPH * 1000.0 / 60.0)
 GRAVITY_SPEED_MPS = (GRAVITY_SPEED_MPM / 60.0)
 GRAVITY_SPEED_PPS = (GRAVITY_SPEED_MPS * PIXEL_PER_METER)
@@ -57,12 +58,15 @@ class Walk:
 class Attack:
     sx = 0
     sy = 0
-    number = 0
     dir = 0
+    num = 0
     @staticmethod
     def enter(monster, e):
-        Attack.number = monster.number
-        game_world.add_collision_pair('kobby:air', Attack, None)
+        Attack.number = monster.action
+        if monster.action == 2:
+            game_world.add_collision_pair('kobby:boss', None, Attack)
+        else:
+            game_world.add_collision_pair('kobby:boss_damage', None, Attack)
         pass
 
     @staticmethod
@@ -73,12 +77,10 @@ class Attack:
     @staticmethod
     def do(monster):
         Attack.dir = monster.dir
-        if server.ground1.stage == 4:
-            Attack.sx = monster.x
-            Attack.sy = monster.y
-        else:
-            Attack.sx = monster.x - server.ground1.window_left
-            Attack.sy = monster.y - server.ground1.window_bottom
+        Attack.sx = monster.x
+        Attack.sy = monster.y
+        Attack.num = monster.action
+
 
     @staticmethod
     def draw(monster):
@@ -87,26 +89,19 @@ class Attack:
 
     @staticmethod
     def get_bb():
-        if Attack.number == 1:
+        if Attack.num == 0 or Attack.num == 1:
+            return 0, 0, 0, 0
+        elif Attack.num == 2:
             if Attack.dir > 0:
-                return Attack.sx + 30, Attack.sy - 20, Attack.sx + 120, Attack.sy + 10
+                return Attack.sx + 50, Attack.sy - 50, Attack.sx + 650, Attack.sy + 50
             else:
-                return Attack.sx - 120, Attack.sy - 20, Attack.sx - 30, Attack.sy + 10
-        if Attack.number == 2:
+                return Attack.sx - 650, Attack.sy - 50, Attack.sx - 50, Attack.sy + 50
+        else:
             if Attack.dir > 0:
-                return Attack.sx + 40, Attack.sy - 30, Attack.sx + 90, Attack.sy + 30
+                return Attack.sx - 50, Attack.sy - 50, Attack.sx + 90, Attack.sy + 100
             else:
-                return Attack.sx - 90, Attack.sy - 30, Attack.sx - 40, Attack.sy + 30
-        if Attack.number == 3:
-            if Attack.dir > 0:
-                return Attack.sx + 30, Attack.sy - 25, Attack.sx + 75, Attack.sy + 25
-            else:
-                return Attack.sx - 75, Attack.sy - 25, Attack.sx - 30, Attack.sy + 25
-        if Attack.number == 4:
-            if Attack.dir > 0:
-                return Attack.sx + 30, Attack.sy - 35, Attack.sx + 90, Attack.sy + 35
-            else:
-                return Attack.sx - 90, Attack.sy - 35, Attack.sx - 30, Attack.sy + 35
+                return Attack.sx - 90, Attack.sy - 50, Attack.sx + 50, Attack.sy + 100
+
 
     @staticmethod
     def handle_collision(monster, group):
@@ -115,19 +110,23 @@ class Attack:
 class Boss:
     images = None
 
-    def __init__(self, d = 0, x = 0, y = 90, move_time = 2, stage = 1):
+    def __init__(self, x = 0, y = 90):
         self.x = x
         self.past_x = x
         self.y = y
         self.ground = False
         self.gravity = 1
         self.size = 200
-        self.stage = stage
-        self.action = 0 # 0: 걷기 1: 죽음 2: 공격
+        self.action = 0
         self.collision_size_x = 20
         self.collision_size_y = 20
+        self.pattern = 0
         self.frame = 0
-        self.dir = 1
+        self.time = 0
+        self.dir = -1
+        self.hp = 30
+        if Boss.images is None:
+            self.image = load_image('boss_sheet.png')
         self.build_behavior_tree()
         self.state_machine = StateMachine(self)
         self.state_machine.start(Walk)
@@ -142,9 +141,19 @@ class Boss:
     def update(self):
         self.state_machine.update()
 
-        self.x = clamp(25, self.x, 800 - 25)
-        self.y = clamp(25, self.x, 600 - 30)
+        self.x = clamp(50, self.x, 800 - 50)
+        self.y = clamp(50, self.y, 600 - 50)
 
+        if self.action == 0:
+            self.frame = (self.frame + 4 * ACTION_PER_TIME * game_framework.frame_time) % 4
+        elif self.action == 1:
+            self.frame = (self.frame + 4 * ACTION_PER_TIME * game_framework.frame_time) % 4
+
+        if self.action == 0:
+            if server.kobby.x < self.x:
+                self.dir = -1
+            else:
+                self.dir = 1
 
         # 중력
         if self.ground == False:
@@ -156,19 +165,60 @@ class Boss:
         else:
             self.gravity = 1
 
-        if self.y > 165:
+
+        if self.y > 200:
             self.ground = False
             self.y -= self.gravity * game_framework.frame_time
         else:
-            self.y = 165
+            self.y = 200
             self.ground = True
 
+
+        if self.hp <= 0:
+            self.action = 5
+
         # ai 작동
-        self.bt.run()
+        if self.action == 5:
+            self.frame = (self.frame + 2 * ACTION_PER_TIME * game_framework.frame_time)
+            if self.frame > 4:
+                game_world.remove_collisions_object(Attack)
+                game_world.remove_collisions_object(self)
+        else:
+            self.bt.run()
 
 
     def draw(self):
         self.state_machine.draw()
+        if self.action == 0:
+            if self.dir > 0:
+                self.image.clip_composite_draw(64 * int(self.frame), 396, 64, 64, 0, 'h', self.x, self.y, 128, 128)
+            else:
+                self.image.clip_draw(64 * int(self.frame), 396, 64, 64, self.x, self.y, 128, 128)
+        elif self.action == 1:
+            if self.dir > 0:
+                self.image.clip_composite_draw(64 * int(self.frame), 332, 64, 64, 0, 'h', self.x, self.y, 128, 128)
+            else:
+                self.image.clip_draw(64 * int(self.frame), 332, 64, 64, self.x, self.y, 128, 128)
+        elif self.action == 2:
+            if self.dir > 0:
+                self.image.clip_composite_draw(70 * int(self.frame), 262, 70, 70, 0, 'h', self.x, self.y, 140, 140)
+            else:
+                self.image.clip_draw(70 * int(self.frame), 262, 70, 70, self.x, self.y, 140, 140)
+        elif self.action == 3:
+            if self.dir > 0:
+                self.image.clip_composite_draw(90 * int(self.frame), 166, 90, 96, 0, 'h', self.x, self.y + 30, 180, 192)
+            else:
+                self.image.clip_draw(90 * int(self.frame), 166, 90, 96, self.x, self.y + 30, 180, 192)
+        elif self.action == 4:
+            if self.dir > 0:
+                self.image.clip_composite_draw(90 * int(self.frame), 70, 90, 96, 0, 'h', self.x, self.y + 30, 180, 192)
+            else:
+                self.image.clip_draw(90 * int(self.frame), 70, 90, 96, self.x, self.y + 30, 180, 192)
+        elif self.action == 5:
+            if self.dir > 0:
+                self.image.clip_composite_draw(70 * int(self.frame), 0, 70, 70, 0, 'h', self.x, self.y, 140, 140)
+            else:
+                self.image.clip_draw(70 * int(self.frame), 0, 70, 70, self.x, self.y, 140, 140)
 
         draw_rectangle(*self.get_bb())
 
@@ -176,159 +226,182 @@ class Boss:
         pass
 
     def get_bb(self):
-        if self.dir < 0:
-            return self.x - self.collision_size_x, self.y - self.collision_size_y, self.x + 20, self.y + self.collision_size_y
-        else:
-            return self.x - 20, self.y - self.collision_size_y, self.x + self.collision_size_x, self.y + self.collision_size_y
+        return self.x - 50, self.y - 60, self.x + 50, self.y + 50
 
 
     def handle_collision(self, group, other):
         pass
 
+    def wait_time(self):
+        self.time = get_time()
+
+        return BehaviorTree.SUCCESS
 
     def random_pattern(self):
         # 0 : 걷기
         # 1 : 흡입 후 하늘 날고 떨어지기
         # 2 : 점프 망치
         # 3 : 망치 휘두르며 돌진
-        
-        pass
-
-    def distance_less_than(self, x1, y1, x2, y2, r):
-        distance2 = (x1- x2) **2 + (y1- y2) ** 2
-        return distance2 < (PIXEL_PER_METER * r) ** 2
-
-    def move_slightly_to(self, tx, ty):
-        self.dir2 = math.atan2(ty - self.y, tx - self.x)
-        if server.kobby.x < self.x:
-            self.dir = -1
-        else :
-            self.dir = 1
-        distance = RUN_SPEED_PPS * game_framework.frame_time
-        self.past_x = self.x
-        self.x += distance * math.cos(self.dir2)
-        if self.number == 6:
-            self.y += distance * math.sin(self.dir2)
-
-
-    def move_to(self, r=0.5): #r은 범위
-        #이동하는데 속도와 시간 필요
-        self.action = 0  # 돌아 다니는 상태
-        self.move_slightly_to(self.tx, self.ty)
-        if self.distance_less_than(self.tx, self.ty, self.x, self.y, r):
+        self.action = 0
+        self.pattern  = random.randint(0, 3)
+        if get_time() - self.time > 3:
             return BehaviorTree.SUCCESS
         else:
             return BehaviorTree.RUNNING
 
-
-    def is_kobby_nearby(self, distance):
-        if self.distance_less_than(server.kobby.x, server.kobby.y, self.x, self.y, distance):
+    def check_pattern(self, num):
+        if self.pattern == num:
             return BehaviorTree.SUCCESS
         else:
             return BehaviorTree.FAIL
-        pass
 
-
-    def move_to_kobby(self, r=0.5):
-        #self.action = 0
-        if self.number == 6 and self.action == 0:
-            self.action = 2
-            self.attack_time = get_time()
-        self.move_slightly_to(server.kobby.x, server.kobby.y)
-        if self.distance_less_than(server.kobby.x, server.kobby.y, self.x, self.y, r):
+    def pattern_1_move(self):
+        self.action = 1
+        self.x += self.dir * RUN_SPEED_PPS * game_framework.frame_time
+        if self.x > 800 - 50:
+            self.dir = -1
+        if self.x < 0 + 50:
+            self.dir = 1
+        if get_time() - self.time > 4:
             return BehaviorTree.SUCCESS
         else:
             return BehaviorTree.RUNNING
-        pass
 
-    def move_to_LR(self):
-        self.past_x = self.x
-        if self.number == 4:
-            self.x += self.dir * RUN_SPEED_PPS * 2 * game_framework.frame_time
+    def pattern_2_move_1(self):
+        self.action = 2
+        self.frame = 0
+        if get_time() - self.time > 2:
+            self.state_machine.add_event(('ATTACK', 0))
+            return BehaviorTree.SUCCESS
         else:
-            self.x += self.dir * RUN_SPEED_PPS * game_framework.frame_time
-        if get_time() - self.time > self.move_time:
-            self.dir = -self.dir
-            self.time = get_time()
-        return BehaviorTree.SUCCESS
+            return BehaviorTree.RUNNING
 
-    def attack_to_kobby(self):
-        if server.kobby.x < self.x:
+    def pattern_2_move_2(self):
+        self.frame = ((self.frame - 1) + 4 * ACTION_PER_TIME * game_framework.frame_time) % 2 + 1
+
+        if get_time() - self.time > 4:
+            self.state_machine.add_event(('TIME_OUT', 0))
+            return BehaviorTree.SUCCESS
+        else:
+            return BehaviorTree.RUNNING
+
+    def pattern_2_move_3(self):
+        self.frame = 4
+
+        self.y += GRAVITY_SPEED_PPS * 8 * game_framework.frame_time
+
+        self.x += self.dir * RUN_SPEED_PPS * 3 * game_framework.frame_time
+
+        if self.x > 800 - 50:
             self.dir = -1
-        else :
+        if self.x < 0 + 50:
             self.dir = 1
 
-        if self.action == 0:
-            self.action = 2
-        return BehaviorTree.SUCCESS
+        if get_time() - self.time > 5.5:
+            self.frame = 3
 
-    def attack_to_move_kobby(self):
-        if server.kobby.x < self.x:
+        if get_time() - self.time > 6:
+            star = Air_shoot(self.x, 250, self.dir, 4, 0)
+            game_world.add_object(star, 1)
+            game_world.add_collision_pair('kobby:food', None, star)
+            return BehaviorTree.SUCCESS
+        else:
+            return BehaviorTree.RUNNING
+
+    def pattern_3_move_1(self):
+        self.action = 4
+        self.frame = 0
+        if get_time() - self.time > 2:
+            self.state_machine.add_event(('ATTACK', 0))
+            return BehaviorTree.SUCCESS
+        else:
+            return BehaviorTree.RUNNING
+
+    def pattern_3_move_2(self):
+        self.frame = ((self.frame - 1) + 7 * ACTION_PER_TIME * game_framework.frame_time) % 7 + 1
+        self.x += self.dir * RUN_SPEED_PPS * 4 * game_framework.frame_time
+
+        if self.x > 800 - 50:
             self.dir = -1
-        else :
+        if self.x < 0 + 50:
             self.dir = 1
 
-        self.past_x = self.x
-        if self.number == 1:
-            self.x += self.dir * 0.2 * RUN_SPEED_PPS * 2 * game_framework.frame_time
-        if self.number == 3:
-            self.x += self.dir * 0.4 * RUN_SPEED_PPS * 2 * game_framework.frame_time
+        if get_time() - self.time > 4:
+            self.state_machine.add_event(('TIME_OUT', 0))
+            return BehaviorTree.SUCCESS
+        else:
+            return BehaviorTree.RUNNING
 
-        if self.action == 0:
-            self.action = 2
+    def pattern_4_move_1(self):
+        self.action = 3
+        self.frame = 0
+        if get_time() - self.time > 2:
+            self.state_machine.add_event(('ATTACK', 0))
+            return BehaviorTree.SUCCESS
+        else:
+            return BehaviorTree.RUNNING
 
-        return BehaviorTree.SUCCESS
+    def pattern_4_move_2(self):
+        if self.frame < 5:
+            self.frame = ((self.frame - 1) + 2.5 * ACTION_PER_TIME * game_framework.frame_time) + 1
 
-    def change_attack_mode(self):
-        if self.action == 0:
-            self.action = 2
-        self.attack_time = get_time()
-        return BehaviorTree.SUCCESS
+        if self.x < server.kobby.x:
+            self.dir = 1
+        else:
+            self.dir = -1
+
+        self.x += self.dir * RUN_SPEED_PPS * 1.2 * game_framework.frame_time
+        self.y += GRAVITY_SPEED_PPS * 5 * game_framework.frame_time
+
+
+
+        if get_time() - self.time > 1.5:
+            self.state_machine.add_event(('TIME_OUT', 0))
+            star = Air_shoot(self.x, self.y - 50, self.dir, 4, 0)
+            game_world.add_object(star, 1)
+            game_world.add_collision_pair('kobby:food', None, star)
+            return BehaviorTree.SUCCESS
+        else:
+            return BehaviorTree.RUNNING
+
+
 
     def build_behavior_tree(self):
-        # 좌우 왔다 갔다
-        a1 = Action('repeat left right', self.move_to_LR)
-        c1 = Condition('커비 근처에 있는가?', self.is_kobby_nearby, 0.75)
+        # 랜덤 패턴
+        a1  = Action('timer', self.wait_time)
+        a2  = Action('random pattern', self.random_pattern)
+        root = random_pattern = Sequence('random set patten', a1, a2)
+        # 패턴 == 0
+        c1 = Condition('pattern == 0', self.check_pattern, 0)
+        a3 = Action('timer2', self.wait_time)
+        a4 = Action('move move', self.pattern_1_move)
+        root = pattern_1 = Sequence('move to move', c1, a3, a4)
+        # 패턴 == 1
+        c2 = Condition('pattern == 1', self.check_pattern, 1)
+        a5 = Action('timer3', self.wait_time)
+        a6 = Action('ready_pattern 1', self.pattern_2_move_1)
+        a7 = Action('timer4', self.wait_time)
+        a8 = Action('suction', self.pattern_2_move_2)
+        a9 = Action('timer5', self.wait_time)
+        a10 = Action('fly', self.pattern_2_move_3)
+        root = pattern_2 = Sequence('suction & fly', c2, a5, a6, a7, a8, a9, a10)
+        # 패턴 == 2
+        c3 = Condition('pattern == 2', self.check_pattern, 2)
+        a11 = Action('timer6', self.wait_time)
+        a12 = Action('attack move ready', self.pattern_3_move_1)
+        a13 = Action('timer7', self.wait_time)
+        a14 = Action('attack move', self.pattern_3_move_2)
+        root = pattern_3 = Sequence('attack & move', c3, a11, a12, a13, a14, a14)
+        # 패턴 == 3
+        c4 = Condition('pattern == 3', self.check_pattern, 3)
+        a15 = Action('timer8', self.wait_time)
+        a16 = Action('jump attack', self.pattern_4_move_1)
+        a17 = Action('timer9', self.wait_time)
+        a18 = Action('jump attack2', self.pattern_4_move_2)
+        root = pattern_4 = Sequence('attack & jump', c4, a15, a16, a17, a18, a18)
 
-        # 커비가 근처에 있나
-        c2 = Condition('커비 근처에 있는가?', self.is_kobby_nearby, 1)
-        a2 = Action('커비한데 접근', self.move_to_kobby)
+        root = pattern_go = Selector('pattern go', pattern_1, pattern_2, pattern_3, pattern_4)
 
-        # 범위안에 들어오면 공격
-        c3 = Condition('커비 근처에 있는가?', self.is_kobby_nearby, 2)
-        a3 = Action('커비를 향해 공격', self.attack_to_kobby)
+        root = boss_ai = Sequence('boss ai', random_pattern, pattern_go)
 
-        # 근처 오면 각성
-        c4 = Condition('커비 근처에 있는가?', self.is_kobby_nearby, 2.5)
-        a4 = Action('각성모드로 변경', self.change_attack_mode)
-
-        c5 = Condition('커비 근처에 있는가?', self.is_kobby_nearby, 1.5)
-        a5 = Action('커비 향해 이동 공격', self.attack_to_move_kobby)
-
-
-
-        #self.bt = BehaviorTree(root)
-
-
-    #a1 = Action('Set target location', self.set_target_location, 1000, 1000)
-
-    #    a2 = Action('Move to', self.move_to)
-
-    #    root = move_to_target_location = Sequence('Move to target location', a1, a2)
-
-    #    a3 = Action('Set random location', self.set_random_location)
-    #    root = wander = Sequence('Wander', a3, a2)
-
-    #    c1 = Condition('좀비 공 >= 소년 공?', self.is_ball_more_boy)
-    #    a4 = Action('소년한데 접근', self.move_to_boy)
-    #    root = chase_boy = Sequence('소년을 추적', c1, a4)
-
-    #    a5 = Action('소년한데 도망', self.run_to_boy)
-    #   root = run_boy = Sequence('소년한데 도망', a5)
-
-    #    root = chase_or_run_boy = Selector('소년을 추적 또는 도망', chase_boy, run_boy)
-
-    #    c2 = Condition('소년이 근처에 있는가?', self.is_boy_nearby, 7)
-    #    root = chase_run_boy = Sequence('소년 추적, 도망', c2, chase_or_run_boy)
-
-    #    root = chase_run_or_flee = Selector('추적 또는 배회', chase_run_boy, wander)
+        self.bt = BehaviorTree(root)
