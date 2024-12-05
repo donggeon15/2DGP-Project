@@ -1389,8 +1389,14 @@ class Kobby:
                 play_mode.setting_stage3()
             if self.stage == 4:
                 play_mode.setting_boss()
+        if group == 'kobby:boss':
+            if self.x < other.sx:
+                self.x += WALK_SPEED_PPS * 1.5 * game_framework.frame_time
+            else:
+                self.x -= WALK_SPEED_PPS * 1.5 * game_framework.frame_time
         if group == 'kobby:boss_damage':
             if self.no_damage == False:
+                self.damage_type = 0
                 self.state_machine.add_event(('HURT', 0))
                 self.hp -= 1
                 self.no_damage = True
@@ -1398,8 +1404,8 @@ class Kobby:
                 self.flink_time = get_time()
                 if self.mode != 0 or self.food == True:
                     star = Air_shoot(self.x, self.y, random.choice([-1,1]), 4, self.star_type)
-                    game_world.add_object(star, 1)
                     game_world.add_collision_pair('kobby:food', None, star)
+                    game_world.add_object(star, 1)
                     self.mode = 0
                     self.food = False
                 if self.hp <= 0:
@@ -1408,8 +1414,3 @@ class Kobby:
                         game_world.clear()
                         game_framework.change_mode(title_mode)
                     self.hp = 3
-        if group == 'kobby:boss':
-            if self.x < other.sx:
-                self.x += WALK_SPEED_PPS * 1.5 * game_framework.frame_time
-            else:
-                self.x -= WALK_SPEED_PPS * 1.5 * game_framework.frame_time

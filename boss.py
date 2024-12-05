@@ -125,8 +125,49 @@ class Boss:
         self.time = 0
         self.dir = -1
         self.hp = 30
+        self.sound_time = 0
+        self.no_damage = False
+        self.no_damage_time = 0
         if Boss.images is None:
             self.image = load_image('boss_sheet.png')
+            self.boss_sound1 = load_wav('boss_sound1.wav')
+            self.boss_sound1.set_volume(40)
+            self.boss_sound2 = load_wav('suction2.wav')
+            self.boss_sound2.set_volume(10)
+            self.hit_sound = load_wav('hit.wav')
+            self.hit_sound.set_volume(30)
+            self.image_hp_30 = load_image('./boss hp/boss_hp.png')
+            self.image_hp_29 = load_image('./boss hp/boss_hp_29.png')
+            self.image_hp_28 = load_image('./boss hp/boss_hp_28.png')
+            self.image_hp_27 = load_image('./boss hp/boss_hp_27.png')
+            self.image_hp_0 = load_image('./boss hp/boss_hp_0.png')
+            self.image_hp_1 = load_image('./boss hp/boss_hp_1.png')
+            self.image_hp_2 = load_image('./boss hp/boss_hp_2.png')
+            self.image_hp_3 = load_image('./boss hp/boss_hp_3.png')
+            self.image_hp_4 = load_image('./boss hp/boss_hp_4.png')
+            self.image_hp_5 = load_image('./boss hp/boss_hp_5.png')
+            self.image_hp_6 = load_image('./boss hp/boss_hp_6.png')
+            self.image_hp_7 = load_image('./boss hp/boss_hp_7.png')
+            self.image_hp_8 = load_image('./boss hp/boss_hp_8.png')
+            self.image_hp_9 = load_image('./boss hp/boss_hp_9.png')
+            self.image_hp_10 = load_image('./boss hp/boss_hp_10.png')
+            self.image_hp_11 = load_image('./boss hp/boss_hp_11.png')
+            self.image_hp_12 = load_image('./boss hp/boss_hp_12.png')
+            self.image_hp_13 = load_image('./boss hp/boss_hp_13.png')
+            self.image_hp_14 = load_image('./boss hp/boss_hp_14.png')
+            self.image_hp_15 = load_image('./boss hp/boss_hp_15.png')
+            self.image_hp_16 = load_image('./boss hp/boss_hp_16.png')
+            self.image_hp_17 = load_image('./boss hp/boss_hp_17.png')
+            self.image_hp_18 = load_image('./boss hp/boss_hp_18.png')
+            self.image_hp_19 = load_image('./boss hp/boss_hp_19.png')
+            self.image_hp_20 = load_image('./boss hp/boss_hp_20.png')
+            self.image_hp_21 = load_image('./boss hp/boss_hp_21.png')
+            self.image_hp_22 = load_image('./boss hp/boss_hp_22.png')
+            self.image_hp_23 = load_image('./boss hp/boss_hp_23.png')
+            self.image_hp_24 = load_image('./boss hp/boss_hp_24.png')
+            self.image_hp_25 = load_image('./boss hp/boss_hp_25.png')
+            self.image_hp_26 = load_image('./boss hp/boss_hp_26.png')
+            self.image_boss = load_image('./boss hp/boss_icon.png')
         self.build_behavior_tree()
         self.state_machine = StateMachine(self)
         self.state_machine.start(Walk)
@@ -174,15 +215,18 @@ class Boss:
             self.ground = True
 
 
+        if get_time() - self.no_damage_time > 0.75:
+            self.no_damage = False
+
         if self.hp <= 0:
             self.action = 5
 
         # ai 작동
         if self.action == 5:
-            self.frame = (self.frame + 2 * ACTION_PER_TIME * game_framework.frame_time)
-            if self.frame > 4:
-                game_world.remove_collisions_object(Attack)
-                game_world.remove_collisions_object(self)
+            game_world.remove_collisions_object(Attack)
+            game_world.remove_collisions_object(self)
+            if self.frame < 3:
+                self.frame = (self.frame + 2 * ACTION_PER_TIME * game_framework.frame_time)
         else:
             self.bt.run()
 
@@ -220,6 +264,71 @@ class Boss:
             else:
                 self.image.clip_draw(70 * int(self.frame), 0, 70, 70, self.x, self.y, 140, 140)
 
+        self.image_boss.draw(730, 60, 200, 70)
+
+        if self.hp == 30:
+            self.image_hp_30.draw(470, 45, 450, 40)
+        elif self.hp == 1:
+            self.image_hp_1.draw(500, 45, 450, 40)
+        elif self.hp == 2:
+            self.image_hp_2.draw(500, 45, 450, 40)
+        elif self.hp == 3:
+            self.image_hp_3.draw(500, 45, 450, 40)
+        elif self.hp == 4:
+            self.image_hp_4.draw(500, 45, 450, 40)
+        elif self.hp == 5:
+            self.image_hp_5.draw(500, 45, 450, 40)
+        elif self.hp == 6:
+            self.image_hp_6.draw(500, 45, 450, 40)
+        elif self.hp == 7:
+            self.image_hp_7.draw(500, 45, 450, 40)
+        elif self.hp == 8:
+            self.image_hp_8.draw(500, 45, 450, 40)
+        elif self.hp == 9:
+            self.image_hp_9.draw(500, 45, 450, 40)
+        elif self.hp == 10:
+            self.image_hp_10.draw(500, 45, 450, 40)
+        elif self.hp == 11:
+            self.image_hp_11.draw(500, 45, 450, 40)
+        elif self.hp == 12:
+            self.image_hp_12.draw(500, 45, 450, 40)
+        elif self.hp == 13:
+            self.image_hp_13.draw(500, 45, 450, 40)
+        elif self.hp == 14:
+            self.image_hp_14.draw(500, 45, 450, 40)
+        elif self.hp == 15:
+            self.image_hp_15.draw(500, 45, 450, 40)
+        elif self.hp == 16:
+            self.image_hp_16.draw(500, 45, 450, 40)
+        elif self.hp == 17:
+            self.image_hp_17.draw(500, 45, 450, 40)
+        elif self.hp == 18:
+            self.image_hp_18.draw(500, 45, 450, 40)
+        elif self.hp == 19:
+            self.image_hp_19.draw(500, 45, 450, 40)
+        elif self.hp == 20:
+            self.image_hp_20.draw(500, 45, 450, 40)
+        elif self.hp == 21:
+            self.image_hp_21.draw(500, 45, 450, 40)
+        elif self.hp == 22:
+            self.image_hp_22.draw(500, 45, 450, 40)
+        elif self.hp == 23:
+            self.image_hp_23.draw(500, 45, 450, 40)
+        elif self.hp == 24:
+            self.image_hp_24.draw(500, 45, 450, 40)
+        elif self.hp == 25:
+            self.image_hp_25.draw(500, 45, 450, 40)
+        elif self.hp == 26:
+            self.image_hp_26.draw(500, 45, 450, 40)
+        elif self.hp == 27:
+            self.image_hp_27.draw(500, 45, 450, 40)
+        elif self.hp == 28:
+            self.image_hp_28.draw(500, 45, 450, 40)
+        elif self.hp == 29:
+            self.image_hp_29.draw(500, 45, 450, 40)
+        else:
+            self.image_hp_0.draw(500, 45, 450, 40)
+
         draw_rectangle(*self.get_bb())
 
     def handle_event(self, event):
@@ -230,7 +339,12 @@ class Boss:
 
 
     def handle_collision(self, group, other):
-        pass
+        if group == 'air:monster':
+            if self.no_damage == False:
+                self.hit_sound.play(1)
+                self.hp -= 1
+                self.no_damage = True
+                self.no_damage_time = get_time()
 
     def wait_time(self):
         self.time = get_time()
@@ -262,6 +376,7 @@ class Boss:
             self.dir = -1
         if self.x < 0 + 50:
             self.dir = 1
+
         if get_time() - self.time > 4:
             return BehaviorTree.SUCCESS
         else:
@@ -272,12 +387,16 @@ class Boss:
         self.frame = 0
         if get_time() - self.time > 2:
             self.state_machine.add_event(('ATTACK', 0))
+            self.sound_time = get_time()
             return BehaviorTree.SUCCESS
         else:
             return BehaviorTree.RUNNING
 
     def pattern_2_move_2(self):
         self.frame = ((self.frame - 1) + 4 * ACTION_PER_TIME * game_framework.frame_time) % 2 + 1
+
+        if get_time() - self.sound_time > 0.5:
+            self.boss_sound2.play(1)
 
         if get_time() - self.time > 4:
             self.state_machine.add_event(('TIME_OUT', 0))
@@ -301,7 +420,8 @@ class Boss:
             self.frame = 3
 
         if get_time() - self.time > 6:
-            star = Air_shoot(self.x, 250, self.dir, 4, 0)
+            self.boss_sound1.play(1)
+            star = Air_shoot(self.x, 250, random.choice([-1,1]), 4, 0)
             game_world.add_object(star, 1)
             game_world.add_collision_pair('kobby:food', None, star)
             return BehaviorTree.SUCCESS
@@ -313,6 +433,7 @@ class Boss:
         self.frame = 0
         if get_time() - self.time > 2:
             self.state_machine.add_event(('ATTACK', 0))
+            self.sound_time = get_time()
             return BehaviorTree.SUCCESS
         else:
             return BehaviorTree.RUNNING
@@ -320,7 +441,9 @@ class Boss:
     def pattern_3_move_2(self):
         self.frame = ((self.frame - 1) + 7 * ACTION_PER_TIME * game_framework.frame_time) % 7 + 1
         self.x += self.dir * RUN_SPEED_PPS * 4 * game_framework.frame_time
-
+        if get_time() - self.sound_time > 0.5:
+            self.boss_sound1.play(1)
+            self.sound_time = get_time()
         if self.x > 800 - 50:
             self.dir = -1
         if self.x < 0 + 50:
@@ -356,8 +479,9 @@ class Boss:
 
 
         if get_time() - self.time > 1.5:
+            self.boss_sound1.play(1)
             self.state_machine.add_event(('TIME_OUT', 0))
-            star = Air_shoot(self.x, self.y - 50, self.dir, 4, 0)
+            star = Air_shoot(self.x, self.y - 50, random.choice([-1,1]), 4, 0)
             game_world.add_object(star, 1)
             game_world.add_collision_pair('kobby:food', None, star)
             return BehaviorTree.SUCCESS

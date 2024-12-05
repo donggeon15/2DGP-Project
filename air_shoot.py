@@ -243,33 +243,32 @@ class Air_shoot:
             if self in game_world.objects[1]:
                 game_world.remove_object(self)
         if group == 'kobby:food':
-            if group == 'kobby:food':
-                if server.kobby.x < self.x:
-                    self.past_x = self.x
-                    self.x -= AIRSHOOT_SPEED_PPS * 1.4 * game_framework.frame_time
-                else:
-                    self.past_x = self.x
-                    self.x += AIRSHOOT_SPEED_PPS * 1.4 * game_framework.frame_time
-                if server.kobby.y < self.y:
-                    self.y -= AIRSHOOT_SPEED_PPS * 1.4 * game_framework.frame_time
-                else:
-                    self.y += AIRSHOOT_SPEED_PPS * 1.4 * game_framework.frame_time
+            if server.kobby.x < self.x:
+                self.past_x = self.x
+                self.x -= AIRSHOOT_SPEED_PPS * 1.4 * game_framework.frame_time
+            else:
+                self.past_x = self.x
+                self.x += AIRSHOOT_SPEED_PPS * 1.4 * game_framework.frame_time
+            if server.kobby.y < self.y:
+                self.y -= AIRSHOOT_SPEED_PPS * 1.4 * game_framework.frame_time
+            else:
+                self.y += AIRSHOOT_SPEED_PPS * 1.4 * game_framework.frame_time
 
-                if server.kobby.x <= self.x + 3 and server.kobby.x >= self.x - 3:
-                    server.kobby.food = True
-                    if self.type == 0:
-                        server.kobby.food_type = 0
-                        server.kobby.star_type = 0
-                    elif self.type == 1:
-                        server.kobby.food_type = 1
-                        server.kobby.star_type = 1
-                    elif self.type == 2:
-                        server.kobby.food_type = 2
-                        server.kobby.star_type = 2
-                    elif self.type == 3:
-                        server.kobby.food_type = 3
-                        server.kobby.star_type = 3
-                    elif self.type == 4:
-                        server.kobby.food_type = 4
-                        server.kobby.star_type = 4
-                    game_world.remove_object(self)
+            if server.kobby.x <= self.x + 3 and server.kobby.x >= self.x - 3:
+                server.kobby.food = True
+                if self.type == 0:
+                    server.kobby.food_type = 0
+                    server.kobby.star_type = 0
+                elif self.type == 1:
+                    server.kobby.food_type = 1
+                    server.kobby.star_type = 1
+                elif self.type == 2:
+                    server.kobby.food_type = 2
+                    server.kobby.star_type = 2
+                elif self.type == 3:
+                    server.kobby.food_type = 3
+                    server.kobby.star_type = 3
+                elif self.type == 4:
+                    server.kobby.food_type = 4
+                    server.kobby.star_type = 4
+                game_world.remove_object(self)

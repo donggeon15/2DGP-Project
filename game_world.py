@@ -57,7 +57,8 @@ def add_collision_pair(group, a, b):
 
 def handle_collisions():
     # game_world 에 등록된 충돌 정보를 바탕으로 실제 정보를  수행
-    for group, pairs in collision_pairs.items():
+    global collision_pairs  # 충돌 데이터
+    for group, pairs in list(collision_pairs.items()):  # 복사본 사용
         for a in pairs[0]:
             for b in pairs[1]:
                 if collide(a, b):
