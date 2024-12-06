@@ -132,12 +132,12 @@ class Boss:
         self.no_damage = False
         self.no_damage_time = 0
         if Boss.images is None:
-            self.image = load_image('boss_sheet.png')
-            self.boss_sound1 = load_wav('boss_sound1.wav')
+            self.image = load_image('./resource/boss_sheet.png')
+            self.boss_sound1 = load_wav('./resource/boss_sound1.wav')
             self.boss_sound1.set_volume(40)
-            self.boss_sound2 = load_wav('suction2.wav')
+            self.boss_sound2 = load_wav('./resource/suction2.wav')
             self.boss_sound2.set_volume(5)
-            self.hit_sound = load_wav('boss_hit.wav')
+            self.hit_sound = load_wav('./resource/boss_hit.wav')
             self.hit_sound.set_volume(30)
             self.image_hp_30 = load_image('./boss hp/boss_hp.png')
             self.image_hp_29 = load_image('./boss hp/boss_hp_29.png')

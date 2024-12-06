@@ -9,8 +9,8 @@ def init():
     global sound
     global game_clear_time
 
-    image = load_image('game_clear.png')
-    sound = load_music('game_clear.mp3')
+    image = load_image('./resource/game_clear.png')
+    sound = load_music('./resource/game_clear.mp3')
     sound.set_volume(10)
     sound.play()
     game_clear_time = get_time()

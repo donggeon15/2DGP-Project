@@ -135,17 +135,17 @@ class Monster:
         self.x = x
         self.past_x = x
         if Monster.sound is None:
-            self.hit_sound = load_wav('hit.wav')
+            self.hit_sound = load_wav('./resource/hit.wav')
             self.hit_sound.set_volume(30)
-            self.magic_sound = load_wav('magicmonster.wav')
+            self.magic_sound = load_wav('./resource/magicmonster.wav')
             self.magic_sound.set_volume(30)
-            self.monster_hit = load_wav('monster_hit.wav')
+            self.monster_hit = load_wav('./resource/monster_hit.wav')
             self.monster_hit.set_volume(20)
-            self.sword = load_wav('sword.wav')
+            self.sword = load_wav('./resource/sword.wav')
             self.sword.set_volume(20)
-            self.ice = load_wav('ice.wav')
+            self.ice = load_wav('./resource/ice.wav')
             self.ice.set_volume(15)
-            self.fire = load_wav('fire.wav')
+            self.fire = load_wav('./resource/fire.wav')
             self.fire.set_volume(15)
         self.y = y
         self.ground = False
@@ -153,14 +153,14 @@ class Monster:
         self.number = d #1 기본 몬스터 / 2.기본 몬스터2 / 3. 법사 몬스터 / 4. 검사 몬스터
         # 5. 얼음몬스터1 / 6. 얼음몬스터2 / 7. 불꽃 몬스터1 / 8. 불꽃 몬스터2
         if Monster.images is None:
-            self.nomal_monster_image = load_image('nomal_monster.png') # 일반 몬스터
-            self.nomal_monster_image2 = load_image('nomal_monster_2.png')
-            self.magic_monster_image = load_image('magic_monster.png')
-            self.sword_monster_image = load_image('sword_monster.png')
-            self.ice_monster_image = load_image('ice_monster_1.png')
-            self.ice_monster_image2 = load_image('ice_monster_2.png') # 눈사람
-            self.fire_monster_image = load_image('fire_monster_1.png')
-            self.fire_monster_image2 = load_image('fire_monster_2.png') #불꽃 돼지
+            self.nomal_monster_image = load_image('./resource/nomal_monster.png') # 일반 몬스터
+            self.nomal_monster_image2 = load_image('./resource/nomal_monster_2.png')
+            self.magic_monster_image = load_image('./resource/magic_monster.png')
+            self.sword_monster_image = load_image('./resource/sword_monster.png')
+            self.ice_monster_image = load_image('./resource/ice_monster_1.png')
+            self.ice_monster_image2 = load_image('./resource/ice_monster_2.png') # 눈사람
+            self.fire_monster_image = load_image('./resource/fire_monster_1.png')
+            self.fire_monster_image2 = load_image('./resource/fire_monster_2.png') #불꽃 돼지
         self.size = 200
         self.stage = stage
         self.action = 0 # 0: 걷기 1: 죽음 2: 공격

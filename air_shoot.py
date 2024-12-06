@@ -22,21 +22,21 @@ class Air_shoot:
 
     def __init__(self, x=400, y=300, velocity = 1, air = 0, type = 0):
         if Air_shoot.image == None:
-            Air_shoot.image = load_image('air_shoot.png')
+            Air_shoot.image = load_image('./resource/air_shoot.png')
         if Air_shoot.image2 == None:
-            Air_shoot.image2 = load_image('sword_shoot.png')
+            Air_shoot.image2 = load_image('./resource/sword_shoot.png')
         if Air_shoot.image3 == None:
-            Air_shoot.image3 = load_image('fire_shoot.png')
+            Air_shoot.image3 = load_image('./resource/fire_shoot.png')
         if Air_shoot.image4 == None:
-            Air_shoot.image4 = load_image('ice_shoot.png')
+            Air_shoot.image4 = load_image('./resource/ice_shoot.png')
         if Air_shoot.image5 == None:
-            Air_shoot.image5 = load_image('star_shoot.png')
+            Air_shoot.image5 = load_image('./resource/star_shoot.png')
         if Air_shoot.sound == None:
-            self.star_sound = load_wav('movestar.wav')
+            self.star_sound = load_wav('./resource/movestar.wav')
             self.star_sound.set_volume(30)
-            self.fire_sound = load_wav('fire_shoot.wav')
+            self.fire_sound = load_wav('./resource/fire_shoot.wav')
             self.fire_sound.set_volume(20)
-            self.ice_sound = load_wav('ice_shoot.wav')
+            self.ice_sound = load_wav('./resource/ice_shoot.wav')
             self.ice_sound.set_volume(20)
         self.x, self.y, self.velocity, self.air = x, y, velocity, air
         self.past_x = x

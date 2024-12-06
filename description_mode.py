@@ -8,8 +8,8 @@ import play_mode
 def init():
     global image
     global sound
-    image = load_image('description.png')
-    sound = load_music('Title.mp3')
+    image = load_image('./resource/description.png')
+    sound = load_music('./resource/Title.mp3')
     sound.set_volume(10)
     sound.repeat_play()
 

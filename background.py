@@ -5,9 +5,9 @@ import server
 
 class Background:
     def __init__(self, stage = 1):
-        self.image = load_image('background1.png')
-        self.image2 = load_image('background2.png')
-        self.image3 = load_image('background_stage3.png')
+        self.image = load_image('./resource/background1.png')
+        self.image2 = load_image('./resource/background2.png')
+        self.image3 = load_image('./resource/background_stage3.png')
         self.cw = get_canvas_width()
         self.ch = get_canvas_height()
         self.w = self.image.w
