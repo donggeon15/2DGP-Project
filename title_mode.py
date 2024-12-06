@@ -3,7 +3,6 @@ from sdl2 import SDL_KEYDOWN, SDLK_ESCAPE, SDL_QUIT, SDLK_SPACE
 
 import description_mode
 import game_framework
-import play_mode
 
 
 def init():

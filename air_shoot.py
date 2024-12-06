@@ -1,5 +1,4 @@
 from pico2d import load_image, draw_rectangle, get_time, load_wav
-from pygame.examples.cursors import image
 
 import game_framework
 import game_world
