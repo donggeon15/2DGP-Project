@@ -85,7 +85,7 @@ class Attack:
 
     @staticmethod
     def draw(monster):
-        draw_rectangle(*Attack.get_bb())
+        #draw_rectangle(*Attack.get_bb())
         pass
 
     @staticmethod
@@ -99,9 +99,9 @@ class Attack:
                 return Attack.sx - 650, Attack.sy - 50, Attack.sx - 50, Attack.sy + 50
         else:
             if Attack.dir > 0:
-                return Attack.sx - 50, Attack.sy - 50, Attack.sx + 90, Attack.sy + 100
+                return Attack.sx - 50, Attack.sy - 50, Attack.sx + 90, Attack.sy + 90
             else:
-                return Attack.sx - 90, Attack.sy - 50, Attack.sx + 50, Attack.sy + 100
+                return Attack.sx - 90, Attack.sy - 50, Attack.sx + 50, Attack.sy + 90
 
 
     @staticmethod
@@ -344,7 +344,7 @@ class Boss:
         else:
             self.image_hp_0.draw(500, 45, 450, 40)
 
-        draw_rectangle(*self.get_bb())
+        #draw_rectangle(*self.get_bb())
 
     def handle_event(self, event):
         pass

@@ -96,7 +96,7 @@ class Attack:
 
     @staticmethod
     def draw(monster):
-        draw_rectangle(*Attack.get_bb())
+        #draw_rectangle(*Attack.get_bb())
         pass
 
     @staticmethod
@@ -678,7 +678,7 @@ class Monster:
                     self.fire_monster_image.clip_draw(28 * int(self.frame), 0, 28, 26, sx, sy, 56, 52)
                 if self.number == 7:
                     self.fire_monster_image2.clip_composite_draw(28 * int(self.frame), 0, 28, 28, 0, 'h', sx, sy + 5, 56, 56)
-        draw_rectangle(*self.get_bb())
+        #draw_rectangle(*self.get_bb())
 
     def handle_event(self, event):
         pass

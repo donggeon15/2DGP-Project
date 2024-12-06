@@ -56,7 +56,7 @@ class Air_shoot:
 
 
     def draw(self):
-        draw_rectangle(*self.get_bb())
+        #draw_rectangle(*self.get_bb())
         if self.air == 0:
             if self.velocity > 0:
                 self.image.clip_draw(20 * int(self.frame), 0, 20, 20, self.sx, self.sy, 50, 50)

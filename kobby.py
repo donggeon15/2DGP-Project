@@ -601,7 +601,7 @@ class Ability:
                 if kobby.food == True:  # 커비가 몬스터 or 별 먹을 경우 바로 time out
                     kobby.state_machine.add_event(('TIME_OUT', 0))
         if kobby.mode == 1: # 마법사 모드
-            kobby.frame = (kobby.frame + 16 * ACTION_PER_TIME * game_framework.frame_time)
+            kobby.frame = (kobby.frame + 18 * ACTION_PER_TIME * game_framework.frame_time)
             if kobby.frame > 9:
                 kobby.temp -= 1
                 kobby.frame = 0
@@ -699,7 +699,7 @@ class Ability:
                 kobby.image4_1.clip_composite_draw(95 * int(kobby.frame), 64 + (kobby.temp * 45), 95, 45, 0, 'h', kobby.sx - 40, kobby.sy + 5, 190,90)
             elif kobby.mode == 4:
                 kobby.image5_1.clip_composite_draw(95 * int(kobby.frame), 90 + (kobby.temp * 45), 95, 45, 0, 'h', kobby.sx - 40, kobby.sy + 5, 190,90)
-        draw_rectangle(*Ability.get_bb())
+        #draw_rectangle(*Ability.get_bb())
 
     @staticmethod
     def get_bb():
@@ -1352,7 +1352,7 @@ class Kobby:
             self.icon_image2.draw(60, 500, 74, 32)
         if self.heart == 1:
             self.icon_image.draw(60, 500, 74, 32)
-        draw_rectangle(*self.get_bb())
+        #draw_rectangle(*self.get_bb())
 
     def air_shoot(self):
         if self.face_dir == 1:
