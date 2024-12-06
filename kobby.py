@@ -250,6 +250,7 @@ class Squashed:
     def enter(kobby, e):
         if kobby.food == True:
             kobby.change_sound.play(1)
+            kobby.effect_frame = 0
             pass
         else:
             if right_down(e) or right_up(e) or kobby.face_dir == 1:
@@ -271,6 +272,7 @@ class Squashed:
     @staticmethod
     def do(kobby):
         if kobby.food == True:
+            kobby.effect_frame = ((kobby.effect_frame) + 5 * ACTION_PER_TIME * game_framework.frame_time)
             kobby.frame = ((kobby.frame - 2) + 9 * ACTION_PER_TIME * game_framework.frame_time) + 2
             if kobby.frame > 8:
                 kobby.state_machine.add_event(('TIME_OUT', 0))
@@ -313,6 +315,7 @@ class Squashed:
             if kobby.mode == 0:
                 if kobby.food == True:
                     kobby.image1_2.clip_draw(75 * int(kobby.frame), 26, 75, 26, kobby.sx + 10, kobby.sy, 150, 52)
+                    kobby.effect_image.clip_draw(72 * int(kobby.effect_frame), 62, 72, 64, kobby.sx, kobby.sy, 72, 64)
                 else:
                     kobby.image.clip_draw(25 * int(kobby.frame), 75, 25, 25, kobby.sx, kobby.sy, 50, 50)
             elif kobby.mode == 1:
@@ -327,6 +330,7 @@ class Squashed:
             if kobby.mode == 0:
                 if kobby.food == True:
                     kobby.image1_2.clip_composite_draw(75 * int(kobby.frame), 26, 75, 26, 0, 'h', kobby.sx - 10, kobby.sy, 150, 52)
+                    kobby.effect_image.clip_composite_draw(72 * int(kobby.effect_frame), 62, 72, 64, 0, 'h', kobby.sx, kobby.sy, 72, 64)
                 else:
                     kobby.image.clip_composite_draw(25 * int(kobby.frame), 75, 25, 25, 0, 'h', kobby.sx, kobby.sy, 50, 50)
             elif kobby.mode == 1:
@@ -571,7 +575,7 @@ class Ability:
     def do(kobby):
         if kobby.mode == 0:
             if kobby.food == True and get_time() - kobby.time <= 0.1:
-                kobby.frame = (kobby.frame + 4 * ACTION_PER_TIME * 2 * game_framework.frame_time)
+                kobby.frame = (kobby.frame + 4.2 * ACTION_PER_TIME * 2 * game_framework.frame_time)
                 if kobby.frame > 3:
                     star = Air_shoot(kobby.x, kobby.y, kobby.face_dir, 4, kobby.star_type)
                     game_world.add_object(star, 1)
@@ -840,6 +844,8 @@ class Kobby:
         self.food = False
         self.food_type = 0
         self.frame = 0
+        self.effect_frame = 0
+        self.effect_on = False
         self.dir = 0
         self.frame2 = 0
         self.damage_type = 0  # 0: 기본 , 1: 화상, 2: 찌릿, 3:동상
@@ -925,6 +931,7 @@ class Kobby:
             self.icon_image = load_image('heart_icon1.png')
             self.icon_image2 = load_image('heart_icon2.png')
             self.icon_image3 = load_image('heart_icon3.png')
+            self.effect_image = load_image('effect.png')
         self.state_machine = StateMachine(self)
         self.state_machine.start(Idle)
         self.state_machine.set_transitions(
@@ -980,6 +987,8 @@ class Kobby:
                 if self.state_machine.cur_state == Ability:
                     if self.mode == 2:
                         self.gravity = 400
+                    elif self.mode == 0:
+                        self.gravity = 200
                     else:
                         self.gravity  = 150
                 if self.gravity <= 1200:
@@ -987,7 +996,11 @@ class Kobby:
         else:
             self.gravity = 1
 
-
+        # effect
+        if self.effect_on == True:
+            self.effect_frame = (self.effect_frame + 5 * ACTION_PER_TIME * game_framework.frame_time)
+            if self.effect_frame > 3:
+                self.effect_on = False
 
         # 낙사
         if self.y <= -50:
@@ -1298,6 +1311,11 @@ class Kobby:
                     ('DOUBLE_INPUT', event)
                 )
         elif event.type == SDL_KEYDOWN and event.key == SDLK_p and self.food == False and self.mode != 0:
+            self.frame = 0
+            self.effect_frame = 0
+            self.state_machine.cur_state = Idle
+            self.action = 0
+            self.effect_on = True
             self.food = True
             self.star_type = self.mode
             self.mode = 0
@@ -1311,6 +1329,16 @@ class Kobby:
         if self.flink == False:
             self.state_machine.draw()
 
+        if self.face_dir == 1:
+            if self.mode == 0:
+                if self.food == True:
+                    if self.effect_on == True:
+                        self.effect_image.clip_draw(64 * int(self.effect_frame), 0, 64, 62, self.sx, self.sy, 64, 62)
+        elif self.face_dir == -1:
+            if self.mode == 0:
+                if self.food == True:
+                    if self.effect_on == True:
+                        self.effect_image.clip_composite_draw(64 * int(self.effect_frame), 0, 64, 62, 0, 'h', self.sx, self.sy, 64, 62)
 
         if self.hp == 3:
             self.hp_image1.draw(100, 550, 162, 56)
